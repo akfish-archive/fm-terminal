@@ -15,5 +15,11 @@ jQuery(document).ready ->
                                 term.echo "WTF?"
                         return
         
-        new Terminal({ prompt: '>', name: 'test', greetings: greet })                
+        new Terminal({
+                prompt: '♫',
+                name: 'catx.fm',
+                greetings: greet,
+                history: true,
+                tabcompletion: true
+                })                
         
