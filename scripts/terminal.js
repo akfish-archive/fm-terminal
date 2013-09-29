@@ -56,7 +56,7 @@
     }
 
     HelpCommand.prototype.execute = function() {
-      var cmd, name, _ref;
+      var arg, cmd, name, _i, _len, _ref;
       this.echo("[[b;;]Available Commands]");
       this.echo("--------------------------------");
       _ref = window.commands;
@@ -65,6 +65,10 @@
         this.echo(cmd.getHelpString());
       }
       this.echo("--------------------------------");
+      for (_i = 0, _len = arguments.length; _i < _len; _i++) {
+        arg = arguments[_i];
+        this.echo(arg);
+      }
     };
 
     HelpCommand.prototype.completion = function(term, str, cb) {
@@ -102,15 +106,16 @@
     };
 
     Terminal.prototype.interpret = function(name, term) {
-      var cmd, commands, _ref;
+      var cmd, commands, parse, _ref;
       term.echo("[[gb;#929292;#000]...]");
+      parse = $.terminal.parseCommand(name);
       if (window.T == null) {
         window.T = term;
       }
       commands = window.commands;
-      if ((commands != null) && (commands[name] != null)) {
-        cmd = commands[name];
-        cmd.execute.apply(cmd);
+      if ((commands != null) && (commands[parse.name] != null)) {
+        cmd = commands[parse.name];
+        cmd.execute.apply(cmd, parse.args);
       } else {
         if ((_ref = window.Help) != null) {
           _ref.errorMessage(name);

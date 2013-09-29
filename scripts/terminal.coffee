@@ -52,11 +52,12 @@ class Terminal
 
         interpret: (name, term) ->
                 term.echo "[[gb;#929292;#000]...]"
+                parse = $.terminal.parseCommand(name)
                 window.T ?= term
                 commands = window.commands
-                if commands? and commands[name]?
-                        cmd = commands[name]
-                        cmd.execute.apply cmd
+                if commands? and commands[parse.name]?
+                        cmd = commands[parse.name]
+                        cmd.execute.apply cmd, parse.args
                 else
                         window.Help?.errorMessage name
                 term.echo "[[gb;#929292;#000]...]"
@@ -77,7 +78,7 @@ jQuery(document).ready ->
                 greetings: greet,
                 history: true,
                 tabcompletion: true,
-                completion: window.Help.completion
+                completion: window.Help.completion,
                 })                
         
         
