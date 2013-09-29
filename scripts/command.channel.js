@@ -8,6 +8,21 @@
 
   channel = "http://www.douban.com/j/app/radio/channels";
 
+  String.prototype.width = function() {
+    var c, i, len, width, _i, _len;
+    len = this.length;
+    width = 0;
+    for (c = _i = 0, _len = this.length; _i < _len; c = ++_i) {
+      i = this[c];
+      if (this.charCodeAt(i) || this.charCodeAt(i) > 126) {
+        width += 2;
+      } else {
+        width++;
+      }
+    }
+    return width;
+  };
+
   ChannelCommand = (function(_super) {
     __extends(ChannelCommand, _super);
 
@@ -17,16 +32,35 @@
     }
 
     ChannelCommand.prototype.on_data = function(data) {
-      var channels, json, jsonp, x, _i, _len;
+      var channels, delta, i, json, jsonp, line, max_name_length, name, name_per_line, parsed, space, x, _i, _j, _len, _len1;
       window.T.resume();
       x = $("" + data.responseText + "");
       jsonp = x[5].innerHTML;
       json = jsonp.substring(jsonp.indexOf('(') + 1, jsonp.lastIndexOf(')'));
-      channels = $.parseJSON(json).channels;
+      parsed = $.parseJSON(json);
+      channels = parsed.channels;
+      if (channels == null) {
+        this.echo(parsed.error);
+      }
+      max_name_length = 0;
       for (_i = 0, _len = channels.length; _i < _len; _i++) {
         channel = channels[_i];
-        this.echo(channel.name);
+        max_name_length = Math.max(channel.name.width(), max_name_length);
       }
+      name_per_line = Math.floor(80 / max_name_length);
+      line = "";
+      space = 2;
+      for (i = _j = 0, _len1 = channels.length; _j < _len1; i = ++_j) {
+        channel = channels[i];
+        if (i !== 0 && i % name_per_line === 0) {
+          this.echo(line);
+          line = "";
+        }
+        name = channel.name;
+        delta = max_name_length + space - name.width();
+        line += channel.name + Array(Math.floor(delta / 4)).join("\t");
+      }
+      this.echo(line);
     };
 
     ChannelCommand.prototype.on_error = function() {

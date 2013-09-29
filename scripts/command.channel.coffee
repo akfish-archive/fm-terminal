@@ -4,6 +4,18 @@ proxy = "https://jsonpwrapper.appspot.com/?callback=?"
 channel = "http://www.douban.com/j/app/radio/channels";
 
 
+String.prototype.width =  () ->
+        len = @length; 
+        width = 0;
+
+        for i, c in @
+                if @charCodeAt(i) || @charCodeAt(i) > 126
+                        width += 2
+                else
+                        width++
+        return width
+
+
 class ChannelCommand extends window.CommandBase
         on_data: (data) ->
                 window.T.resume()
@@ -11,12 +23,26 @@ class ChannelCommand extends window.CommandBase
  
                 jsonp = x[5].innerHTML;
                 json = jsonp.substring jsonp.indexOf('(') + 1, jsonp.lastIndexOf(')')
-
-                channels = $.parseJSON(json).channels
-
+                parsed = $.parseJSON(json)
+                channels = parsed.channels
+                if not channels?
+                        @echo parsed.error
+                max_name_length = 0
                 for channel in channels
-                        @echo channel.name
+                        max_name_length = Math.max channel.name.width(), max_name_length
 
+                name_per_line = Math.floor 80 / max_name_length
+
+                line = ""
+                space = 2
+                for channel, i in channels
+                        if i != 0 and i % name_per_line == 0
+                                @echo line
+                                line = ""
+                        name = channel.name
+                        delta = max_name_length + space - name.width()
+                        line += channel.name + Array(Math.floor(delta / 4)).join("\t")
+                @echo line
                 return
                 
         on_error: () ->
