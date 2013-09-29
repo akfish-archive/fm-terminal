@@ -15,16 +15,19 @@
     <script src="scripts/terminal.js"></script>
     <script src="scripts/command.channel.js"></script>
     <script>
-      var channel = "http://www.douban.com/j/app/radio/channels?callback=?";
+      var proxy = "http://catx.me/ajax-proxy.php"
+      var channel = "http://www.douban.com/j/app/radio/channels";
 
       $.ajax({
 
       // The 'type' property sets the HTTP method.
       // A value of 'PUT' or 'DELETE' will trigger a preflight request.
       type: 'GET',
-
+      dataType: 'JSON',
       // The URL to make the request to.
       url: channel,
+
+
 
       // The 'contentType' property sets the 'Content-Type' header.
       // The JQuery default for this property is
