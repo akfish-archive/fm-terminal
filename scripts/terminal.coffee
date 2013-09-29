@@ -4,25 +4,61 @@ greet = (callback) ->
         str += "[[;#e67e22;]music provided by douban.fm]"
         return str
 
+class CommandBase
+        constructor: (name, desc) ->
+                @name = name
+                @desc = desc
+        echo: (msg) ->
+                window.T?.echo msg
+                return
+        register: () ->
+                window.TERM?.registerCommand(@name, @)
+        execute: () ->
+                @echo "Command Base"
+                return
+        getHelpString: () ->
+                return "[[ub;#2ecc71;#000]#{@name}] \t #{@desc}"
+
+window.CommandBase ?= CommandBase
+
+class HelpCommand extends CommandBase
+        constructor: (name, desc) ->
+                super(name, desc)
+                window.Help ?= @
+                
+        execute: () ->
+                @echo "[[b;;]Available Commands]"
+                @echo "--------------------------------"                
+                for name, cmd of window.commands
+                        @echo cmd.getHelpString()
+                @echo "--------------------------------"
+                return
+
+        errorMessage: (cmd) ->
+                @echo "[[gb;#e67e22;#000]Unknown command:] [[gub;#e67e22;#000]#{cmd}]"
+                @echo "Type [[ub;#2ecc71;#000]help] for command list"
+                
 class Terminal
 
         constructor: () ->
-                @commands = {}
+                window.commands ?= {}
         start: (options) ->
                 $('body').terminal(@interpret, options)
-                
+
         interpret: (name, term) ->
-                commands = window.TERM.commands
+                window.T ?= term
+                commands = window.commands
                 if commands? and commands[name]?
-                        commmands[name]()
+                        cmd = commands[name]
+                        cmd.execute.apply cmd
                 else
-                        term.echo "WTF?"
+                        window.Help?.errorMessage name
                 return
         registerCommand: (name, command) ->
-                @commands[name] = command
+                window.commands[name] = command
 
-if not window.TERM?
-        window.TERM = new Terminal() 
+window.TERM ?= new Terminal()
+(new HelpCommand "help", "Show help").register()
 
 jQuery(document).ready ->
         window.TERM.start({
