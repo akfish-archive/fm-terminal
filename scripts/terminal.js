@@ -67,6 +67,20 @@
       this.echo("--------------------------------");
     };
 
+    HelpCommand.prototype.completion = function(term, str, cb) {
+      var cmd, name;
+      cb((function() {
+        var _ref, _results;
+        _ref = window.commands;
+        _results = [];
+        for (name in _ref) {
+          cmd = _ref[name];
+          _results.push(name);
+        }
+        return _results;
+      })());
+    };
+
     HelpCommand.prototype.errorMessage = function(cmd) {
       this.echo("[[gb;#e67e22;#000]Unknown command:] [[gub;#e67e22;#000]" + cmd + "]");
       return this.echo("Type [[ub;#2ecc71;#000]help] for command list");
@@ -84,11 +98,12 @@
     }
 
     Terminal.prototype.start = function(options) {
-      return $('body').terminal(this.interpret, options);
+      $('body').terminal(this.interpret, options);
     };
 
     Terminal.prototype.interpret = function(name, term) {
       var cmd, commands, _ref;
+      term.echo("[[gb;#929292;#000]...]");
       if (window.T == null) {
         window.T = term;
       }
@@ -101,10 +116,11 @@
           _ref.errorMessage(name);
         }
       }
+      term.echo("[[gb;#929292;#000]...]");
     };
 
     Terminal.prototype.registerCommand = function(name, command) {
-      return window.commands[name] = command;
+      window.commands[name] = command;
     };
 
     return Terminal;
@@ -115,8 +131,6 @@
     window.TERM = new Terminal();
   }
 
-  (new CommandBase("base", "base class")).register();
-
   (new HelpCommand("help", "Show help")).register();
 
   jQuery(document).ready(function() {
@@ -125,7 +139,8 @@
       name: 'catx.fm',
       greetings: greet,
       history: true,
-      tabcompletion: true
+      tabcompletion: true,
+      completion: window.Help.completion
     });
   });
 

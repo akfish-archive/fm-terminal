@@ -34,6 +34,10 @@ class HelpCommand extends CommandBase
                 @echo "--------------------------------"
                 return
 
+        completion: (term, str, cb) ->
+                cb(name for name, cmd of window.commands)
+                return
+
         errorMessage: (cmd) ->
                 @echo "[[gb;#e67e22;#000]Unknown command:] [[gub;#e67e22;#000]#{cmd}]"
                 @echo "Type [[ub;#2ecc71;#000]help] for command list"
@@ -44,8 +48,10 @@ class Terminal
                 window.commands ?= {}
         start: (options) ->
                 $('body').terminal(@interpret, options)
+                return
 
         interpret: (name, term) ->
+                term.echo "[[gb;#929292;#000]...]"
                 window.T ?= term
                 commands = window.commands
                 if commands? and commands[name]?
@@ -53,9 +59,13 @@ class Terminal
                         cmd.execute.apply cmd
                 else
                         window.Help?.errorMessage name
+                term.echo "[[gb;#929292;#000]...]"
                 return
+                
         registerCommand: (name, command) ->
                 window.commands[name] = command
+                return
+                
 
 window.TERM ?= new Terminal()
 (new HelpCommand "help", "Show help").register()
@@ -66,7 +76,8 @@ jQuery(document).ready ->
                 name: 'catx.fm',
                 greetings: greet,
                 history: true,
-                tabcompletion: true
+                tabcompletion: true,
+                completion: window.Help.completion
                 })                
         
         
