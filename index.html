@@ -10,10 +10,65 @@
     <script src="jquery.terminal/js/jquery.mousewheel-min.js"></script>
     <script src="jquery.terminal/js/jquery.terminal-min.js"></script>
     <link href="jquery.terminal/css/jquery.terminal.css" rel="stylesheet"/>
+    <script src="jquery.fn/cross-domain-ajax/jquery.xdomainajax.js"></script>
 
     <script src="scripts/terminal.js"></script>
+    <script src="scripts/command.channel.js"></script>
     <script>
-      
+      var proxy = "http://localhost:10080/?callback=foo"
+
+      var channel = "http://www.douban.com/j/app/radio/channels";
+
+      $.ajax({
+
+      // The 'type' property sets the HTTP method.
+      // A value of 'PUT' or 'DELETE' will trigger a preflight request.
+      type: 'GET',
+      dataType: 'JSON',
+      data: {
+      'url':channel
+      },
+      // The URL to make the request to.
+      url: proxy,
+
+
+
+      // The 'contentType' property sets the 'Content-Type' header.
+      // The JQuery default for this property is
+      // 'application/x-www-form-urlencoded; charset=UTF-8', which does not trigger
+      // a preflight. If you set this value to anything other than
+      // application/x-www-form-urlencoded, multipart/form-data, or text/plain,
+      // you will trigger a preflight request.
+      contentType: 'text/plain',
+
+      xhrFields: {
+      // The 'xhrFields' property sets additional fields on the XMLHttpRequest.
+      // This can be used to set the 'withCredentials' property.
+      // Set the value to 'true' if you'd like to pass cookies to the server.
+      // If this is enabled, your server must respond with the header
+      // 'Access-Control-Allow-Credentials: true'.
+      withCredentials: false 
+      },
+
+      headers: {
+      // Set any custom headers here.
+      // If you set any non-simple headers, your server must include these
+      // headers in the 'Access-Control-Allow-Headers' response header.
+      },
+
+      success: function(data) {
+      // Here's where you handle a successful response.
+      console.log(data);
+      },
+
+      error: function() {
+      // Here's where you handle an error response.
+      // Note that if the error was due to a CORS issue,
+      // this function will still fire, but there won't be any additional
+      // information about the error.
+      console.log("Failed");
+      }
+      });
     </script>
   </head>
   <body>

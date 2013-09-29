@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "command.channel.js",
+  "sourceRoot": "",
+  "sources": [
+    "command.channel.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,KAAA,cAAA;KAAA;oSAAA;;CAAA,CAAM;CAAN;;;;;CAAA;;CAAA;;CAA6B,KAAM;;CAAnC,CAGA,EAAK,IAAL,CAAK,KAAA,KAAA;CAHL"
+}
