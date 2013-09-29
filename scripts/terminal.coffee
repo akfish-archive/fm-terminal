@@ -78,7 +78,7 @@ window.TERM ?= new Terminal()
 
 jQuery(document).ready ->
         window.TERM.start({
-                prompt: '♫',
+                prompt: '♫>',
                 name: 'catx.fm',
                 greetings: greet,
                 history: true,

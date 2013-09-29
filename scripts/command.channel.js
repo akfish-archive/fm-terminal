@@ -40,9 +40,11 @@
       parsed = $.parseJSON(json);
       channels = parsed.channels;
       if (channels == null) {
-        this.echo(parsed.error);
+        this.echo("Error " + parsed.error);
+        return;
       }
       max_name_length = 0;
+      this.echo(Array(80).join('-'));
       for (_i = 0, _len = channels.length; _i < _len; _i++) {
         channel = channels[_i];
         max_name_length = Math.max(channel.name.width(), max_name_length);
@@ -56,11 +58,12 @@
           this.echo(line);
           line = "";
         }
-        name = channel.name;
-        delta = max_name_length + space - name.width();
-        line += channel.name + Array(Math.floor(delta / 4)).join("\t");
+        name = "[[ub;#2ecc71;#000]" + channel.name + "]";
+        delta = max_name_length - channel.name.width();
+        line += name + Array(Math.ceil(delta / 4) + 1).join("\t");
       }
       this.echo(line);
+      this.echo(Array(80).join('-'));
     };
 
     ChannelCommand.prototype.on_error = function() {

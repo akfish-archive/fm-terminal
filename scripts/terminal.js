@@ -142,7 +142,7 @@
 
   jQuery(document).ready(function() {
     return window.TERM.start({
-      prompt: '♫',
+      prompt: '♫>',
       name: 'catx.fm',
       greetings: greet,
       history: true,
