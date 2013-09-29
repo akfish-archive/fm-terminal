@@ -24,8 +24,14 @@ class MainHandler(webapp2.RequestHandler):
         try:
             result = urllib2.urlopen(url)
             return result.read()
-        except e:
+        except urllib2.URLError as e:
             return "{\"error\":\"" + e.message + "\"}"
+        except urllib2.HTTPError as e:
+            return "{\"error\":\"" + e.message + "\"}"
+        except:
+            return "{\"error\":\"" + "Unknown" + "\"}"
+
+
     def get_json_p(self):
         url = self.request.get('url');
         callback = self.request.get('callback');
