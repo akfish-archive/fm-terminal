@@ -29,6 +29,8 @@ class MainHandler(webapp2.RequestHandler):
     def get_json_p(self):
         url = self.request.get('url');
         callback = self.request.get('callback');
+
+        self.response.headers['Content-Type'] = "application/json"
         if callback:
             self.response.write(callback + "(")
         self.response.write(self.fetch(url))
