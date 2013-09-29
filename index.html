@@ -11,14 +11,19 @@
     <script src="jquery.terminal/js/jquery.terminal-min.js"></script>
     <link href="jquery.terminal/css/jquery.terminal.css" rel="stylesheet"/>
     <script src="jquery.fn/cross-domain-ajax/jquery.xdomainajax.js"></script>
-
+    <script src="crossdomain/cross-sub-domain.js"></script>
+    
     <script src="scripts/terminal.js"></script>
     <script src="scripts/command.channel.js"></script>
+
+    <iframe id="proxy-iframe" src="crossdomain/iframe.html"></iframe>
+    <div id="proxy-target"></div>
     <script>
-      var channel = "http://www.douban.com/j/app/radio/channels?callback=?";
-      $.ajax(channel, function (data) {
-      console.log(data);
-      });
+      var proxy_url = "http://catx.me/ajax-proxy.php"
+      var channel_url = "http://www.douban.com/j/app/radio/channels";
+      var proxy = new CrossDomain($("#proxy-iframe"), $("#proxy-target"),"catx.me","http://catx.me");
+      proxy.getFrameContent();		//this function will perform all the operations required.
+	
     </script>
   </head>
   <body>
