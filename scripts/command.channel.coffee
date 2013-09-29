@@ -31,21 +31,24 @@ class ChannelCommand extends window.CommandBase
                 max_name_length = 0
 
                 @echo(Array(80).join('-'))
+                names = []
                 for channel in channels
-                        max_name_length = Math.max channel.name.width(), max_name_length
+                        name = "#{channel.seq_id}.#{channel.name}"
+                        names.push(name)
+                        max_name_length = Math.max name.width(), max_name_length
 
                 name_per_line = Math.floor 80 / max_name_length
 
                 line = ""
                 space = 2
-                for channel, i in channels
+                for name, i in names
                         if i != 0 and i % name_per_line == 0
                                 @echo line
                                 line = ""
-                        name = "[[ub;#2ecc71;#000]#{channel.name}]"
+                        str = "[[ub;#2ecc71;#000]#{name}]"
 
-                        delta = max_name_length - channel.name.width()
-                        line += name + Array(Math.ceil(delta / 4)+1).join("\t")
+                        delta = max_name_length - name.width()
+                        line += str + Array(Math.ceil(delta / 4)+1).join("\t")
                 @echo line
                 @echo(Array(80).join('-'))
                 return

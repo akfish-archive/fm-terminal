@@ -32,7 +32,7 @@
     }
 
     ChannelCommand.prototype.on_data = function(data) {
-      var channels, delta, i, json, jsonp, line, max_name_length, name, name_per_line, parsed, space, x, _i, _j, _len, _len1;
+      var channels, delta, i, json, jsonp, line, max_name_length, name, name_per_line, names, parsed, space, str, x, _i, _j, _len, _len1;
       window.T.resume();
       x = $("" + data.responseText + "");
       jsonp = x[5].innerHTML;
@@ -45,22 +45,25 @@
       }
       max_name_length = 0;
       this.echo(Array(80).join('-'));
+      names = [];
       for (_i = 0, _len = channels.length; _i < _len; _i++) {
         channel = channels[_i];
-        max_name_length = Math.max(channel.name.width(), max_name_length);
+        name = "" + channel.seq_id + "." + channel.name;
+        names.push(name);
+        max_name_length = Math.max(name.width(), max_name_length);
       }
       name_per_line = Math.floor(80 / max_name_length);
       line = "";
       space = 2;
-      for (i = _j = 0, _len1 = channels.length; _j < _len1; i = ++_j) {
-        channel = channels[i];
+      for (i = _j = 0, _len1 = names.length; _j < _len1; i = ++_j) {
+        name = names[i];
         if (i !== 0 && i % name_per_line === 0) {
           this.echo(line);
           line = "";
         }
-        name = "[[ub;#2ecc71;#000]" + channel.name + "]";
-        delta = max_name_length - channel.name.width();
-        line += name + Array(Math.ceil(delta / 4) + 1).join("\t");
+        str = "[[ub;#2ecc71;#000]" + name + "]";
+        delta = max_name_length - name.width();
+        line += str + Array(Math.ceil(delta / 4) + 1).join("\t");
       }
       this.echo(line);
       this.echo(Array(80).join('-'));
