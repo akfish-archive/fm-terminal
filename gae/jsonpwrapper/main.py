@@ -15,10 +15,31 @@
 # limitations under the License.
 #
 import webapp2
+import urllib2
+
+
 
 class MainHandler(webapp2.RequestHandler):
+    def fetch(self, url):
+        try:
+            result = urllib2.urlopen(url)
+            return result.read()
+        except e:
+            return "{\"error\":\"" + e.message + "\"}"
+    def get_json_p(self):
+        url = self.request.get('url');
+        callback = self.request.get('callback');
+        if callback:
+            self.response.write(callback + "(")
+        self.response.write(self.fetch(url))
+        if callback:
+            self.response.write(")");
+
     def get(self):
-        self.response.write('Hello world!')
+        self.get_json_p()
+    def post(self):
+        self.get_json_p()
+
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler)
