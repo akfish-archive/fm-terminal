@@ -1,7 +1,10 @@
 
 greet = (callback) ->
         str =  "[[gb;#ffffff;#000]CatX.FM 猫杀电台\r\n]"
-        str += "[[;#e67e22;]music provided by douban.fm]"
+        str += "[[;#e67e22;]music provided by douban.fm]\r\n"
+        str += "Type [[ub;#2ecc71;#000]channel] to discovery music, or "
+        str += "[[ub;#2ecc71;#000]help] for full command list\r\n"
+        str += "[[gb;#929292;#000]......]"
         return str
 
 class CommandBase
@@ -17,7 +20,9 @@ class CommandBase
                 @echo "Command Base"
                 return
         getHelpString: () ->
-                return "[[ub;#2ecc71;#000]#{@name}] \t #{@desc}"
+                len = @name.length
+                padding = Array(10 - len).join " " 
+                return "[[ub;#2ecc71;#000]#{@name}]#{padding}#{@desc}"
 
 window.CommandBase ?= CommandBase
 

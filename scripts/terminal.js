@@ -7,7 +7,10 @@
   greet = function(callback) {
     var str;
     str = "[[gb;#ffffff;#000]CatX.FM 猫杀电台\r\n]";
-    str += "[[;#e67e22;]music provided by douban.fm]";
+    str += "[[;#e67e22;]music provided by douban.fm]\r\n";
+    str += "Type [[ub;#2ecc71;#000]channel] to discovery music, or ";
+    str += "[[ub;#2ecc71;#000]help] for full command list\r\n";
+    str += "[[gb;#929292;#000]......]";
     return str;
   };
 
@@ -34,7 +37,10 @@
     };
 
     CommandBase.prototype.getHelpString = function() {
-      return "[[ub;#2ecc71;#000]" + this.name + "] \t " + this.desc;
+      var len, padding;
+      len = this.name.length;
+      padding = Array(10 - len).join(" ");
+      return "[[ub;#2ecc71;#000]" + this.name + "]" + padding + this.desc;
     };
 
     return CommandBase;
@@ -56,7 +62,7 @@
     }
 
     HelpCommand.prototype.execute = function() {
-      var arg, cmd, name, _i, _len, _ref;
+      var cmd, name, _ref;
       this.echo("[[b;;]Available Commands]");
       this.echo("--------------------------------");
       _ref = window.commands;
@@ -65,10 +71,6 @@
         this.echo(cmd.getHelpString());
       }
       this.echo("--------------------------------");
-      for (_i = 0, _len = arguments.length; _i < _len; _i++) {
-        arg = arguments[_i];
-        this.echo(arg);
-      }
     };
 
     HelpCommand.prototype.completion = function(term, str, cb) {
