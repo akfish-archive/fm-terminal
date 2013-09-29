@@ -15,7 +15,8 @@
     <script src="scripts/terminal.js"></script>
     <script src="scripts/command.channel.js"></script>
     <script>
-      var proxy = "http://catx.me/ajax-proxy.php"
+      var proxy = "http://localhost:10080/?callback=foo"
+
       var channel = "http://www.douban.com/j/app/radio/channels";
 
       $.ajax({
@@ -24,8 +25,11 @@
       // A value of 'PUT' or 'DELETE' will trigger a preflight request.
       type: 'GET',
       dataType: 'JSON',
+      data: {
+      'url':channel
+      },
       // The URL to make the request to.
-      url: channel,
+      url: proxy,
 
 
 
