@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "command.play.js",
+  "sourceRoot": "",
+  "sources": [
+    "command.play.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,KAAA,WAAA;KAAA;oSAAA;;CAAA,CAAM;CACE;;;;;CAAA;;CAAA,EAAS,IAAT,EAAU,CAAD;CACA,EAAoB,CAApB,MAAD,GAAA,EAAO;CADf,IAAS;;CAAT;;CADkB,KAAM;;CAAhC,CAIA,EAAK,EAAA,EAAL,GAAK,iCAAA;CAJL"
+}
