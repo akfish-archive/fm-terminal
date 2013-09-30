@@ -13,13 +13,12 @@
     }
 
     PlayCommand.prototype.play = function(songs) {
-      var song, _i, _len, _results;
-      _results = [];
+      var song, _i, _len;
       for (_i = 0, _len = songs.length; _i < _len; _i++) {
         song = songs[_i];
-        _results.push(this.echo("Song: " + song.artist + " - " + song.title + " " + song.albumtitle));
+        this.echo("Song: " + song.artist + " - " + song.title + " " + song.albumtitle);
       }
-      return _results;
+      return window.DoubanFM.player.play(songs[0]);
     };
 
     PlayCommand.prototype.listSongs = function() {

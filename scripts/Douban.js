@@ -143,7 +143,7 @@
 
   })();
 
-  proxy_domain = "https://jsonpwrapper.appspot.com";
+  proxy_domain = "http://localhost:10080";
 
   if (window.Service == null) {
     window.Service = new Service(proxy_domain);
@@ -151,6 +151,7 @@
 
   Player = (function() {
     function Player() {
+      this.sounds = {};
       soundManager.setup({
         url: "SoundManager2/swf/",
         preferFlash: false,
@@ -164,6 +165,18 @@
         }
       });
     }
+
+    Player.prototype.play = function(song) {
+      var id, url, _base;
+      id = song.sid;
+      url = song.url;
+      if ((_base = this.sounds)[id] == null) {
+        _base[id] = soundManager.createSound({
+          url: url
+        });
+      }
+      return this.sounds[id].play();
+    };
 
     return Player;
 
