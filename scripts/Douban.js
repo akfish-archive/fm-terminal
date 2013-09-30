@@ -136,6 +136,8 @@
 
     DoubanFM.prototype.remember = function() {};
 
+    DoubanFM.prototype.forget = function() {};
+
     DoubanFM.prototype.post_login = function(data, remember, succ, err) {
       this.user = new User(data);
       if (this.user.r === 1) {
@@ -168,7 +170,10 @@
       }));
     };
 
-    DoubanFM.prototype.logout = function() {};
+    DoubanFM.prototype.logout = function() {
+      this.User = new User();
+      return this.forget();
+    };
 
     DoubanFM.prototype.channels = function() {
       return doGetChannels();

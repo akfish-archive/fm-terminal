@@ -1,5 +1,6 @@
-
-proxy = "https://jsonpwrapper.appspot.com/?callback=?"
+proxy_domain = "http://localhost:10080"
+        
+proxy = proxy_domain + "/"
 
 channel = "http://www.douban.com/j/app/radio/channels";
 
@@ -19,12 +20,8 @@ String.prototype.width =  () ->
 class ChannelCommand extends window.CommandBase
         on_data: (data) ->
                 window.T.resume()
-                x = $("" + data.responseText + "");
- 
-                jsonp = x[5].innerHTML;
-                json = jsonp.substring jsonp.indexOf('(') + 1, jsonp.lastIndexOf(')')
-                parsed = $.parseJSON(json)
-                channels = parsed.channels
+
+                channels = data.channels
                 if not channels?
                         @echo "Error #{parsed.error}"
                         return
@@ -53,8 +50,10 @@ class ChannelCommand extends window.CommandBase
                 @echo(Array(80).join('-'))
                 return
                 
-        on_error: () ->
+        on_error: (status, error) ->
                 window.T.resume()
+                @echo "Status: #{status}"
+                @echo "Error: #{error}"
                 @echo "Error, try again later"
                 return
                 
@@ -75,9 +74,8 @@ class ChannelCommand extends window.CommandBase
                         success: (data) =>
                                 @on_data data
                                 ,
-                        error: () ->
-                                @on_error
-                                return
+                        error: (j, status, error) =>
+                                @on_error(status, error)
                 })
                 return
                         

@@ -49,6 +49,7 @@ class MainHandler(webapp2.RequestHandler):
             data = None
 
         self.response.headers['Content-Type'] = "application/json"
+        self.response.headers['Access-Control-Allow-Origin'] = "*"
         if callback:
             self.response.write(callback + "(")
 
