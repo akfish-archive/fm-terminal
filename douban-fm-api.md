@@ -75,6 +75,42 @@ The features covered by this API contains following:
 ```
 
 ### Channel List
+
+#### Get Channels
+
+##### Request
+
+```GET /j/app/radio/channels```
+
+##### Parameters
+
+Not necessary.
+
+##### Response
+
+```javascript
+{
+  "channels":
+  [
+    {
+      "name":"私人兆赫",
+      "seq_id":0,
+      "abbr_en":"My", // Shouldn't it be "mine"? :)
+      "channel_id":0,
+      "name_en":"Personal Radio"
+    },
+    {
+      "name":"华语",
+      "seq_id":1,
+      "abbr_en":"CH",
+      "channel_id":1,
+      "name_en":"Chinese"
+    },
+    //.. and more
+  ]
+}
+```
+
 ### Song List
 #### Get Songs
 
