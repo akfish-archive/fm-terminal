@@ -22,6 +22,10 @@ class Song extends JsonObject
                 window.DoubanFM?.doSkip(@)
 
 class User extends JsonObject
+        attachAuth: (data) ->
+                data["user_id"] = @user_id if @user_id?
+                data["token"] = @token if @token?
+                data["expire"] = @expire if @expire?
         
 class Service
         constructor: (@proxy) ->
@@ -34,20 +38,54 @@ class Service
 
 
 class DoubanFM
+        app_name = "radio_desktop_win"
+        version = 100
         domain = "http://www.douban.com"
         login_url = "/j/app/login"
         channel_url = "/j/app/radio/channels"
         song_url = "/j/app/radio/people"
+
+        attachVersion: (data) ->
+                data["app_name"] = app_name
+                data["version"] = version
         
         constructor: (@service) ->
                 window.DoubanFM ?= @
-                @user = @resume()
+                @resume()
                 
         resume: () ->
-                #TODO:
+                #TODO: read cookie to @user
 
-        login: (user, password, remeber) ->
-                #TODO:
+        remember: () ->
+                #TODO: write cookie from @user
+
+        post_login: (data, remember, succ, err) ->
+                @user = new User(data)
+                if (@user.r == 1)
+                        err(@user)
+                        return
+                if (remember)
+                        @remember
+                succ(@user)
+                
+        login: (email, password, remember, succ, err) ->
+                payload =
+                {
+                        "email": email,
+                        "password": password,
+                }
+                @attachVersion(payload)
+                @service.post(
+                        domain + login_url,
+                        payload,
+                        ((data) =>
+                                @post_login(data, remember, succ, err)
+                        ),
+                        (() =>
+                                data = { r: 1, err: "Internal Error" }
+                                @post_login(data, remember, succ, err)
+                        ))
+                return
                 
         logout: () ->
                 #TODO:

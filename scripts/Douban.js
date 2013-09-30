@@ -75,6 +75,18 @@
       return _ref2;
     }
 
+    User.prototype.attachAuth = function(data) {
+      if (this.user_id != null) {
+        data["user_id"] = this.user_id;
+      }
+      if (this.token != null) {
+        data["token"] = this.token;
+      }
+      if (this.expire != null) {
+        return data["expire"] = this.expire;
+      }
+    };
+
     return User;
 
   })(JsonObject);
@@ -93,7 +105,11 @@
   })();
 
   DoubanFM = (function() {
-    var channel_url, domain, login_url, song_url;
+    var app_name, channel_url, domain, login_url, song_url, version;
+
+    app_name = "radio_desktop_win";
+
+    version = 100;
 
     domain = "http://www.douban.com";
 
@@ -103,17 +119,54 @@
 
     song_url = "/j/app/radio/people";
 
+    DoubanFM.prototype.attachVersion = function(data) {
+      data["app_name"] = app_name;
+      return data["version"] = version;
+    };
+
     function DoubanFM(service) {
       this.service = service;
       if (window.DoubanFM == null) {
         window.DoubanFM = this;
       }
-      this.user = this.resume();
+      this.resume();
     }
 
     DoubanFM.prototype.resume = function() {};
 
-    DoubanFM.prototype.login = function(user, password, remeber) {};
+    DoubanFM.prototype.remember = function() {};
+
+    DoubanFM.prototype.post_login = function(data, remember, succ, err) {
+      this.user = new User(data);
+      if (this.user.r === 1) {
+        err(this.user);
+        return;
+      }
+      if (remember) {
+        this.remember;
+      }
+      return succ(this.user);
+    };
+
+    DoubanFM.prototype.login = function(email, password, remember, succ, err) {
+      var payload,
+        _this = this;
+      payload = {
+        "email": email,
+        "password": password
+      };
+      this.attachVersion(payload);
+      this.service.post(domain + login_url, payload, (function(data) {
+        return _this.post_login(data, remember, succ, err);
+      }), (function() {
+        var data;
+        data = {
+          r: 1,
+          err: "Internal Error"
+        };
+        return _this.post_login(data, remember, succ, err);
+      }));
+    };
 
     DoubanFM.prototype.logout = function() {};
 
