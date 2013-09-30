@@ -12,8 +12,30 @@
       return _ref;
     }
 
+    PlayCommand.prototype.playChannel = function(channel_id) {
+      var channel, _ref1, _ref2;
+      channel = (_ref1 = window.DoubanFM) != null ? (_ref2 = _ref1.channels) != null ? _ref2[channel_id] : void 0 : void 0;
+      if (channel == null) {
+        this.echo("Unknown channel " + channel_id);
+      } else {
+        this.echo("Play channel " + channel_id + "." + channel.name);
+      }
+      return window.T.resume();
+    };
+
     PlayCommand.prototype.execute = function(channel_id) {
-      return this.echo("Play channel " + channel_id);
+      var _this = this;
+      if (window.DoubanFM.channels != null) {
+        return this.playChannel(channel_id);
+      } else {
+        this.echo("Requesting...");
+        window.T.pause();
+        return window.DoubanFM.update(function(channels) {
+          return _this.playChannel(channel_id);
+        }, function(status, error) {
+          return _this.on_error(status, error);
+        });
+      }
     };
 
     return PlayCommand;

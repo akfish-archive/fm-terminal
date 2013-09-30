@@ -24,6 +24,14 @@ class CommandBase
                 padding = Array(10 - len).join " " 
                 return "[[ub;#2ecc71;#000]#{@name}]#{padding}#{@desc}"
 
+        on_error: (status, error) ->
+                window.T.resume()
+                @echo "Status: #{status}"
+                @echo "Error: #{error}"
+                @echo "Error, try again later"
+                return
+                
+
 window.CommandBase ?= CommandBase
 
 class HelpCommand extends CommandBase

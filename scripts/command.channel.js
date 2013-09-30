@@ -57,13 +57,6 @@
       this.echo(Array(80).join('-'));
     };
 
-    ChannelCommand.prototype.on_error = function(status, error) {
-      window.T.resume();
-      this.echo("Status: " + status);
-      this.echo("Error: " + error);
-      this.echo("Error, try again later");
-    };
-
     ChannelCommand.prototype.execute = function() {
       var _this = this;
       if (window.DoubanFM.channels == null) {

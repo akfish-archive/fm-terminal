@@ -26,9 +26,23 @@
       return _ref;
     }
 
-    Channel.prototype.songs = function(succ, err) {
-      var _ref1;
-      return (_ref1 = window.DoubanFM) != null ? _ref1.doGetSongs(this, succ, err) : void 0;
+    Channel.prototype.update = function(succ, err) {
+      var _ref1,
+        _this = this;
+      return (_ref1 = window.DoubanFM) != null ? _ref1.doGetSongs(this, (function(json) {
+        var s;
+        _this.songs = (function() {
+          var _i, _len, _ref2, _results;
+          _ref2 = json != null ? json.song : void 0;
+          _results = [];
+          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+            s = _ref2[_i];
+            _results.push(new Song(s));
+          }
+          return _results;
+        })();
+        return succ(_this.songs);
+      }), err) : void 0;
     };
 
     return Channel;
@@ -240,19 +254,7 @@
       if ((_ref4 = this.user) != null) {
         _ref4.attachAuth(payload);
       }
-      return this.service.get(domain + song_url, payload, function(json) {
-        var s;
-        return succ((function() {
-          var _i, _len, _ref5, _results;
-          _ref5 = json != null ? json.song : void 0;
-          _results = [];
-          for (_i = 0, _len = _ref5.length; _i < _len; _i++) {
-            s = _ref5[_i];
-            _results.push(new Song(s));
-          }
-          return _results;
-        })());
-      }, err);
+      return this.service.get(domain + song_url, payload, succ, err);
     };
 
     DoubanFM.prototype.doLike = function(song) {};

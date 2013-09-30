@@ -42,13 +42,6 @@ class ChannelCommand extends window.CommandBase
                 @echo(Array(80).join('-'))
                 return
                 
-        on_error: (status, error) ->
-                window.T.resume()
-                @echo "Status: #{status}"
-                @echo "Error: #{error}"
-                @echo "Error, try again later"
-                return
-                
         execute: () ->
                 if not window.DoubanFM.channels?
                         @echo "Requesting..."

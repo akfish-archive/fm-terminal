@@ -43,6 +43,13 @@
       return "[[ub;#2ecc71;#000]" + this.name + "]" + padding + this.desc;
     };
 
+    CommandBase.prototype.on_error = function(status, error) {
+      window.T.resume();
+      this.echo("Status: " + status);
+      this.echo("Error: " + error);
+      this.echo("Error, try again later");
+    };
+
     return CommandBase;
 
   })();

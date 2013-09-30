@@ -5,8 +5,18 @@ class JsonObject
                 
 
 class Channel extends JsonObject
-        songs: (succ, err) ->
-                window.DoubanFM?.doGetSongs(@, succ, err)
+
+        update: (succ, err) ->
+                window.DoubanFM?.doGetSongs(
+                        @,
+                        ((json) =>
+                                @songs = (new Song(s) for s in json?.song)
+                                succ(@songs)
+                        )
+                                ,
+                        err
+                )
+
         
 class Song extends JsonObject
         like: () ->
@@ -148,8 +158,7 @@ class DoubanFM
                 @service.get(
                         domain + song_url,
                         payload,
-                        (json) -> succ(new Song(s) for s in json?.song)
-                        ,
+                        succ,
                         err
                 )
 
