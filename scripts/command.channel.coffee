@@ -1,9 +1,3 @@
-proxy_domain = "http://localhost:10080"
-        
-proxy = proxy_domain + "/"
-
-channel = "http://www.douban.com/j/app/radio/channels";
-
 
 String.prototype.width =  () ->
         len = @length; 
@@ -21,10 +15,8 @@ class ChannelCommand extends window.CommandBase
         on_data: (data) ->
                 window.T.resume()
 
-                channels = data.channels
-                if not channels?
-                        @echo "Error #{parsed.error}"
-                        return
+                channels = data
+
                 max_name_length = 0
 
                 @echo(Array(80).join('-'))
@@ -60,23 +52,10 @@ class ChannelCommand extends window.CommandBase
         execute: () ->
                 @echo "Requesting..."
                 window.T.pause()
-                $.ajax({
-                        type: 'GET',
-                        dateType: 'jsonp',
-                        data: {
-                                'url': channel
-                        },
-                        url: proxy,
-                        
-                        xhrFields: {
-                                withCredentials: false
-                        },
-                        success: (data) =>
-                                @on_data data
-                                ,
-                        error: (j, status, error) =>
-                                @on_error(status, error)
-                })
+                window.DoubanFM.channels(
+                        (channels) => @on_data(channels),
+                        (status, error) => @on_error(status, error)
+                )
                 return
                         
 
