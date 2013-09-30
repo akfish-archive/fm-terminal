@@ -1,11 +1,26 @@
 class PlayCommand extends window.CommandBase
+        play: (songs) ->
+                for song in songs
+                        @echo "Song: #{song.artist} - #{song.title} #{song.albumtitle}"
+        listSongs: () ->
+                console.log "List songs"
+                if @channel.songs?
+                        @play(@channel.songs)
+                else
+                        @channel.update(
+                                (songs) => @play(songs),
+                                (status, error) => @on_error
+                        )
+                        
         playChannel: (channel_id) ->
-                channel = window.DoubanFM?.channels?[channel_id]
-                if not channel?
+                @channel = window.DoubanFM?.channels?[channel_id]
+                if not @channel?
                         @echo "Unknown channel #{channel_id}"
                 else
-                        @echo "Play channel #{channel_id}.#{channel.name}"
+                        @echo "Play channel #{channel_id}.#{@channel.name}"
+                        @listSongs()
                 window.T.resume()
+                
         execute: (channel_id) ->
                 #Check if channel is valid
                 if window.DoubanFM.channels?

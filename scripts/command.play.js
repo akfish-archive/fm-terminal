@@ -12,13 +12,38 @@
       return _ref;
     }
 
+    PlayCommand.prototype.play = function(songs) {
+      var song, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = songs.length; _i < _len; _i++) {
+        song = songs[_i];
+        _results.push(this.echo("Song: " + song.artist + " - " + song.title + " " + song.albumtitle));
+      }
+      return _results;
+    };
+
+    PlayCommand.prototype.listSongs = function() {
+      var _this = this;
+      console.log("List songs");
+      if (this.channel.songs != null) {
+        return this.play(this.channel.songs);
+      } else {
+        return this.channel.update(function(songs) {
+          return _this.play(songs);
+        }, function(status, error) {
+          return _this.on_error;
+        });
+      }
+    };
+
     PlayCommand.prototype.playChannel = function(channel_id) {
-      var channel, _ref1, _ref2;
-      channel = (_ref1 = window.DoubanFM) != null ? (_ref2 = _ref1.channels) != null ? _ref2[channel_id] : void 0 : void 0;
-      if (channel == null) {
+      var _ref1, _ref2;
+      this.channel = (_ref1 = window.DoubanFM) != null ? (_ref2 = _ref1.channels) != null ? _ref2[channel_id] : void 0 : void 0;
+      if (this.channel == null) {
         this.echo("Unknown channel " + channel_id);
       } else {
-        this.echo("Play channel " + channel_id + "." + channel.name);
+        this.echo("Play channel " + channel_id + "." + this.channel.name);
+        this.listSongs();
       }
       return window.T.resume();
     };

@@ -150,7 +150,7 @@ class DoubanFM
                 payload = {
                         "sid": "",
                         "channel": channel.channel_id ? 0,
-                        "type": n
+                        "type": "n"
                 }
                 @attachVersion(payload)
                 @user?.attachAuth(payload)

@@ -248,7 +248,7 @@
       payload = {
         "sid": "",
         "channel": (_ref3 = channel.channel_id) != null ? _ref3 : 0,
-        "type": n
+        "type": "n"
       };
       this.attachVersion(payload);
       if ((_ref4 = this.user) != null) {
