@@ -26,16 +26,37 @@ class User extends JsonObject
                 data["user_id"] = @user_id if @user_id?
                 data["token"] = @token if @token?
                 data["expire"] = @expire if @expire?
-        
+
 class Service
         constructor: (@proxy) ->
 
-        get: (url, data, succ, err) ->
+        query: (type, url, data, succ, err) ->
+                data['url'] = url
+                console.log "#{type} #{url}"
+                console.log "Data: "
+                console.log data
+                $.ajax({
+                        type: type,
+                        dateType: 'jsonp',
+                        data: data,
+                        url: @proxy,
+                        
+                        xhrFields: {
+                                withCredentials: false
+                        },
+                        success: (data) -> succ(data)
+                                ,
+                        error: (j, status, error) -> err(status, error)
+                })
 
+        get: (url, data, succ, err) ->
+                @query("GET", url, data, succ, err)
 
         post: (url, data, succ, err) ->
-
-
+                @query("POST", url, data, succ, err)
+                
+proxy_domain = "http://localhost:10080"
+window.Service ?= new Service(proxy_domain)
 
 class DoubanFM
         app_name = "radio_desktop_win"
@@ -78,7 +99,7 @@ class DoubanFM
                         "password": password,
                 }
                 @attachVersion(payload)
-                @service.post(
+                @service.get(
                         domain + login_url,
                         payload,
                         ((data) =>
@@ -118,3 +139,5 @@ class DoubanFM
 
         doSkip: (song) ->
                 #TODO:
+
+new DoubanFM(window.Service)

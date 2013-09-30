@@ -16,7 +16,7 @@
 #
 import webapp2
 import urllib2
-
+import logging
 
 
 class MainHandler(webapp2.RequestHandler):
@@ -50,9 +50,16 @@ class MainHandler(webapp2.RequestHandler):
 
         self.response.headers['Content-Type'] = "application/json"
         self.response.headers['Access-Control-Allow-Origin'] = "*"
+
+        logging.debug("POST:", post)
+        logging.debug(post)
+        logging.debug("URL:")
+        logging.debug(url)
+        logging.debug("Data:")
+        logging.debug(data)
+
         if callback:
             self.response.write(callback + "(")
-
         self.response.write(self.fetch(url, data))
 
         if callback:
