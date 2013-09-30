@@ -182,35 +182,47 @@
     };
 
     Player.prototype.onPlaying = function(pos) {
-      var bar, barWidth, bar_str, duration, hl, hl_bar_count, hl_format, left, nm, nm_bar_count, nm_format, percent, right, time;
+      var bar, barWidth, bar_str, delta_bar_count, duration, hl, hl_bar_count, hl_format, ld_bar_count, left, loaded_percent, nm, nm_bar_count, nm_format, no_bar_count, no_format, nu, percent, right, time;
       barWidth = 30;
       pos = this.current.position;
       duration = this.current.duration;
       percent = pos / duration;
+      loaded_percent = this.current.bytesLoaded / this.current.bytesTotal;
+      ld_bar_count = Math.round(barWidth * loaded_percent);
       hl_bar_count = Math.floor(barWidth * percent);
       nm_bar_count = barWidth - hl_bar_count;
+      delta_bar_count = ld_bar_count - hl_bar_count;
+      if (delta_bar_count < 0) {
+        delta_bar_count = 0;
+      }
+      no_bar_count = nm_bar_count - delta_bar_count;
+      nm_bar_count = delta_bar_count;
       hl_format = "[gb;#2ecc71;#000]";
       nm_format = "[gb;#fff;#000]";
+      no_format = "[gb;#000;#000]";
       left = $.terminal.escape_brackets("[");
       right = $.terminal.escape_brackets("]");
       hl = Array(hl_bar_count).join("=") + "♫";
-      nm = Array(nm_bar_count + 1).join("=");
+      nm = Array(nm_bar_count).join("=") + (no_bar_count > 0 ? "☁" : "=");
+      nu = Array(no_bar_count + 1).join("-");
       time = "" + (this.formatTime(pos)) + "/" + (this.formatTime(duration));
-      bar_str = "[" + nm_format + left + "][" + hl_format + hl + "][" + nm_format + nm + "][" + nm_format + right + " " + time + "]";
+      bar_str = "[" + nm_format + left + "][" + hl_format + hl + "][" + nm_format + nm + "][" + no_format + nu + "][" + nm_format + right + " " + time + "]";
       bar = $.terminal.format(bar_str);
       this.$ui.text("");
       return this.$ui.append(bar);
     };
 
     Player.prototype.play = function(song) {
-      var album, artist, id, title, url,
+      var album, artist, id, like, like_format, title, url,
         _this = this;
       id = song.sid;
       url = song.url;
       artist = song.artist;
       title = song.title;
       album = song.albumtitle;
-      window.T.echo("[[gb;#e67e22;#000]" + song.artist + " - " + song.title + " " + song.albumtitle + "]");
+      like = song.like !== 0;
+      like_format = like ? "[gb;#f00;#000]" : "[gb;#fff;#000]";
+      window.T.echo("[" + like_format + "♥ ][[gb;#e67e22;#000]" + song.artist + " - " + song.title + " " + song.albumtitle + "]");
       this.current = this.sounds[id];
       window.T.echo("Loading...", {
         finalize: function(div) {

@@ -97,20 +97,38 @@ class Player
 
         onPlaying: (pos) ->
                 barWidth = 30
+                # playing progress
                 pos = @current.position
                 duration = @current.duration
                 percent = pos / duration
 
+                # loading progress
+                loaded_percent = @current.bytesLoaded / @current.bytesTotal
+                ld_bar_count = Math.round(barWidth * loaded_percent)
+
+                
+                        
                 hl_bar_count = Math.floor(barWidth * percent)
                 nm_bar_count = barWidth - hl_bar_count
+
+                delta_bar_count = ld_bar_count - hl_bar_count
+                if delta_bar_count < 0
+                        delta_bar_count = 0
+     
+                no_bar_count = nm_bar_count - delta_bar_count
+                nm_bar_count = delta_bar_count
+                
                 hl_format = "[gb;#2ecc71;#000]"
                 nm_format = "[gb;#fff;#000]"
+                no_format = "[gb;#000;#000]"
+                
                 left = $.terminal.escape_brackets("[")
                 right = $.terminal.escape_brackets("]")
                 hl = Array(hl_bar_count).join("=") + "♫"
-                nm = Array(nm_bar_count + 1).join("=")
+                nm = Array(nm_bar_count).join("=") + (if no_bar_count > 0 then "☁" else "=")
+                nu = Array(no_bar_count + 1).join("-")
                 time = "#{@formatTime(pos)}/#{@formatTime(duration)}"
-                bar_str = "[#{nm_format}#{left}][#{hl_format}#{hl}][#{nm_format}#{nm}][#{nm_format}#{right} #{time}]"
+                bar_str = "[#{nm_format}#{left}][#{hl_format}#{hl}][#{nm_format}#{nm}][#{no_format}#{nu}][#{nm_format}#{right} #{time}]"
 
                 bar = $.terminal.format(bar_str)
                 @$ui.text("")
@@ -122,8 +140,10 @@ class Player
                 artist = song.artist
                 title = song.title
                 album = song.albumtitle
+                like = song.like != 0
+                like_format = if like then "[gb;#f00;#000]" else "[gb;#fff;#000]"
                 #window.T.clear()
-                window.T.echo "[[gb;#e67e22;#000]#{song.artist} - #{song.title} #{song.albumtitle}]"
+                window.T.echo "[#{like_format}♥ ][[gb;#e67e22;#000]#{song.artist} - #{song.title} #{song.albumtitle}]"
 
                 @current = @sounds[id]
                 window.T.echo("Loading...",
