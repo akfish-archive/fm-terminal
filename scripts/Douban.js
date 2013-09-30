@@ -144,7 +144,7 @@
 
   })();
 
-  proxy_domain = "http://localhost:10080";
+  proxy_domain = "https://jsonpwrapper.appspot.com";
 
   if (window.Service == null) {
     window.Service = new Service(proxy_domain);

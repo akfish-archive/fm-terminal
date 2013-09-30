@@ -65,7 +65,9 @@ class Service
         post: (url, data, succ, err) ->
                 @query("POST", url, data, succ, err)
                 
-proxy_domain = "http://localhost:10080"
+#proxy_domain = "http://localhost:10080"
+proxy_domain = "https://jsonpwrapper.appspot.com"
+
 window.Service ?= new Service(proxy_domain)
 
 class DoubanFM
