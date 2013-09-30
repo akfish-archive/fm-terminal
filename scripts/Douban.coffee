@@ -5,8 +5,8 @@ class JsonObject
                 
 
 class Channel extends JsonObject
-        songs: () ->
-                window.DoubanFM?.doGetSongs(@)
+        songs: (succ, err) ->
+                window.DoubanFM?.doGetSongs(@, succ, err)
         
 class Song extends JsonObject
         like: () ->
@@ -132,8 +132,22 @@ class DoubanFM
                         succ,
                         err)        
                 
-        doGetSongs: (channel)->
-                #TODO:
+        doGetSongs: (channel, succ, err)->
+                payload = {
+                        "sid": "",
+                        "channel": channel.channel_id ? 0,
+                        "type": n
+                }
+                @attachVersion(payload)
+                @user?.attachAuth(payload)
+
+                @service.get(
+                        domain + song_url,
+                        payload,
+                        (json) -> succ(new Song(s) for s in json?.song)
+                        ,
+                        err
+                )
 
         #######################################
         doLike: (song) ->
