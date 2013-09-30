@@ -22,7 +22,7 @@ The features covered by this API contains following:
 * User Authentication
 * Channel List
 * Song List
-* Social
+* User Behaviour
 
 ### User Authentication
 
@@ -163,10 +163,90 @@ The features covered by this API contains following:
       "artist":"国家大剧院",
       "subtype":"T",
       "length":15,
-      "sid":"da60222_43",
+      "sid":"da60222_43", //Aha, very diffrent from normal songs
       "aid":"85560222"},
 
   ]
 }
 ```
-### Social
+### User Behaviour 
+
+#### Like/Unlike/Dislike/Skip
+
+##### Request
+
+```GET /j/app/radio/people```
+
+##### Parameters
+
+* *app_name*
+      
+  App name. For Windows App, the value is ```radio_desktop_win```
+
+* *version*
+      
+  Version number. For Windows App v0.97.1, the value is ```100```
+
+
+* *user_id*
+      
+  User id from login response
+
+
+* *expire*
+      
+  Expire from login response
+
+
+* *token*
+      
+  Token from login response
+
+* *sid*
+      
+  Song's ID
+
+* *channel*
+      
+  Channel id
+
+* *h (optional)*
+
+  Escaped history seqence. See the section below for detail discussion.
+
+* *type*
+      
+  | Value | Bahavior |
+  | ----- | -------- |
+  | n | None. Used for getting song list only. |
+  | e | Normally ended a song. |
+  | u | Unlike (un-heart) a song. |
+  | r | Like (heart) a song. |
+  | s | Skip a song |
+  | b | Boooo (trash) a song |
+
+##### Response
+
+Same as ```Get Songs```
+
+##### Discussion of ```h(istory)``` parameter
+
+This parameter is dedicated for tracking users' behaviour for Douban.FM to analysis users' personal preference. 
+
+Below are 2 adjacent requests' ```h``` field: 
+
+>%7C%3Ae%7C%3Ae%7C%3Ae%7C%3Ae%7C%3Ae%7Cda60984_84%3As%7C1385975%3Ar%7C%3Ae%7C157218%3Au
+
+>%7C%3Ae%7C%3Ae%7C%3Ae%7C%3Ae%7C%3Ae%7Cda60984_84%3As%7C1385975%3Ar%7C%3Ae%7C157218%3Au%7C157218%3Ar
+
+Unescaped:
+
+>|:e|:e|:e|:e|:e|da60984_84:s|1385975:r|:e|157218:u
+
+>|:e|:e|:e|:e|:e|da60984_84:s|1385975:r|:e|157218:u|157218:r
+
+It is very clear what these mean. The values are apparently sequences of use behavior seperated by ```|```.
+Each node consits of ```song id```(ommited when the song is played though the end) and ```user behiviour``` (corresponding to ```type``` field), seperated with ```:```.
+Their lengths are variable and the max length is unknown (too lazy to do more experiments).
+
+When a song is normally played though the end, this field is omitted. Apprently they found it boring when you listened to every song they through at you.
