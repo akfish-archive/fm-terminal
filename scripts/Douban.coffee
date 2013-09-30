@@ -58,6 +58,9 @@ class DoubanFM
 
         remember: () ->
                 #TODO: write cookie from @user
+                
+        forget: () ->
+                #TODO: clear cookie
 
         post_login: (data, remember, succ, err) ->
                 @user = new User(data)
@@ -88,7 +91,8 @@ class DoubanFM
                 return
                 
         logout: () ->
-                #TODO:
+                @User = new User()
+                @forget()
 
         #######################################
         # 
