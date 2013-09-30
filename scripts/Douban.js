@@ -166,16 +166,42 @@
       });
     }
 
+    Player.prototype.bind = function(div) {
+      return this.$ui = $(div);
+    };
+
+    Player.prototype.onLoading = function() {
+      return this.$ui.text("Loading.. " + (this.current.bytesLoaded / this.current.bytesTotal * 100));
+    };
+
+    Player.prototype.onPlaying = function(pos) {
+      return this.$ui.text("Playing.. " + this.current.position);
+    };
+
     Player.prototype.play = function(song) {
-      var id, url, _base;
+      var id, url,
+        _this = this;
       id = song.sid;
       url = song.url;
-      if ((_base = this.sounds)[id] == null) {
-        _base[id] = soundManager.createSound({
-          url: url
-        });
-      }
-      return this.sounds[id].play();
+      this.current = this.sounds[id];
+      window.T.echo("Loading...", {
+        finalize: function(div) {
+          return _this.bind(div);
+        }
+      });
+      return this.current != null ? this.current : this.current = soundManager.createSound({
+        url: url,
+        autoLoad: true,
+        whileloading: function() {
+          return _this.onLoading();
+        },
+        whileplaying: function() {
+          return _this.onPlaying();
+        },
+        onload: function() {
+          return this.play();
+        }
+      });
     };
 
     return Player;

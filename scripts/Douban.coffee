@@ -75,19 +75,41 @@ class Player
                 soundManager.setup({
                         url: "SoundManager2/swf/",
                         preferFlash: false,
+
                         onready: () ->
                                 window.T?.echo("Player initialized");
                         ontimeout: () ->
                                 window.T?.error("Failed to intialize player. Check your brower's flash setting.")
                 });
 
+        bind: (div) ->
+                @$ui = $(div)
+
+        onLoading: () ->
+                @$ui.text("Loading.. #{@current.bytesLoaded / @current.bytesTotal * 100}")
+
+        onPlaying: (pos) ->
+                @$ui.text("Playing.. #{@current.position}")
+
         play: (song) ->
                 id = song.sid
                 url = song.url
-                @sounds[id] ?= soundManager.createSound({
-                        url: url
-                });
-                @sounds[id].play();
+                @current = @sounds[id]
+                window.T.echo("Loading...",
+                        {
+                                finalize: (div) => @bind(div),
+                        })
+
+                @current ?= soundManager.createSound({
+                        url: url,
+                        autoLoad: true,
+                        whileloading: () => @onLoading(),
+                        whileplaying: () => @onPlaying(),
+                        onload: () -> @.play()
+                })
+                
+
+
         
 class DoubanFM
         app_name = "radio_desktop_win"
