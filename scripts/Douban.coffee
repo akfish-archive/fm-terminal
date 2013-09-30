@@ -105,8 +105,8 @@ class DoubanFM
                         ((data) =>
                                 @post_login(data, remember, succ, err)
                         ),
-                        (() =>
-                                data = { r: 1, err: "Internal Error" }
+                        ((status, error) =>
+                                data = { r: 1, err: "Internal Error: #{error}" }
                                 @post_login(data, remember, succ, err)
                         ))
                 return
@@ -117,12 +117,20 @@ class DoubanFM
 
         #######################################
         # 
-        channels: () ->
-                return doGetChannels()
+        channels: (succ, err) ->
+                @doGetChannels(
+                        (json) -> succ(new Channel(j) for j in json?.channels)
+                                ,
+                        err
+                )
 
         #######################################
-        doGetChannels: ()->
-                #TODO:
+        doGetChannels: (succ, err)->
+                @service.get(
+                        domain + channel_url,
+                        {},
+                        succ,
+                        err)        
                 
         doGetSongs: (channel)->
                 #TODO:

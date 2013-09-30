@@ -192,11 +192,11 @@
       this.attachVersion(payload);
       this.service.get(domain + login_url, payload, (function(data) {
         return _this.post_login(data, remember, succ, err);
-      }), (function() {
+      }), (function(status, error) {
         var data;
         data = {
           r: 1,
-          err: "Internal Error"
+          err: "Internal Error: " + error
         };
         return _this.post_login(data, remember, succ, err);
       }));
@@ -207,11 +207,25 @@
       return this.forget();
     };
 
-    DoubanFM.prototype.channels = function() {
-      return doGetChannels();
+    DoubanFM.prototype.channels = function(succ, err) {
+      return this.doGetChannels(function(json) {
+        var j;
+        return succ((function() {
+          var _i, _len, _ref3, _results;
+          _ref3 = json != null ? json.channels : void 0;
+          _results = [];
+          for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+            j = _ref3[_i];
+            _results.push(new Channel(j));
+          }
+          return _results;
+        })());
+      }, err);
     };
 
-    DoubanFM.prototype.doGetChannels = function() {};
+    DoubanFM.prototype.doGetChannels = function(succ, err) {
+      return this.service.get(domain + channel_url, {}, succ, err);
+    };
 
     DoubanFM.prototype.doGetSongs = function(channel) {};
 
