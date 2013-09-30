@@ -1,7 +1,5 @@
 class PlayCommand extends window.CommandBase
         play: (songs) ->
-                for song in songs
-                        @echo "Song: #{song.artist} - #{song.title} #{song.albumtitle}"
                 window.DoubanFM.player.play(songs[0])
                 
         listSongs: () ->

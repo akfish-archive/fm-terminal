@@ -86,14 +86,45 @@ class Player
                 @$ui = $(div)
 
         onLoading: () ->
-                @$ui.text("Loading.. #{@current.bytesLoaded / @current.bytesTotal * 100}")
+                #@$ui.text("Loading.. #{@current.bytesLoaded / @current.bytesTotal * 100}")
+
+        formatTime: (ms) ->
+                s = Math.floor(ms / 1000)
+                MS = ms - s * 1000
+                MM = Math.floor(s / 60)
+                SS = s - MM * 60
+                return "#{MM}:#{SS}"
 
         onPlaying: (pos) ->
-                @$ui.text("Playing.. #{@current.position}")
+                barWidth = 30
+                pos = @current.position
+                duration = @current.duration
+                percent = pos / duration
+
+                hl_bar_count = Math.floor(barWidth * percent)
+                nm_bar_count = barWidth - hl_bar_count
+                hl_format = "[gb;#2ecc71;#000]"
+                nm_format = "[gb;#fff;#000]"
+                left = $.terminal.escape_brackets("[")
+                right = $.terminal.escape_brackets("]")
+                hl = Array(hl_bar_count).join("=") + "♫"
+                nm = Array(nm_bar_count + 1).join("=")
+                time = "#{@formatTime(pos)}/#{@formatTime(duration)}"
+                bar_str = "[#{nm_format}#{left}][#{hl_format}#{hl}][#{nm_format}#{nm}][#{nm_format}#{right} #{time}]"
+
+                bar = $.terminal.format(bar_str)
+                @$ui.text("")
+                @$ui.append(bar)
 
         play: (song) ->
                 id = song.sid
                 url = song.url
+                artist = song.artist
+                title = song.title
+                album = song.albumtitle
+                #window.T.clear()
+                window.T.echo "[[gb;#e67e22;#000]#{song.artist} - #{song.title} #{song.albumtitle}]"
+
                 @current = @sounds[id]
                 window.T.echo("Loading...",
                         {
