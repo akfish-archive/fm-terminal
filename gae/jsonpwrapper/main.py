@@ -18,6 +18,7 @@ import webapp2
 import urllib2
 import logging
 
+logging.getLogger().setLevel(logging.DEBUG)
 
 class MainHandler(webapp2.RequestHandler):
     def fetch(self, url, data = None):
@@ -48,7 +49,7 @@ class MainHandler(webapp2.RequestHandler):
             url += "?" + query
             data = None
 
-        self.response.headers['Content-Type'] = "application/json"
+        self.response.headers['Content-Type'] = "application/javascript"
         self.response.headers['Access-Control-Allow-Origin'] = "*"
 
         logging.debug("POST:", post)
@@ -63,7 +64,7 @@ class MainHandler(webapp2.RequestHandler):
         self.response.write(self.fetch(url, data))
 
         if callback:
-            self.response.write(")");
+            self.response.write(");");
 
     def get(self):
         self.get_json_p()

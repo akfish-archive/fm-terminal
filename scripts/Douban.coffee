@@ -45,11 +45,10 @@ class Service
                 console.log "#{type} #{url}"
                 console.log "Data: "
                 console.log data
-                $.ajax({
+                $.jsonp({
                         type: type,
-                        dateType: 'jsonp',
                         data: data,
-                        url: @proxy,
+                        url: @proxy + "?callback=?",
                         
                         xhrFields: {
                                 withCredentials: false
@@ -65,8 +64,8 @@ class Service
         post: (url, data, succ, err) ->
                 @query("POST", url, data, succ, err)
                 
-#proxy_domain = "http://localhost:10080"
-proxy_domain = "https://jsonpwrapper.appspot.com"
+proxy_domain = "http://localhost:10080"
+#proxy_domain = "https://jsonpwrapper.appspot.com"
 
 window.Service ?= new Service(proxy_domain)
 

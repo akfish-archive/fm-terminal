@@ -115,11 +115,10 @@
       console.log("" + type + " " + url);
       console.log("Data: ");
       console.log(data);
-      return $.ajax({
+      return $.jsonp({
         type: type,
-        dateType: 'jsonp',
         data: data,
-        url: this.proxy,
+        url: this.proxy + "?callback=?",
         xhrFields: {
           withCredentials: false
         },
@@ -144,7 +143,7 @@
 
   })();
 
-  proxy_domain = "https://jsonpwrapper.appspot.com";
+  proxy_domain = "http://localhost:10080";
 
   if (window.Service == null) {
     window.Service = new Service(proxy_domain);
