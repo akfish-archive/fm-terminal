@@ -60,13 +60,13 @@ class Terminal
         constructor: () ->
                 window.commands ?= {}
         start: (options) ->
-                $('body').terminal(@interpret, options)
+                window.T = $('body').terminal(@interpret, options)
                 return
 
         interpret: (name, term) ->
                 term.echo "[[gb;#929292;#000]...]"
                 parse = $.terminal.parseCommand(name)
-                window.T ?= term
+                # window.T ?= term
                 commands = window.commands
                 if commands? and commands[parse.name]?
                         cmd = commands[parse.name]

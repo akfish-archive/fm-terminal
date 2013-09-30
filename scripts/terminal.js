@@ -111,16 +111,13 @@
     }
 
     Terminal.prototype.start = function(options) {
-      $('body').terminal(this.interpret, options);
+      window.T = $('body').terminal(this.interpret, options);
     };
 
     Terminal.prototype.interpret = function(name, term) {
       var cmd, commands, parse, _ref;
       term.echo("[[gb;#929292;#000]...]");
       parse = $.terminal.parseCommand(name);
-      if (window.T == null) {
-        window.T = term;
-      }
       commands = window.commands;
       if ((commands != null) && (commands[parse.name] != null)) {
         cmd = commands[parse.name];

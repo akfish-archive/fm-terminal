@@ -69,6 +69,17 @@ proxy_domain = "https://jsonpwrapper.appspot.com"
 
 window.Service ?= new Service(proxy_domain)
 
+class Player
+        constructor: () ->
+                soundManager.setup({
+                        url: "SoundManager2/swf/",
+                        preferFlash: false,
+                        onready: () ->
+                                window.T?.echo("Player initialized");
+                        ontimeout: () ->
+                                window.T?.error("Failed to intialize player. Check your brower's flash setting.")
+                });
+        
 class DoubanFM
         app_name = "radio_desktop_win"
         version = 100
@@ -83,7 +94,10 @@ class DoubanFM
         
         constructor: (@service) ->
                 window.DoubanFM ?= @
-                @resume()
+                @player = new Player()
+                $(document).ready =>
+                        window.T.echo("DoubanFM initialized...")
+                        @resume()
                 
         resume: () ->
                 #TODO: read cookie to @user
