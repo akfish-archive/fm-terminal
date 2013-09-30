@@ -66,13 +66,17 @@
 
     ChannelCommand.prototype.execute = function() {
       var _this = this;
-      this.echo("Requesting...");
-      window.T.pause();
-      window.DoubanFM.channels(function(channels) {
-        return _this.on_data(channels);
-      }, function(status, error) {
-        return _this.on_error(status, error);
-      });
+      if (window.DoubanFM.channels == null) {
+        this.echo("Requesting...");
+        window.T.pause();
+        window.DoubanFM.update(function(channels) {
+          return _this.on_data(channels);
+        }, function(status, error) {
+          return _this.on_error(status, error);
+        });
+      } else {
+        this.on_data(window.DoubanFM.channels);
+      }
     };
 
     return ChannelCommand;

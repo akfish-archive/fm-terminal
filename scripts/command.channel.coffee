@@ -50,12 +50,15 @@ class ChannelCommand extends window.CommandBase
                 return
                 
         execute: () ->
-                @echo "Requesting..."
-                window.T.pause()
-                window.DoubanFM.channels(
-                        (channels) => @on_data(channels),
-                        (status, error) => @on_error(status, error)
-                )
+                if not window.DoubanFM.channels?
+                        @echo "Requesting..."
+                        window.T.pause()
+                        window.DoubanFM.update(
+                                (channels) => @on_data(channels),
+                                (status, error) => @on_error(status, error)
+                        )
+                else
+                        @on_data(window.DoubanFM.channels)
                 return
                         
 

@@ -116,13 +116,17 @@ class DoubanFM
                 @forget()
 
         #######################################
-        # 
-        channels: (succ, err) ->
+        #
+        update: (succ, err) ->
                 @doGetChannels(
-                        (json) -> succ(new Channel(j) for j in json?.channels)
+                        ((json) =>
+                                @channels = (new Channel(j) for j in json?.channels)
+                                succ(@channels)
+                        )
                                 ,
                         err
                 )
+                
 
         #######################################
         doGetChannels: (succ, err)->

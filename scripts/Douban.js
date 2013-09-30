@@ -207,10 +207,11 @@
       return this.forget();
     };
 
-    DoubanFM.prototype.channels = function(succ, err) {
-      return this.doGetChannels(function(json) {
+    DoubanFM.prototype.update = function(succ, err) {
+      var _this = this;
+      return this.doGetChannels((function(json) {
         var j;
-        return succ((function() {
+        _this.channels = (function() {
           var _i, _len, _ref3, _results;
           _ref3 = json != null ? json.channels : void 0;
           _results = [];
@@ -219,8 +220,9 @@
             _results.push(new Channel(j));
           }
           return _results;
-        })());
-      }, err);
+        })();
+        return succ(_this.channels);
+      }), err);
     };
 
     DoubanFM.prototype.doGetChannels = function(succ, err) {
