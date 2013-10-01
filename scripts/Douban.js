@@ -341,13 +341,15 @@
     DoubanFM.prototype.post_login = function(data, remember, succ, err) {
       this.user = new User(data);
       if (this.user.r === 1) {
-        err(this.user);
+        if (typeof err === "function") {
+          err(this.user);
+        }
         return;
       }
       if (remember) {
         this.remember;
       }
-      return succ(this.user);
+      return typeof succ === "function" ? succ(this.user) : void 0;
     };
 
     DoubanFM.prototype.login = function(email, password, remember, succ, err) {

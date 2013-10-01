@@ -254,11 +254,11 @@ class DoubanFM
         post_login: (data, remember, succ, err) ->
                 @user = new User(data)
                 if (@user.r == 1)
-                        err(@user)
+                        err?(@user)
                         return
                 if (remember)
                         @remember
-                succ(@user)
+                succ?(@user)
                 
         login: (email, password, remember, succ, err) ->
                 payload =
