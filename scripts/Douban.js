@@ -404,11 +404,33 @@
       });
     }
 
-    DoubanFM.prototype.resume_session = function() {};
+    DoubanFM.prototype.resume_session = function() {
+      var cookie_user_json;
+      $.cookie.json = true;
+      cookie_user_json = $.cookie('user');
+      this.user = cookie_user_json != null ? new User(cookie_user_json) : new User();
+      return window.TERM.setUser(this.user);
+    };
 
-    DoubanFM.prototype.remember = function() {};
+    DoubanFM.prototype.remember = function(always) {
+      var expire, expire_day, now, value, _ref3;
+      now = new Date();
+      expire_day = (this.user.expire - now.getTime() / 1000) / 3600 / 24;
+      console.log("Expire in " + expire_day + " days");
+      expire = {
+        expires: expire_day
+      };
+      value = (_ref3 = this.user) != null ? _ref3.json : void 0;
+      if (always) {
+        return $.cookie('user', value, expire);
+      } else {
+        return $.cookie('user', value);
+      }
+    };
 
-    DoubanFM.prototype.forget = function() {};
+    DoubanFM.prototype.forget = function() {
+      return $.removeCookie('user');
+    };
 
     DoubanFM.prototype.clean_user_data = function() {};
 
@@ -420,9 +442,7 @@
         }
         return;
       }
-      if (remember) {
-        this.remember;
-      }
+      this.remember(remember);
       this.clean_user_data();
       return typeof succ === "function" ? succ(this.user) : void 0;
     };

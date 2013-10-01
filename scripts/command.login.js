@@ -84,7 +84,7 @@
       switch (this.stage) {
         case wait_for_user:
           if (this.isValidUser(text)) {
-            this.user = text;
+            this.username = text;
             this.echoNeedPass();
             this.stage = wait_for_pass;
           } else {
@@ -97,7 +97,7 @@
             term.echo("Login...");
             term.pause();
             if ((_ref1 = window.DoubanFM) != null) {
-              _ref1.login(this.user, this.pass, false, function(user) {
+              _ref1.login(this.username, this.pass, false, function(user) {
                 return _this.succ(user);
               }, function(user) {
                 return _this.fail(user);

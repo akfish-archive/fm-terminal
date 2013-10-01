@@ -56,7 +56,7 @@ class LoginCommand extends window.CommandBase
                         when wait_for_user
                                 # TODO: validate
                                 if @isValidUser(text)
-                                        @user = text
+                                        @username = text
 
                                         # Go pass
                                         @echoNeedPass()
@@ -71,7 +71,7 @@ class LoginCommand extends window.CommandBase
                                         term.echo("Login...")
                                         term.pause()
                                         # TODO: auto login
-                                        window.DoubanFM?.login(@user, @pass, false,
+                                        window.DoubanFM?.login(@username, @pass, false,
                                                 (user) => @succ(user),
                                                 (user) => @fail(user))
                 return
