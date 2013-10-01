@@ -5,7 +5,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   LoginCommand = (function(_super) {
-    var wait_for_pass, wait_for_user;
+    var msg_wrong_pass, msg_wrong_user, wait_for_pass, wait_for_user;
 
     __extends(LoginCommand, _super);
 
@@ -20,7 +20,17 @@
 
     LoginCommand.prototype.showInfo = function() {
       window.T.echo("Login to douban.fm...");
-      return window.T.echo("Username (email address)");
+      return this.echoNeedUser();
+    };
+
+    LoginCommand.prototype.echoNeedUser = function() {
+      window.T.echo("Username (email address)");
+      return window.T.set_mask(false);
+    };
+
+    LoginCommand.prototype.echoNeedPass = function() {
+      window.T.echo("Password");
+      return window.T.set_mask(true);
     };
 
     LoginCommand.prototype.isValidUser = function(user) {
@@ -31,14 +41,51 @@
       return true;
     };
 
+    LoginCommand.prototype.exit = function() {
+      var term;
+      this.pass = "";
+      term = window.T;
+      term.set_mask(false);
+      return window.TERM.setUser(this.user);
+    };
+
+    LoginCommand.prototype.succ = function(user) {
+      this.user = user;
+      window.T.pop();
+      window.T.resume();
+      return window.T.echo("Welcome...");
+    };
+
+    msg_wrong_user = "invalidate_email";
+
+    msg_wrong_pass = "wrong_password";
+
+    LoginCommand.prototype.fail = function(user) {
+      var err;
+      this.user = user;
+      err = user.err;
+      window.T.error("Login failed: " + err);
+      window.T.resume();
+      switch (err) {
+        case msg_wrong_user:
+          this.stage = wait_for_user;
+          return this.echoNeedUser();
+        case msg_wrong_pass:
+          this.stage = wait_for_pass;
+          return this.echoNeedPass();
+        default:
+          return window.T.pop();
+      }
+    };
+
     LoginCommand.prototype.input = function(text, term) {
+      var _ref1,
+        _this = this;
       switch (this.stage) {
         case wait_for_user:
           if (this.isValidUser(text)) {
             this.user = text;
-            term.echo("User: " + text);
-            term.set_mask(true);
-            term.echo("Password");
+            this.echoNeedPass();
             this.stage = wait_for_pass;
           } else {
             term.error("Invalid username, try again");
@@ -48,9 +95,14 @@
           if (this.isValidPass(text)) {
             this.pass = text;
             term.echo("Login...");
-            this.pass = "";
-            term.set_mask(false);
-            term.pop();
+            term.pause();
+            if ((_ref1 = window.DoubanFM) != null) {
+              _ref1.login(this.user, this.pass, false, function(user) {
+                return _this.succ(user);
+              }, function(user) {
+                return _this.fail(user);
+              });
+            }
           }
       }
     };
@@ -67,12 +119,10 @@
           return _this.showInfo();
         },
         onExit: function() {
-          return console.log("Exit Login");
+          return _this.exit();
         },
         completion: function() {},
-        keydown: function(e) {
-          return console.log(e);
-        }
+        keydown: function(e) {}
       });
     };
 

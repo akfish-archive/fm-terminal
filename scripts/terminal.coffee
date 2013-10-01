@@ -54,9 +54,13 @@ class HelpCommand extends CommandBase
         errorMessage: (cmd) ->
                 @echo "[[gb;#e67e22;#000]Unknown command:] [[gub;#e67e22;#000]#{cmd}]"
                 @echo "Type [[ub;#2ecc71;#000]help] for command list"
-                
-class Terminal
 
+prompt = "♫>"                
+class Terminal
+        setUser: (user) ->
+                name = user?.user_name ? ""
+                window.T?.set_prompt(name + prompt)
+                
         constructor: () ->
                 window.commands ?= {}
         start: (options) ->
@@ -86,7 +90,7 @@ window.TERM ?= new Terminal()
 
 jQuery(document).ready ->
         window.TERM.start({
-                prompt: '♫>',
+                prompt: prompt,
                 name: 'catx.fm',
                 greetings: greet,
                 history: true,
