@@ -33,14 +33,14 @@
       return this.songs = this.songs.concat(newSongs);
     };
 
-    Channel.prototype.update = function(succ, err, action, history) {
+    Channel.prototype.update = function(succ, err, action, sid, history) {
       var _ref1,
         _this = this;
-      return (_ref1 = window.DoubanFM) != null ? _ref1.doGetSongs(this, action, history, (function(json) {
+      return (_ref1 = window.DoubanFM) != null ? _ref1.doGetSongs(this, action, sid, history, (function(json) {
         var s;
         _this.appendSongs((function() {
           var _i, _len, _ref2, _results;
-          _ref2 = json != null ? json.song : void 0;
+          _ref2 = (json != null ? json.song : void 0) != null;
           _results = [];
           for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
             s = _ref2[_i];
@@ -240,20 +240,40 @@
     Player.prototype.startPlay = function(channel) {
       this.currentChannel = channel;
       this.currentSongIndex = -1;
+      this.currentSong = null;
+      this.history = [];
       return this.nextSong(this.action.NONE);
     };
 
+    Player.prototype.getHistory = function() {
+      var H, str;
+      str = "|";
+      H = $(this.history).map(function(i, h) {
+        return h.join(":");
+      });
+      str += H.get().join("|");
+      return str;
+    };
+
     Player.prototype.nextSong = function(action) {
-      var _this = this;
+      var h, sid,
+        _this = this;
       this.stop();
+      sid = "";
+      if (this.currentSong) {
+        sid = this.currentSong.sid;
+        h = [sid, action];
+        this.history.push(h);
+        console.log(this.getHistory());
+      }
       if (this.currentSongIndex + 1 >= this.currentChannel.songs.length) {
         this.currentChannel.update(function(songs) {
           return _this.nextSong(action);
-        }, function() {}, action, this.history);
+        }, function() {}, action, sid, this.getHistory());
         return;
       }
       if (this.currentSongIndex > -1) {
-        this.currentChannel.update(null, null, action, this.history);
+        this.currentChannel.update(null, null, action, sid, this.getHistory());
       }
       this.currentSongIndex++;
       return this.doPlay(this.currentChannel.songs[this.currentSongIndex]);
@@ -411,10 +431,10 @@
       return this.service.get(domain + channel_url, {}, succ, err);
     };
 
-    DoubanFM.prototype.doGetSongs = function(channel, action, history, succ, err) {
+    DoubanFM.prototype.doGetSongs = function(channel, action, sid, history, succ, err) {
       var payload, _ref3, _ref4;
       payload = {
-        "sid": "",
+        "sid": sid,
         "channel": (_ref3 = channel.channel_id) != null ? _ref3 : 0,
         "type": action != null ? action : "n",
         "h": history != null ? history : ""

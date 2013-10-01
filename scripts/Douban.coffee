@@ -10,13 +10,13 @@ class Channel extends JsonObject
                 # TODO: check max size and release
                 @songs = @songs.concat(newSongs)
                 
-        update: (succ, err, action, history) ->
+        update: (succ, err, action, sid, history) ->
                 window.DoubanFM?.doGetSongs(
                         @,
-                        action, history,
+                        action, sid, history,
                         ((json) =>
                                 # TODO: append song list instead of replacing
-                                @appendSongs(new Song(s) for s in json?.song)
+                                @appendSongs(new Song(s) for s in json?.song?)
                                 succ?(@songs)
                         )
                                 ,
@@ -166,13 +166,27 @@ class Player
 
                 # initialize
                 @currentSongIndex = -1
+                @currentSong = null
+                @history = []
 
                 @nextSong(@action.NONE)
         
-
+        getHistory: () ->
+                str = "|"
+                H = $(@history).map (i, h) ->
+                        h.join(":")
+                str += H.get().join("|")
+                return str
+                
         nextSong: (action) ->
                 @stop()
-                
+
+                sid = ""
+                if @currentSong
+                        sid = @currentSong.sid
+                        h = [sid, action]
+                        @history.push(h)
+                        console.log @getHistory()
                 # TODO: record history
                 # if not in cache, update
                 if (@currentSongIndex + 1 >= @currentChannel.songs.length)
@@ -181,12 +195,13 @@ class Player
                                 (songs) => @nextSong(action),
                                 () -> #TODO:,
                                 action,
-                                @history)
+                                sid,
+                                @getHistory())
                         return # block operation here
                 # handle action of previous song
                 # action could be booo, finish, skip, null
                 if (@currentSongIndex > -1)
-                        @currentChannel.update(null, null, action, @history)
+                        @currentChannel.update(null, null, action, sid, @getHistory())
                 # get next song
                 @currentSongIndex++
 
@@ -312,9 +327,9 @@ class DoubanFM
                         succ,
                         err)        
                 
-        doGetSongs: (channel, action, history, succ, err)->
+        doGetSongs: (channel, action, sid, history, succ, err)->
                 payload = {
-                        "sid": "",
+                        "sid": sid,
                         "channel": channel.channel_id ? 0,
                         "type": action ? "n",
                         "h": history ? ""
