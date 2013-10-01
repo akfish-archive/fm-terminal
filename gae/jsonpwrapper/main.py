@@ -17,6 +17,7 @@
 import webapp2
 import urllib2
 import logging
+import base64
 
 logging.getLogger().setLevel(logging.DEBUG)
 
@@ -38,6 +39,7 @@ class MainHandler(webapp2.RequestHandler):
     def get_json_p(self, post = False):
         url = self.request.get('url');
         callback = self.request.get('callback');
+        payload = self.request.get('payload');
 
         data = {}
         for arg in self.request.arguments():
@@ -45,8 +47,7 @@ class MainHandler(webapp2.RequestHandler):
                 data[arg] = self.request.get(arg)
 
         if not post:
-            query = self.data_to_query(data)
-            url += "?" + query
+            url += "?" + base64.b64decode(payload)
             data = None
 
         self.response.headers['Content-Type'] = "application/javascript"
