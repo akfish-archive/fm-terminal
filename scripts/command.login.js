@@ -5,6 +5,8 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   LoginCommand = (function(_super) {
+    var wait_for_pass, wait_for_user;
+
     __extends(LoginCommand, _super);
 
     function LoginCommand() {
@@ -12,7 +14,67 @@
       return _ref;
     }
 
-    LoginCommand.prototype.execute = function() {};
+    wait_for_user = 0;
+
+    wait_for_pass = 1;
+
+    LoginCommand.prototype.showInfo = function() {
+      window.T.echo("Login to douban.fm...");
+      return window.T.echo("Username (email address)");
+    };
+
+    LoginCommand.prototype.isValidUser = function(user) {
+      return true;
+    };
+
+    LoginCommand.prototype.isValidPass = function(pass) {
+      return true;
+    };
+
+    LoginCommand.prototype.input = function(text, term) {
+      switch (this.stage) {
+        case wait_for_user:
+          if (this.isValidUser(text)) {
+            this.user = text;
+            term.echo("User: " + text);
+            term.set_mask(true);
+            term.echo("Password");
+            this.stage = wait_for_pass;
+          } else {
+            term.error("Invalid username, try again");
+          }
+          break;
+        case wait_for_pass:
+          if (this.isValidPass(text)) {
+            this.pass = text;
+            term.echo("Login...");
+            this.pass = "";
+            term.set_mask(false);
+            term.pop();
+          }
+      }
+    };
+
+    LoginCommand.prototype.execute = function() {
+      var _this = this;
+      this.stage = wait_for_user;
+      return window.T.push(function(input, term) {
+        return _this.input(input, term);
+      }, {
+        name: "login",
+        prompt: ":",
+        onStart: function() {
+          return _this.showInfo();
+        },
+        onExit: function() {
+          return console.log("Exit Login");
+        },
+        completion: function() {},
+        keydown: function(e) {
+          return console.log(e);
+        }
+      });
+    };
 
     return LoginCommand;
 
