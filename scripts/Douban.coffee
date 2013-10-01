@@ -165,6 +165,15 @@ class Player
         stop: () ->
                 @currentSound?.unload()
                 @currentSound?.stop()
+
+        pause: () ->
+                @currentSound?.pause()
+
+        resume: () ->
+                @currentSound?.resume()        
+
+        loops: () ->
+                console.log("Should loop")
                         
 
         startPlay: (channel) ->
@@ -316,6 +325,16 @@ class DoubanFM
                 @player?.play(channel)
         next: () ->
                 @player?.nextSong(@player.action.SKIP)
+
+        pause: () ->
+                @player?.pause()
+
+        resume: () ->
+                @player?.resume()
+
+        loops: () ->
+                @player?.loops()
+
         #######################################
         #
         update: (succ, err) ->

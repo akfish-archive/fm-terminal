@@ -244,6 +244,20 @@
       return (_ref4 = this.currentSound) != null ? _ref4.stop() : void 0;
     };
 
+    Player.prototype.pause = function() {
+      var _ref3;
+      return (_ref3 = this.currentSound) != null ? _ref3.pause() : void 0;
+    };
+
+    Player.prototype.resume = function() {
+      var _ref3;
+      return (_ref3 = this.currentSound) != null ? _ref3.resume() : void 0;
+    };
+
+    Player.prototype.loops = function() {
+      return console.log("Should loop");
+    };
+
     Player.prototype.startPlay = function(channel) {
       this.currentChannel = channel;
       this.currentSongIndex = -1;
@@ -417,6 +431,21 @@
     DoubanFM.prototype.next = function() {
       var _ref3;
       return (_ref3 = this.player) != null ? _ref3.nextSong(this.player.action.SKIP) : void 0;
+    };
+
+    DoubanFM.prototype.pause = function() {
+      var _ref3;
+      return (_ref3 = this.player) != null ? _ref3.pause() : void 0;
+    };
+
+    DoubanFM.prototype.resume = function() {
+      var _ref3;
+      return (_ref3 = this.player) != null ? _ref3.resume() : void 0;
+    };
+
+    DoubanFM.prototype.loops = function() {
+      var _ref3;
+      return (_ref3 = this.player) != null ? _ref3.loops() : void 0;
     };
 
     DoubanFM.prototype.update = function(succ, err) {
