@@ -171,6 +171,7 @@
       this.action.SKIP = "s";
       this.maxHistoryCount = 15;
       this.currentSongIndex = -1;
+      this.looping = false;
       soundManager.setup({
         url: "SoundManager2/swf/",
         preferFlash: false,
@@ -201,7 +202,7 @@
     };
 
     Player.prototype.onPlaying = function(pos) {
-      var bar, barWidth, bar_str, delta_bar_count, duration, hl, hl_bar_count, hl_format, ld_bar_count, left, loaded_percent, nm, nm_bar_count, nm_format, no_bar_count, no_format, nu, percent, right, time;
+      var bar, barWidth, bar_str, buffering, delta_bar_count, duration, hl, hl_bar_count, hl_format, ld_bar_count, left, loaded_percent, nm, nm_bar_count, nm_format, no_bar_count, no_format, nu, percent, playing, right, time;
       barWidth = 30;
       pos = this.currentSound.position;
       duration = this.currentSound.duration;
@@ -219,10 +220,12 @@
       hl_format = "[gb;#2ecc71;#000]";
       nm_format = "[gb;#fff;#000]";
       no_format = "[gb;#000;#000]";
-      left = $.terminal.escape_brackets("[");
-      right = $.terminal.escape_brackets("]");
-      hl = Array(hl_bar_count).join(">") + "♫";
-      nm = Array(nm_bar_count).join("=") + (no_bar_count > 0 ? "☁" : "==");
+      left = $.terminal.escape_brackets(this.looping ? ">" : "[");
+      right = $.terminal.escape_brackets(this.looping ? "<" : "]");
+      playing = !this.currentSound.paused;
+      buffering = this.currentSound.isBuffering;
+      hl = Array(hl_bar_count).join(playing ? ">" : "|") + (playing ? "♫" : "♨");
+      nm = Array(nm_bar_count).join(buffering ? "~" : "=") + (no_bar_count > 0 ? "☁" : "==");
       nu = Array(no_bar_count + 1).join("-");
       time = "" + (this.formatTime(pos)) + "/" + (this.formatTime(duration));
       bar_str = "[" + nm_format + left + "][" + hl_format + hl + "][" + nm_format + nm + "][" + no_format + nu + "][" + nm_format + right + " " + time + "]";
@@ -246,7 +249,10 @@
 
     Player.prototype.pause = function() {
       var _ref3;
-      return (_ref3 = this.currentSound) != null ? _ref3.pause() : void 0;
+      if ((_ref3 = this.currentSound) != null) {
+        _ref3.pause();
+      }
+      return this.onPlaying(this.currentSound.position);
     };
 
     Player.prototype.resume = function() {
@@ -255,7 +261,8 @@
     };
 
     Player.prototype.loops = function() {
-      return console.log("Should loop");
+      console.log("Should loop");
+      return this.looping = !this.looping;
     };
 
     Player.prototype.startPlay = function(channel) {
@@ -335,7 +342,11 @@
           return this.play();
         },
         onfinish: function() {
-          return _this.nextSong(_this.action.END);
+          if (_this.looping) {
+            return _this.doPlay(_this.currentSong);
+          } else {
+            return _this.nextSong(_this.action.END);
+          }
         }
       });
     };

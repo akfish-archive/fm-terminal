@@ -94,7 +94,9 @@ class Player
                 @maxHistoryCount = 15
                 
                 @currentSongIndex = -1
-                
+
+                @looping = false
+                                
                 soundManager.setup({
                         url: "SoundManager2/swf/",
                         preferFlash: false,
@@ -145,10 +147,14 @@ class Player
                 nm_format = "[gb;#fff;#000]"
                 no_format = "[gb;#000;#000]"
                 
-                left = $.terminal.escape_brackets("[")
-                right = $.terminal.escape_brackets("]")
-                hl = Array(hl_bar_count).join(">") + "♫"
-                nm = Array(nm_bar_count).join("=") + (if no_bar_count > 0 then "☁" else "==")
+                left = $.terminal.escape_brackets(if @looping then ">" else "[")
+                right = $.terminal.escape_brackets(if @looping then "<" else "]")
+                playing = not @currentSound.paused
+                buffering = @currentSound.isBuffering
+                hl = Array(hl_bar_count).join(if playing then ">" else "|") +
+                        if playing then "♫" else "♨"
+                nm = Array(nm_bar_count).join(if buffering then "~" else "=") +
+                        (if no_bar_count > 0 then "☁" else "==")
                 nu = Array(no_bar_count + 1).join("-")
                 time = "#{@formatTime(pos)}/#{@formatTime(duration)}"
                 bar_str = "[#{nm_format}#{left}][#{hl_format}#{hl}][#{nm_format}#{nm}][#{no_format}#{nu}][#{nm_format}#{right} #{time}]"
@@ -168,12 +174,14 @@ class Player
 
         pause: () ->
                 @currentSound?.pause()
+                @onPlaying(@currentSound.position)
 
         resume: () ->
                 @currentSound?.resume()        
 
         loops: () ->
                 console.log("Should loop")
+                @looping = not @looping
                         
 
         startPlay: (channel) ->
@@ -252,7 +260,11 @@ class Player
                         whileloading: () => @onLoading(),
                         whileplaying: () => @onPlaying(),
                         onload: () -> @.play()
-                        onfinish: () => @nextSong(@action.END)
+                        onfinish: () =>
+                                if @looping
+                                        @doPlay(@currentSong)
+                                else
+                                        @nextSong(@action.END)
                         # TODO: invoke nextSong when complete
                 })
                 
