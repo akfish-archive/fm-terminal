@@ -1,6 +1,7 @@
 class LoginCommand extends window.CommandBase
         wait_for_user = 0
         wait_for_pass = 1
+        wait_for_remember = 2
 
         showInfo: () ->
                 window.T.echo("Login to douban.fm...")
@@ -13,6 +14,12 @@ class LoginCommand extends window.CommandBase
         echoNeedPass: () ->
                 window.T.echo("Password")
                 window.T.set_mask(true)
+
+        echoNeedRemember: () ->
+                window.T.echo("Remember me? (y/n)")
+                window.T.set_mask(false)
+                if @remember?
+                        window.T.insert(if @remember then "y" else "n")
                 
         isValidUser: (user) ->
                 return true
@@ -28,6 +35,7 @@ class LoginCommand extends window.CommandBase
                                 
         succ: (user) ->
                 @user = user
+                delete @["remember"]
                 window.T.pop()
                 window.T.resume()
                 window.T.echo("Welcome...")
@@ -67,13 +75,26 @@ class LoginCommand extends window.CommandBase
                                 if @isValidPass(text)
                                         @pass = text
 
-                                        # Do login
-                                        term.echo("Login...")
-                                        term.pause()
-                                        # TODO: auto login
-                                        window.DoubanFM?.login(@username, @pass, false,
-                                                (user) => @succ(user),
-                                                (user) => @fail(user))
+                                        @echoNeedRemember()
+                                        @stage = wait_for_remember
+                        when wait_for_remember
+
+                                switch text
+                                        when "y", "Y"
+                                                @remember = true
+                                        when "n", "N"
+                                                @remember = false
+                                        else
+                                                @echoNeedRemember()
+                                                return
+                                # Do login
+                                term.echo("Login...")
+                                term.pause()
+                                # TODO: auto login
+                                window.DoubanFM?.login(@username, @pass, @remember,
+                                        (user) => @succ(user),
+                                        (user) => @fail(user))
+                                                
                 return
                 
         execute: () ->

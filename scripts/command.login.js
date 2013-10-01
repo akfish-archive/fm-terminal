@@ -5,7 +5,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   LoginCommand = (function(_super) {
-    var msg_wrong_pass, msg_wrong_user, wait_for_pass, wait_for_user;
+    var msg_wrong_pass, msg_wrong_user, wait_for_pass, wait_for_remember, wait_for_user;
 
     __extends(LoginCommand, _super);
 
@@ -17,6 +17,8 @@
     wait_for_user = 0;
 
     wait_for_pass = 1;
+
+    wait_for_remember = 2;
 
     LoginCommand.prototype.showInfo = function() {
       window.T.echo("Login to douban.fm...");
@@ -31,6 +33,14 @@
     LoginCommand.prototype.echoNeedPass = function() {
       window.T.echo("Password");
       return window.T.set_mask(true);
+    };
+
+    LoginCommand.prototype.echoNeedRemember = function() {
+      window.T.echo("Remember me? (y/n)");
+      window.T.set_mask(false);
+      if (this.remember != null) {
+        return window.T.insert(this.remember ? "y" : "n");
+      }
     };
 
     LoginCommand.prototype.isValidUser = function(user) {
@@ -51,6 +61,7 @@
 
     LoginCommand.prototype.succ = function(user) {
       this.user = user;
+      delete this["remember"];
       window.T.pop();
       window.T.resume();
       return window.T.echo("Welcome...");
@@ -94,15 +105,32 @@
         case wait_for_pass:
           if (this.isValidPass(text)) {
             this.pass = text;
-            term.echo("Login...");
-            term.pause();
-            if ((_ref1 = window.DoubanFM) != null) {
-              _ref1.login(this.username, this.pass, false, function(user) {
-                return _this.succ(user);
-              }, function(user) {
-                return _this.fail(user);
-              });
-            }
+            this.echoNeedRemember();
+            this.stage = wait_for_remember;
+          }
+          break;
+        case wait_for_remember:
+          switch (text) {
+            case "y":
+            case "Y":
+              this.remember = true;
+              break;
+            case "n":
+            case "N":
+              this.remember = false;
+              break;
+            default:
+              this.echoNeedRemember();
+              return;
+          }
+          term.echo("Login...");
+          term.pause();
+          if ((_ref1 = window.DoubanFM) != null) {
+            _ref1.login(this.username, this.pass, this.remember, function(user) {
+              return _this.succ(user);
+            }, function(user) {
+              return _this.fail(user);
+            });
           }
       }
     };
