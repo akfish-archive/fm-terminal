@@ -410,6 +410,8 @@
 
     DoubanFM.prototype.forget = function() {};
 
+    DoubanFM.prototype.clean_user_data = function() {};
+
     DoubanFM.prototype.post_login = function(data, remember, succ, err) {
       this.user = new User(data);
       if (this.user.r === 1) {
@@ -421,6 +423,7 @@
       if (remember) {
         this.remember;
       }
+      this.clean_user_data();
       return typeof succ === "function" ? succ(this.user) : void 0;
     };
 
@@ -445,8 +448,9 @@
     };
 
     DoubanFM.prototype.logout = function() {
-      this.User = new User();
-      return this.forget();
+      this.user = new User();
+      this.forget();
+      return this.clean_user_data();
     };
 
     DoubanFM.prototype.play = function(channel) {
