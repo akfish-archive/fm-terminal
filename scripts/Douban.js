@@ -26,7 +26,7 @@
       return _ref;
     }
 
-    Channel.prototype.update = function(succ, err) {
+    Channel.prototype.update = function(succ, err, action, history) {
       var _ref1,
         _this = this;
       return (_ref1 = window.DoubanFM) != null ? _ref1.doGetSongs(this, (function(json) {
@@ -41,7 +41,7 @@
           }
           return _results;
         })();
-        return succ(_this.songs);
+        return typeof succ === "function" ? succ(_this.songs) : void 0;
       }), err) : void 0;
     };
 
@@ -152,6 +152,14 @@
   Player = (function() {
     function Player() {
       this.sounds = {};
+      this.action = {};
+      this.action.END = "e";
+      this.action.NONE = "n";
+      this.action.BOO = "b";
+      this.action.LIKE = "r";
+      this.action.UNLIKE = "u";
+      this.action.SKIP = "s";
+      this.currentSongIndex = -1;
       soundManager.setup({
         url: "SoundManager2/swf/",
         preferFlash: false,
@@ -184,10 +192,10 @@
     Player.prototype.onPlaying = function(pos) {
       var bar, barWidth, bar_str, delta_bar_count, duration, hl, hl_bar_count, hl_format, ld_bar_count, left, loaded_percent, nm, nm_bar_count, nm_format, no_bar_count, no_format, nu, percent, right, time;
       barWidth = 30;
-      pos = this.current.position;
-      duration = this.current.duration;
+      pos = this.currentSound.position;
+      duration = this.currentSound.duration;
       percent = pos / duration;
-      loaded_percent = this.current.bytesLoaded / this.current.bytesTotal;
+      loaded_percent = this.currentSound.bytesLoaded / this.currentSound.bytesTotal;
       ld_bar_count = Math.round(barWidth * loaded_percent);
       hl_bar_count = Math.floor(barWidth * percent);
       nm_bar_count = barWidth - hl_bar_count;
@@ -212,7 +220,32 @@
       return this.$ui.append(bar);
     };
 
-    Player.prototype.play = function(song) {
+    Player.prototype.play = function(channel) {
+      return this.startPlay(channel);
+    };
+
+    Player.prototype.startPlay = function(channel) {
+      this.currentChannel = channel;
+      this.currentSongIndex = -1;
+      return this.nextSong(this.action.NONE);
+    };
+
+    Player.prototype.nextSong = function(action) {
+      var _this = this;
+      if (this.currentSongIndex + 1 >= this.currentChannel.songs.length) {
+        this.currentChannel.update(function(songs) {
+          return _this.nextSong(action);
+        }, function() {}, action, this.history);
+        return;
+      }
+      if (this.currentSongIndex > -1) {
+        this.currentChannel.update(null, null, action, this.history);
+      }
+      this.currentSongIndex++;
+      return this.doPlay(this.currentChannel.songs[this.currentSongIndex]);
+    };
+
+    Player.prototype.doPlay = function(song) {
       var album, artist, id, like, like_format, title, url,
         _this = this;
       id = song.sid;
@@ -223,13 +256,14 @@
       like = song.like !== 0;
       like_format = like ? "[gb;#f00;#000]" : "[gb;#fff;#000]";
       window.T.echo("[" + like_format + "♥ ][[gb;#e67e22;#000]" + song.artist + " - " + song.title + " " + song.albumtitle + "]");
-      this.current = this.sounds[id];
+      this.currentSong = song;
+      this.currentSound = this.sounds[id];
       window.T.echo("Loading...", {
         finalize: function(div) {
           return _this.bind(div);
         }
       });
-      return this.current != null ? this.current : this.current = soundManager.createSound({
+      return this.currentSound != null ? this.currentSound : this.currentSound = soundManager.createSound({
         url: url,
         autoLoad: true,
         whileloading: function() {
@@ -240,6 +274,9 @@
         },
         onload: function() {
           return this.play();
+        },
+        onfinish: function() {
+          return _this.nextSong(_this.action.END);
         }
       });
     };
@@ -277,11 +314,11 @@
       this.player = new Player();
       $(document).ready(function() {
         window.T.echo("DoubanFM initialized...");
-        return _this.resume();
+        return _this.resume_session();
       });
     }
 
-    DoubanFM.prototype.resume = function() {};
+    DoubanFM.prototype.resume_session = function() {};
 
     DoubanFM.prototype.remember = function() {};
 
@@ -322,6 +359,12 @@
     DoubanFM.prototype.logout = function() {
       this.User = new User();
       return this.forget();
+    };
+
+    DoubanFM.prototype.play = function(channel) {
+      var _ref3;
+      this.currentChannel = channel;
+      return (_ref3 = this.player) != null ? _ref3.play(channel) : void 0;
     };
 
     DoubanFM.prototype.update = function(succ, err) {

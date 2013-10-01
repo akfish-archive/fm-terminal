@@ -12,18 +12,18 @@
       return _ref;
     }
 
-    PlayCommand.prototype.play = function(songs) {
-      return window.DoubanFM.player.play(songs[0]);
+    PlayCommand.prototype.play = function(channel) {
+      return window.DoubanFM.play(channel);
     };
 
     PlayCommand.prototype.listSongs = function() {
       var _this = this;
       console.log("List songs");
       if (this.channel.songs != null) {
-        return this.play(this.channel.songs);
+        return this.play(this.channel);
       } else {
         return this.channel.update(function(songs) {
-          return _this.play(songs);
+          return _this.play(_this.channel);
         }, function(status, error) {
           return _this.on_error;
         });

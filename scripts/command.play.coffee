@@ -1,14 +1,14 @@
 class PlayCommand extends window.CommandBase
-        play: (songs) ->
-                window.DoubanFM.player.play(songs[0])
-                
+        play: (channel) ->
+                window.DoubanFM.play(channel)
+                                
         listSongs: () ->
                 console.log "List songs"
                 if @channel.songs?
-                        @play(@channel.songs)
+                        @play(@channel)
                 else
                         @channel.update(
-                                (songs) => @play(songs),
+                                (songs) => @play(@channel),
                                 (status, error) => @on_error
                         )
                         

@@ -6,12 +6,13 @@ class JsonObject
 
 class Channel extends JsonObject
 
-        update: (succ, err) ->
+        update: (succ, err, action, history) ->
                 window.DoubanFM?.doGetSongs(
                         @,
                         ((json) =>
+                                # TODO: append song list instead of replacing
                                 @songs = (new Song(s) for s in json?.song)
-                                succ(@songs)
+                                succ?(@songs)
                         )
                                 ,
                         err
@@ -19,6 +20,7 @@ class Channel extends JsonObject
 
         
 class Song extends JsonObject
+        # not so logic, it get liked/unliked/booed/skipped
         like: () ->
                 window.DoubanFM?.doLike(@)
 
@@ -72,6 +74,17 @@ window.Service ?= new Service(proxy_domain)
 class Player
         constructor: () ->
                 @sounds = {}
+                # Actions
+                @action = {}
+                @action.END = "e"
+                @action.NONE = "n"
+                @action.BOO = "b"
+                @action.LIKE = "r"
+                @action.UNLIKE = "u"
+                @action.SKIP = "s"
+
+                @currentSongIndex = -1
+                
                 soundManager.setup({
                         url: "SoundManager2/swf/",
                         preferFlash: false,
@@ -98,12 +111,12 @@ class Player
         onPlaying: (pos) ->
                 barWidth = 30
                 # playing progress
-                pos = @current.position
-                duration = @current.duration
+                pos = @currentSound.position
+                duration = @currentSound.duration
                 percent = pos / duration
 
                 # loading progress
-                loaded_percent = @current.bytesLoaded / @current.bytesTotal
+                loaded_percent = @currentSound.bytesLoaded / @currentSound.bytesTotal
                 ld_bar_count = Math.round(barWidth * loaded_percent)
 
                 
@@ -134,7 +147,41 @@ class Player
                 @$ui.text("")
                 @$ui.append(bar)
 
-        play: (song) ->
+        play: (channel) ->
+                # if playing then stop
+                @startPlay(channel)
+
+        startPlay: (channel) ->
+                @currentChannel = channel
+
+                # initialize
+                @currentSongIndex = -1
+
+                @nextSong(@action.NONE)
+                
+
+        nextSong: (action) ->
+                # TODO: record history
+                # if not in cache, update
+                if (@currentSongIndex + 1 >= @currentChannel.songs.length)
+                        # TODO: prompt user that we are updating
+                        @currentChannel.update(
+                                (songs) => @nextSong(action),
+                                () -> #TODO:,
+                                action,
+                                @history)
+                        return # block operation here
+                # handle action of previous song
+                # action could be booo, finish, skip, null
+                if (@currentSongIndex > -1)
+                        @currentChannel.update(null, null, action, @history)
+                # get next song
+                @currentSongIndex++
+
+                # do simple indexing, since when channel is updated, song list is appended
+                @doPlay(@currentChannel.songs[@currentSongIndex])
+                
+        doPlay: (song) ->
                 id = song.sid
                 url = song.url
                 artist = song.artist
@@ -145,18 +192,21 @@ class Player
                 #window.T.clear()
                 window.T.echo "[#{like_format}♥ ][[gb;#e67e22;#000]#{song.artist} - #{song.title} #{song.albumtitle}]"
 
-                @current = @sounds[id]
+                @currentSong = song
+                @currentSound = @sounds[id]
                 window.T.echo("Loading...",
                         {
                                 finalize: (div) => @bind(div),
                         })
 
-                @current ?= soundManager.createSound({
+                @currentSound ?= soundManager.createSound({
                         url: url,
                         autoLoad: true,
                         whileloading: () => @onLoading(),
                         whileplaying: () => @onPlaying(),
                         onload: () -> @.play()
+                        onfinish: () => @nextSong(@action.END)
+                        # TODO: invoke nextSong when complete
                 })
                 
 
@@ -179,9 +229,9 @@ class DoubanFM
                 @player = new Player()
                 $(document).ready =>
                         window.T.echo("DoubanFM initialized...")
-                        @resume()
+                        @resume_session()
                 
-        resume: () ->
+        resume_session: () ->
                 #TODO: read cookie to @user
 
         remember: () ->
@@ -221,6 +271,11 @@ class DoubanFM
         logout: () ->
                 @User = new User()
                 @forget()
+        #######################################
+        # Play Channel
+        play: (channel) ->
+                @currentChannel = channel
+                @player?.play(channel)
 
         #######################################
         #
