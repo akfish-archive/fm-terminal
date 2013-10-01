@@ -107,9 +107,10 @@
 
   Terminal = (function() {
     Terminal.prototype.setUser = function(user) {
-      var name, _ref, _ref1;
-      name = (_ref = "[" + (user != null ? user.user_name : void 0) + "]") != null ? _ref : "";
-      return (_ref1 = window.T) != null ? _ref1.set_prompt(name + prompt) : void 0;
+      var name, name_str, _ref, _ref1;
+      name = (_ref = user != null ? user.user_name : void 0) != null ? _ref : "";
+      name_str = name !== "" ? "[" + name + "]" : "";
+      return (_ref1 = window.T) != null ? _ref1.set_prompt(name_str + prompt) : void 0;
     };
 
     function Terminal() {
