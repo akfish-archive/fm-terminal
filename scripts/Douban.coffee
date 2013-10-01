@@ -5,13 +5,17 @@ class JsonObject
                 
 
 class Channel extends JsonObject
-
+        appendSongs: (newSongs) ->
+                @songs ?= []
+                # TODO: check max size and release
+                @songs = @songs.concat(newSongs)
+                
         update: (succ, err, action, history) ->
                 window.DoubanFM?.doGetSongs(
                         @,
                         ((json) =>
                                 # TODO: append song list instead of replacing
-                                @songs = (new Song(s) for s in json?.song)
+                                @appendSongs(new Song(s) for s in json?.song)
                                 succ?(@songs)
                         )
                                 ,
@@ -149,7 +153,12 @@ class Player
 
         play: (channel) ->
                 # if playing then stop
+                @stop()
                 @startPlay(channel)
+
+        stop: () ->
+                @currentSound?.stop()
+                        
 
         startPlay: (channel) ->
                 @currentChannel = channel
@@ -158,9 +167,11 @@ class Player
                 @currentSongIndex = -1
 
                 @nextSong(@action.NONE)
-                
+        
 
         nextSong: (action) ->
+                @stop()
+                
                 # TODO: record history
                 # if not in cache, update
                 if (@currentSongIndex + 1 >= @currentChannel.songs.length)
@@ -276,7 +287,8 @@ class DoubanFM
         play: (channel) ->
                 @currentChannel = channel
                 @player?.play(channel)
-
+        next: () ->
+                @player?.nextSong(@player.action.SKIP)
         #######################################
         #
         update: (succ, err) ->

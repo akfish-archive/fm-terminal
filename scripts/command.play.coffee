@@ -4,6 +4,7 @@ class PlayCommand extends window.CommandBase
                                 
         listSongs: () ->
                 console.log "List songs"
+                # TODO: don't do update here, the player will handle that
                 if @channel.songs?
                         @play(@channel)
                 else

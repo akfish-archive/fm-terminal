@@ -26,12 +26,19 @@
       return _ref;
     }
 
+    Channel.prototype.appendSongs = function(newSongs) {
+      if (this.songs == null) {
+        this.songs = [];
+      }
+      return this.songs = this.songs.concat(newSongs);
+    };
+
     Channel.prototype.update = function(succ, err, action, history) {
       var _ref1,
         _this = this;
       return (_ref1 = window.DoubanFM) != null ? _ref1.doGetSongs(this, (function(json) {
         var s;
-        _this.songs = (function() {
+        _this.appendSongs((function() {
           var _i, _len, _ref2, _results;
           _ref2 = json != null ? json.song : void 0;
           _results = [];
@@ -40,7 +47,7 @@
             _results.push(new Song(s));
           }
           return _results;
-        })();
+        })());
         return typeof succ === "function" ? succ(_this.songs) : void 0;
       }), err) : void 0;
     };
@@ -221,7 +228,13 @@
     };
 
     Player.prototype.play = function(channel) {
+      this.stop();
       return this.startPlay(channel);
+    };
+
+    Player.prototype.stop = function() {
+      var _ref3;
+      return (_ref3 = this.currentSound) != null ? _ref3.stop() : void 0;
     };
 
     Player.prototype.startPlay = function(channel) {
@@ -232,6 +245,7 @@
 
     Player.prototype.nextSong = function(action) {
       var _this = this;
+      this.stop();
       if (this.currentSongIndex + 1 >= this.currentChannel.songs.length) {
         this.currentChannel.update(function(songs) {
           return _this.nextSong(action);
@@ -365,6 +379,11 @@
       var _ref3;
       this.currentChannel = channel;
       return (_ref3 = this.player) != null ? _ref3.play(channel) : void 0;
+    };
+
+    DoubanFM.prototype.next = function() {
+      var _ref3;
+      return (_ref3 = this.player) != null ? _ref3.nextSong(this.player.action.SKIP) : void 0;
     };
 
     DoubanFM.prototype.update = function(succ, err) {
