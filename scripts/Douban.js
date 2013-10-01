@@ -135,7 +135,7 @@
       var encoded, encoded_payload;
       encoded = this.encodePayload(payload);
       encoded_payload = {
-        'url': url,
+        'url': $.base64.encode(url),
         'payload': encoded
       };
       console.log("" + type + " " + url);

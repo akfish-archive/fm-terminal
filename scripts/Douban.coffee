@@ -60,7 +60,7 @@ class Service
         query: (type, url, payload, succ, err) ->
                 encoded = @encodePayload(payload)
                 encoded_payload = {
-                        'url': url,
+                        'url': $.base64.encode(url),
                         'payload': encoded
                 }
 
