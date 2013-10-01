@@ -50,14 +50,14 @@ class User extends JsonObject
 class Service
         constructor: (@proxy) ->
 
-        query: (type, url, data, succ, err) ->
-                data['url'] = url
+        query: (type, url, payload, succ, err) ->
+                payload['url'] = url
                 console.log "#{type} #{url}"
-                console.log "Data: "
-                console.log data
+                console.log "Payload: "
+                console.log payload
                 $.jsonp({
                         type: type,
-                        data: data,
+                        data: payload,
                         url: @proxy + "?callback=?",
                         
                         xhrFields: {

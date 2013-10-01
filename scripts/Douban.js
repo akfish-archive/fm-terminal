@@ -120,14 +120,14 @@
       this.proxy = proxy;
     }
 
-    Service.prototype.query = function(type, url, data, succ, err) {
-      data['url'] = url;
+    Service.prototype.query = function(type, url, payload, succ, err) {
+      payload['url'] = url;
       console.log("" + type + " " + url);
-      console.log("Data: ");
-      console.log(data);
+      console.log("Payload: ");
+      console.log(payload);
       return $.jsonp({
         type: type,
-        data: data,
+        data: payload,
         url: this.proxy + "?callback=?",
         xhrFields: {
           withCredentials: false
