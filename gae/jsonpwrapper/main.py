@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/Usr/bin/env python
 #
 # Copyright 2007 Google Inc.
 #
@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 import webapp2
+import urllib
 import urllib2
 import logging
 import base64
@@ -48,24 +49,23 @@ class MainHandler(webapp2.RequestHandler):
         callback = self.request.get('callback');
         payload = self.request.get('payload');
 
-        data = {}
         query = base64.b64decode(payload)
+        data = self.query_to_data(query)
 
         if not post:
-            url += "?" + query
+            url += "?" + urllib.urlencode(data)
             data = None
-        else:
-            data = self.query_to_data(query)
+
 
         self.response.headers['Content-Type'] = "application/javascript"
         self.response.headers['Access-Control-Allow-Origin'] = "*"
 
-        logging.debug("POST:", post)
-        logging.debug(post)
-        logging.debug("URL:")
-        logging.debug(url)
-        logging.debug("Data:")
-        logging.debug(data)
+        logging.warn("POST:", post)
+        logging.warn(post)
+        logging.warn("URL:")
+        logging.warn(url)
+        logging.warn("Data:")
+        logging.warn(data)
 
         if callback:
             self.response.write(callback + "(")
