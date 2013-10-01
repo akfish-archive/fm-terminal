@@ -36,7 +36,7 @@
     Channel.prototype.update = function(succ, err, action, history) {
       var _ref1,
         _this = this;
-      return (_ref1 = window.DoubanFM) != null ? _ref1.doGetSongs(this, (function(json) {
+      return (_ref1 = window.DoubanFM) != null ? _ref1.doGetSongs(this, action, history, (function(json) {
         var s;
         _this.appendSongs((function() {
           var _i, _len, _ref2, _results;
@@ -260,13 +260,14 @@
     };
 
     Player.prototype.doPlay = function(song) {
-      var album, artist, id, like, like_format, title, url,
+      var album, artist, id, like, like_format, picture, title, url,
         _this = this;
       id = song.sid;
       url = song.url;
       artist = song.artist;
       title = song.title;
       album = song.albumtitle;
+      picture = song.picture;
       like = song.like !== 0;
       like_format = like ? "[gb;#f00;#000]" : "[gb;#fff;#000]";
       window.T.echo("[" + like_format + "♥ ][[gb;#e67e22;#000]" + song.artist + " - " + song.title + " " + song.albumtitle + "]");
@@ -410,12 +411,13 @@
       return this.service.get(domain + channel_url, {}, succ, err);
     };
 
-    DoubanFM.prototype.doGetSongs = function(channel, succ, err) {
+    DoubanFM.prototype.doGetSongs = function(channel, action, history, succ, err) {
       var payload, _ref3, _ref4;
       payload = {
         "sid": "",
         "channel": (_ref3 = channel.channel_id) != null ? _ref3 : 0,
-        "type": "n"
+        "type": action != null ? action : "n",
+        "h": history != null ? history : ""
       };
       this.attachVersion(payload);
       if ((_ref4 = this.user) != null) {

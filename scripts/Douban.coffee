@@ -13,6 +13,7 @@ class Channel extends JsonObject
         update: (succ, err, action, history) ->
                 window.DoubanFM?.doGetSongs(
                         @,
+                        action, history,
                         ((json) =>
                                 # TODO: append song list instead of replacing
                                 @appendSongs(new Song(s) for s in json?.song)
@@ -198,6 +199,7 @@ class Player
                 artist = song.artist
                 title = song.title
                 album = song.albumtitle
+                picture = song.picture
                 like = song.like != 0
                 like_format = if like then "[gb;#f00;#000]" else "[gb;#fff;#000]"
                 #window.T.clear()
@@ -310,11 +312,12 @@ class DoubanFM
                         succ,
                         err)        
                 
-        doGetSongs: (channel, succ, err)->
+        doGetSongs: (channel, action, history, succ, err)->
                 payload = {
                         "sid": "",
                         "channel": channel.channel_id ? 0,
-                        "type": "n"
+                        "type": action ? "n",
+                        "h": history ? ""
                 }
                 @attachVersion(payload)
                 @user?.attachAuth(payload)
