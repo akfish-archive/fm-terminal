@@ -114,50 +114,70 @@ class Player
                 #@$ui.text("Loading.. #{@current.bytesLoaded / @current.bytesTotal * 100}")
 
         formatTime: (ms) ->
+                zeroPad = (num, places) ->
+                        zero = places - num.toString().length + 1
+                        Array(+(zero > 0 && zero)).join("0") + num
+
                 s = Math.floor(ms / 1000)
                 MS = ms - s * 1000
                 MM = Math.floor(s / 60)
                 SS = s - MM * 60
-                return "#{MM}:#{SS}"
+                return "#{zeroPad(MM, 2)}:#{zeroPad(SS, 2)}"
 
         onPlaying: (pos) ->
-                barWidth = 30
+                barCount = 30
+
+                playing = not @currentSound.paused
+                buffering = @currentSound.isBuffering
+
                 # playing progress
                 pos = @currentSound.position
                 duration = @currentSound.duration
-                percent = pos / duration
+                play_percent = pos / duration
 
                 # loading progress
                 loaded_percent = @currentSound.bytesLoaded / @currentSound.bytesTotal
-                ld_bar_count = Math.round(barWidth * loaded_percent)
+                load_slider_pos = Math.floor(barCount * loaded_percent)
 
-                
-                        
-                hl_bar_count = Math.floor(barWidth * percent)
-                nm_bar_count = barWidth - hl_bar_count
+                play_slider_pos = Math.floor(barCount * play_percent)
 
-                delta_bar_count = ld_bar_count - hl_bar_count
-                if delta_bar_count < 0
-                        delta_bar_count = 0
-     
-                no_bar_count = nm_bar_count - delta_bar_count
-                nm_bar_count = delta_bar_count
-                
+                # format
                 hl_format = "[gb;#2ecc71;#000]"
                 nm_format = "[gb;#fff;#000]"
                 no_format = "[gb;#000;#000]"
-                
+
+                # slider
+
                 left = $.terminal.escape_brackets(if @looping then ">" else "[")
                 right = $.terminal.escape_brackets(if @looping then "<" else "]")
-                playing = not @currentSound.paused
-                buffering = @currentSound.isBuffering
-                hl = Array(hl_bar_count).join(if playing then ">" else "|") +
-                        if playing then "♫" else "♨"
-                nm = Array(nm_bar_count).join(if buffering then "~" else "=") +
-                        (if no_bar_count > 0 then "☁" else "==")
-                nu = Array(no_bar_count + 1).join("-")
-                time = "#{@formatTime(pos)}/#{@formatTime(duration)}"
-                bar_str = "[#{nm_format}#{left}][#{hl_format}#{hl}][#{nm_format}#{nm}][#{no_format}#{nu}][#{nm_format}#{right} #{time}]"
+
+                border_left = "[#{nm_format}#{left}]"
+                border_right = "[#{nm_format}#{right}]"
+
+                empty_bar = "[#{no_format}=]"
+                load_slider = "[#{nm_format}☁]"
+                loaded_bar = "[#{nm_format}=]"
+                play_slider = "[#{hl_format}#{if playing then "♫" else "♨"}]"
+                played_bar = "[#{hl_format}#{if playing then ">" else "|"}]"
+                
+                # Total bar
+                barArray = Array(barCount)
+                for i in [0..barCount - 1]
+                        barArray[i] = empty_bar
+                for i in [play_slider_pos..load_slider_pos - 1]
+                        barArray[i] = loaded_bar
+                for i in [0..play_slider_pos - 1]
+                        barArray[i] = played_bar
+
+                barArray[load_slider_pos] = load_slider
+                barArray[play_slider_pos] = play_slider
+
+                bar_middle = barArray.join("")
+
+                # display
+                time_played = "[#{nm_format}#{@formatTime(pos)}]"
+                time_total = "[#{nm_format}#{@formatTime(duration)}]"
+                bar_str = "#{time_played}#{border_left}#{bar_middle}#{border_right}#{time_total}"
 
                 bar = $.terminal.format(bar_str)
                 @$ui.text("")
@@ -245,7 +265,7 @@ class Player
                 like = song.like != 0
                 like_format = if like then "[gb;#f00;#000]" else "[gb;#fff;#000]"
                 #window.T.clear()
-                window.T.echo "[#{like_format}♥ ][[gb;#e67e22;#000]#{song.artist} - #{song.title} #{song.albumtitle}]"
+                window.T.echo "[#{like_format}♥ ][[gb;#e67e22;#000]#{song.artist} - #{song.title} | #{song.albumtitle}]"
 
                 @currentSong = song
                 @currentSound = @sounds[id]
