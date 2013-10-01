@@ -120,14 +120,34 @@
       this.proxy = proxy;
     }
 
+    Service.prototype.encodePayload = function(payload) {
+      var k, pairs, str, v;
+      pairs = [];
+      for (k in payload) {
+        v = payload[k];
+        pairs.push(k + "=" + v);
+      }
+      str = pairs.join("&");
+      return $.base64.encode(str);
+    };
+
     Service.prototype.query = function(type, url, payload, succ, err) {
-      payload['url'] = url;
+      var encoded, encoded_payload;
+      encoded = this.encodePayload(payload);
+      encoded_payload = {
+        'url': url,
+        'payload': encoded
+      };
       console.log("" + type + " " + url);
       console.log("Payload: ");
       console.log(payload);
+      console.log("Encoded: ");
+      console.log(encoded_payload);
+      console.log("Decoded: ");
+      console.log($.base64.decode(encoded));
       return $.jsonp({
         type: type,
-        data: payload,
+        data: encoded_payload,
         url: this.proxy + "?callback=?",
         xhrFields: {
           withCredentials: false

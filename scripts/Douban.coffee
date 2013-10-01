@@ -50,14 +50,31 @@ class User extends JsonObject
 class Service
         constructor: (@proxy) ->
 
+        encodePayload: (payload) ->
+                pairs = []
+                for k, v of payload
+                        pairs.push(k + "=" + v)
+                str = pairs.join("&")
+                return $.base64.encode(str)
+                
         query: (type, url, payload, succ, err) ->
-                payload['url'] = url
+                encoded = @encodePayload(payload)
+                encoded_payload = {
+                        'url': url,
+                        'payload': encoded
+                }
+
                 console.log "#{type} #{url}"
                 console.log "Payload: "
                 console.log payload
+                console.log "Encoded: "
+                console.log encoded_payload
+                console.log "Decoded: "
+                console.log $.base64.decode(encoded)
+                
                 $.jsonp({
                         type: type,
-                        data: payload,
+                        data: encoded_payload,
                         url: @proxy + "?callback=?",
                         
                         xhrFields: {
