@@ -311,13 +311,19 @@ class DoubanFM
                         @resume_session()
                 
         resume_session: () ->
-                #TODO: read cookie to @user
+                # TODO: read cookie to @user
+                # TODO: window.TERM.setUser(@user)
 
         remember: () ->
                 #TODO: write cookie from @user
                 
         forget: () ->
                 #TODO: clear cookie
+                #
+
+        clean_user_data: () ->
+                # TODO: clean user specific data
+                # like channels
 
         post_login: (data, remember, succ, err) ->
                 @user = new User(data)
@@ -326,6 +332,7 @@ class DoubanFM
                         return
                 if (remember)
                         @remember
+                @clean_user_data()
                 succ?(@user)
                 
         login: (email, password, remember, succ, err) ->
@@ -350,6 +357,8 @@ class DoubanFM
         logout: () ->
                 @user = new User()
                 @forget()
+                @clean_user_data()
+                
         #######################################
         # Play Channel
         play: (channel) ->

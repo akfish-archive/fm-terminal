@@ -58,7 +58,7 @@ class HelpCommand extends CommandBase
 prompt = "♫>"                
 class Terminal
         setUser: (user) ->
-                name = user?.user_name ? ""
+                name = "[#{user?.user_name}]" ? ""
                 window.T?.set_prompt(name + prompt)
                 
         constructor: () ->
