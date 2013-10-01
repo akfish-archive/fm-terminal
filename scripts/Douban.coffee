@@ -311,15 +311,35 @@ class DoubanFM
                         @resume_session()
                 
         resume_session: () ->
-                # TODO: read cookie to @user
-                # TODO: window.TERM.setUser(@user)
+                # Initialize cookie setting
+                $.cookie.json = true
+                # read cookie to @user
+                cookie_user_json = $.cookie('user')
+                @user = if cookie_user_json? then new User(cookie_user_json) else new User()
+                # update terminal
+                window.TERM.setUser(@user)
 
-        remember: () ->
-                #TODO: write cookie from @user
+
+        remember: (always) ->
+                # calculate expire day
+                # see https://github.com/akfish/fm-terminal/edit/develop/douban-fm-api.md#notes-on-expire-field
+                now = new Date()
+                expire_day = (@user.expire - now.getTime() / 1000) / 3600 / 24
+                console.log("Expire in #{expire_day} days")
+                
+                # session cookie or persistent cookie
+                expire = { expires: expire_day }
+
+                # write cookie from @user
+                value = @user?.json
+                if always
+                        $.cookie('user', value, expire)
+                else
+                        $.cookie('user', value)
                 
         forget: () ->
                 #TODO: clear cookie
-                #
+                $.removeCookie('user')
 
         clean_user_data: () ->
                 # TODO: clean user specific data
@@ -330,8 +350,7 @@ class DoubanFM
                 if (@user.r == 1)
                         err?(@user)
                         return
-                if (remember)
-                        @remember
+                @remember(remember)
                 @clean_user_data()
                 succ?(@user)
                 

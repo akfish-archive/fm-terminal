@@ -7,3 +7,6 @@
 [submodule "jquery-jsonp"]
 	path = jquery-jsonp
 	url = https://github.com/jaubourg/jquery-jsonp.git
+[submodule "jquery-cookie"]
+	path = jquery-cookie
+	url = https://github.com/carhartl/jquery-cookie.git
