@@ -124,8 +124,8 @@ class Player
                 
                 left = $.terminal.escape_brackets("[")
                 right = $.terminal.escape_brackets("]")
-                hl = Array(hl_bar_count).join("=") + "♫"
-                nm = Array(nm_bar_count).join("=") + (if no_bar_count > 0 then "☁" else "=")
+                hl = Array(hl_bar_count).join(">") + "♫"
+                nm = Array(nm_bar_count).join("=") + (if no_bar_count > 0 then "☁" else "==")
                 nu = Array(no_bar_count + 1).join("-")
                 time = "#{@formatTime(pos)}/#{@formatTime(duration)}"
                 bar_str = "[#{nm_format}#{left}][#{hl_format}#{hl}][#{nm_format}#{nm}][#{no_format}#{nu}][#{nm_format}#{right} #{time}]"

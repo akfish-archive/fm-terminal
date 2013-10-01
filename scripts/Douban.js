@@ -202,8 +202,8 @@
       no_format = "[gb;#000;#000]";
       left = $.terminal.escape_brackets("[");
       right = $.terminal.escape_brackets("]");
-      hl = Array(hl_bar_count).join("=") + "♫";
-      nm = Array(nm_bar_count).join("=") + (no_bar_count > 0 ? "☁" : "=");
+      hl = Array(hl_bar_count).join(">") + "♫";
+      nm = Array(nm_bar_count).join("=") + (no_bar_count > 0 ? "☁" : "==");
       nu = Array(no_bar_count + 1).join("-");
       time = "" + (this.formatTime(pos)) + "/" + (this.formatTime(duration));
       bar_str = "[" + nm_format + left + "][" + hl_format + hl + "][" + nm_format + nm + "][" + no_format + nu + "][" + nm_format + right + " " + time + "]";
