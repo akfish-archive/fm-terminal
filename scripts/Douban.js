@@ -445,7 +445,7 @@
     };
 
     DoubanFM.prototype.logout = function() {
-      this.User = new User();
+      this.user = new User();
       return this.forget();
     };
 

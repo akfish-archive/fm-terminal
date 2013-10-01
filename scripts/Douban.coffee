@@ -348,7 +348,7 @@ class DoubanFM
                 return
                 
         logout: () ->
-                @User = new User()
+                @user = new User()
                 @forget()
         #######################################
         # Play Channel
