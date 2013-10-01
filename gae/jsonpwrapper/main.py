@@ -36,19 +36,26 @@ class MainHandler(webapp2.RequestHandler):
     def data_to_query(self, data):
         return '&'.join(map(lambda (k,v): '='.join([k, str(v)]), data.iteritems()))
 
+    def query_to_data(self, query):
+        data = {}
+        for pair in query.split("&"):
+            split = pair.split("=")
+            data[split[0]] = split[1]
+        return data
+
     def get_json_p(self, post = False):
         url = self.request.get('url');
         callback = self.request.get('callback');
         payload = self.request.get('payload');
 
         data = {}
-        for arg in self.request.arguments():
-            if arg != 'url' or arg != 'callback':
-                data[arg] = self.request.get(arg)
+        query = base64.b64decode(payload)
 
         if not post:
-            url += "?" + base64.b64decode(payload)
+            url += "?" + query
             data = None
+        else:
+            data = self.query_to_data(query)
 
         self.response.headers['Content-Type'] = "application/javascript"
         self.response.headers['Access-Control-Allow-Origin'] = "*"

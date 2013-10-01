@@ -378,7 +378,7 @@ class DoubanFM
                         "password": password,
                 }
                 @attachVersion(payload)
-                @service.get(
+                @service.post(
                         domain + login_url,
                         payload,
                         ((data) =>

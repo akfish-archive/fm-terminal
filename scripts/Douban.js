@@ -475,7 +475,7 @@
         "password": password
       };
       this.attachVersion(payload);
-      this.service.get(domain + login_url, payload, (function(data) {
+      this.service.post(domain + login_url, payload, (function(data) {
         return _this.post_login(data, remember, succ, err);
       }), (function(status, error) {
         var data;
