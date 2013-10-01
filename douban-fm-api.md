@@ -74,9 +74,10 @@ The features covered by this API:
 }
 ```
 
-##### Notes On ```expire``` field
+###### Notes on ```expire``` field
 
 The value of ```expire``` is the expire date given in seconds since midnight January 1, 1970.
+
 Usually it will be expired exactly in ```180 days``` since login.
 
 ### Channel List
