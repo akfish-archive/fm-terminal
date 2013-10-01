@@ -17,7 +17,7 @@ All API access is over HTTP, and accessed from the ```www.douban.com``` domain. 
 There is no known JSON-P implementation on the server side. 
 Thus CORS operation can only be achived by proxying through a JSON-P wrapper.
 
-The features covered by this API contains following:
+The features covered by this API:
 
 * User Authentication
 * Channel List
@@ -73,6 +73,11 @@ The features covered by this API contains following:
   "err":"error description" //e.g. wrong_password
 }
 ```
+
+##### Notes On ```expire``` field
+
+The value of ```expire``` is the expire date given in seconds since midnight January 1, 1970.
+Usually it will be expired exactly in ```180 days``` since login.
 
 ### Channel List
 
