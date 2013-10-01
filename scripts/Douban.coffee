@@ -6,9 +6,12 @@ class JsonObject
 
 class Channel extends JsonObject
         appendSongs: (newSongs) ->
+                if not newSongs?
+                        return
                 @songs ?= []
                 # TODO: check max size and release
                 @songs = @songs.concat(newSongs)
+                return
                 
         update: (succ, err, action, sid, history) ->
                 window.DoubanFM?.doGetSongs(
@@ -16,7 +19,7 @@ class Channel extends JsonObject
                         action, sid, history,
                         ((json) =>
                                 # TODO: append song list instead of replacing
-                                @appendSongs(new Song(s) for s in json?.song?)
+                                @appendSongs(new Song(s) for s in json?.song)
                                 succ?(@songs)
                         )
                                 ,
@@ -87,7 +90,9 @@ class Player
                 @action.LIKE = "r"
                 @action.UNLIKE = "u"
                 @action.SKIP = "s"
-
+                
+                @maxHistoryCount = 15
+                
                 @currentSongIndex = -1
                 
                 soundManager.setup({
@@ -158,6 +163,7 @@ class Player
                 @startPlay(channel)
 
         stop: () ->
+                @currentSound?.unload()
                 @currentSound?.stop()
                         
 
@@ -185,8 +191,12 @@ class Player
                 if @currentSong
                         sid = @currentSong.sid
                         h = [sid, action]
+                        # slice to make sure the size 
+                        if @history.length > @maxHistoryCount
+                                @history = @history[1..]
                         @history.push(h)
                         console.log @getHistory()
+                        
                 # TODO: record history
                 # if not in cache, update
                 if (@currentSongIndex + 1 >= @currentChannel.songs.length)

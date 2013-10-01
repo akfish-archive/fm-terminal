@@ -27,10 +27,13 @@
     }
 
     Channel.prototype.appendSongs = function(newSongs) {
+      if (newSongs == null) {
+        return;
+      }
       if (this.songs == null) {
         this.songs = [];
       }
-      return this.songs = this.songs.concat(newSongs);
+      this.songs = this.songs.concat(newSongs);
     };
 
     Channel.prototype.update = function(succ, err, action, sid, history) {
@@ -40,7 +43,7 @@
         var s;
         _this.appendSongs((function() {
           var _i, _len, _ref2, _results;
-          _ref2 = (json != null ? json.song : void 0) != null;
+          _ref2 = json != null ? json.song : void 0;
           _results = [];
           for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
             s = _ref2[_i];
@@ -166,6 +169,7 @@
       this.action.LIKE = "r";
       this.action.UNLIKE = "u";
       this.action.SKIP = "s";
+      this.maxHistoryCount = 15;
       this.currentSongIndex = -1;
       soundManager.setup({
         url: "SoundManager2/swf/",
@@ -233,8 +237,11 @@
     };
 
     Player.prototype.stop = function() {
-      var _ref3;
-      return (_ref3 = this.currentSound) != null ? _ref3.stop() : void 0;
+      var _ref3, _ref4;
+      if ((_ref3 = this.currentSound) != null) {
+        _ref3.unload();
+      }
+      return (_ref4 = this.currentSound) != null ? _ref4.stop() : void 0;
     };
 
     Player.prototype.startPlay = function(channel) {
@@ -263,6 +270,9 @@
       if (this.currentSong) {
         sid = this.currentSong.sid;
         h = [sid, action];
+        if (this.history.length > this.maxHistoryCount) {
+          this.history = this.history.slice(1);
+        }
         this.history.push(h);
         console.log(this.getHistory());
       }
