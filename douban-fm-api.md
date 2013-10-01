@@ -240,7 +240,7 @@ Not necessary.
 
 * *sid*
       
-  Song's ID
+  Song's ID. Required if ```type !== 'n'```.
 
 * *channel*
       
@@ -263,7 +263,13 @@ Not necessary.
 
 ##### Response
 
-Same as ```Get Songs```
+Same as ```Get Songs```.
+
+Notice that it is possible to get a JSON without ```songs``` field, when ```type``` is not ```"n"```:
+
+```javascript
+{"r":0}
+```
 
 ##### Discussion of ```h(istory)``` parameter
 
