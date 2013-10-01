@@ -16,13 +16,14 @@
 #
 import webapp2
 import urllib2
+import logging
 
-
+logging.getLogger().setLevel(logging.DEBUG)
 
 class MainHandler(webapp2.RequestHandler):
-    def fetch(self, url):
+    def fetch(self, url, data = None):
         try:
-            result = urllib2.urlopen(url)
+            result = urllib2.urlopen(url, data = data)
             return result.read()
         except urllib2.URLError as e:
             return "{\"error\":\"" + e.message + "\"}"
@@ -31,22 +32,44 @@ class MainHandler(webapp2.RequestHandler):
         except:
             return "{\"error\":\"" + "Unknown" + "\"}"
 
+    def data_to_query(self, data):
+        return '&'.join(map(lambda (k,v): '='.join([k, str(v)]), data.iteritems()))
 
-    def get_json_p(self):
+    def get_json_p(self, post = False):
         url = self.request.get('url');
         callback = self.request.get('callback');
 
-        self.response.headers['Content-Type'] = "application/json"
+        data = {}
+        for arg in self.request.arguments():
+            if arg != 'url' or arg != 'callback':
+                data[arg] = self.request.get(arg)
+
+        if not post:
+            query = self.data_to_query(data)
+            url += "?" + query
+            data = None
+
+        self.response.headers['Content-Type'] = "application/javascript"
+        self.response.headers['Access-Control-Allow-Origin'] = "*"
+
+        logging.debug("POST:", post)
+        logging.debug(post)
+        logging.debug("URL:")
+        logging.debug(url)
+        logging.debug("Data:")
+        logging.debug(data)
+
         if callback:
             self.response.write(callback + "(")
-        self.response.write(self.fetch(url))
+        self.response.write(self.fetch(url, data))
+
         if callback:
-            self.response.write(")");
+            self.response.write(");");
 
     def get(self):
         self.get_json_p()
     def post(self):
-        self.get_json_p()
+        self.get_json_p(True)
 
 
 app = webapp2.WSGIApplication([

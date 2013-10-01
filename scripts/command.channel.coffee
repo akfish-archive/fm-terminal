@@ -1,9 +1,4 @@
 
-proxy = "https://jsonpwrapper.appspot.com/?callback=?"
-
-channel = "http://www.douban.com/j/app/radio/channels";
-
-
 String.prototype.width =  () ->
         len = @length; 
         width = 0;
@@ -19,15 +14,9 @@ String.prototype.width =  () ->
 class ChannelCommand extends window.CommandBase
         on_data: (data) ->
                 window.T.resume()
-                x = $("" + data.responseText + "");
- 
-                jsonp = x[5].innerHTML;
-                json = jsonp.substring jsonp.indexOf('(') + 1, jsonp.lastIndexOf(')')
-                parsed = $.parseJSON(json)
-                channels = parsed.channels
-                if not channels?
-                        @echo "Error #{parsed.error}"
-                        return
+
+                channels = data
+
                 max_name_length = 0
 
                 @echo(Array(80).join('-'))
@@ -53,32 +42,16 @@ class ChannelCommand extends window.CommandBase
                 @echo(Array(80).join('-'))
                 return
                 
-        on_error: () ->
-                window.T.resume()
-                @echo "Error, try again later"
-                return
-                
         execute: () ->
-                @echo "Requesting..."
-                window.T.pause()
-                $.ajax({
-                        type: 'GET',
-                        dateType: 'jsonp',
-                        data: {
-                                'url': channel
-                        },
-                        url: proxy,
-                        
-                        xhrFields: {
-                                withCredentials: false
-                        },
-                        success: (data) =>
-                                @on_data data
-                                ,
-                        error: () ->
-                                @on_error
-                                return
-                })
+                if not window.DoubanFM.channels?
+                        @echo "Requesting..."
+                        window.T.pause()
+                        window.DoubanFM.update(
+                                (channels) => @on_data(channels),
+                                (status, error) => @on_error(status, error)
+                        )
+                else
+                        @on_data(window.DoubanFM.channels)
                 return
                         
 

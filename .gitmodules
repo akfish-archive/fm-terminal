@@ -4,3 +4,9 @@
 [submodule "jquery.fn"]
 	path = jquery.fn
 	url = https://github.com/padolsey/jquery.fn.git
+[submodule "SoundManager2"]
+	path = SoundManager2
+	url = https://github.com/scottschiller/SoundManager2.git
+[submodule "jquery-jsonp"]
+	path = jquery-jsonp
+	url = https://github.com/jaubourg/jquery-jsonp.git
