@@ -14,11 +14,10 @@
         "SoundManager2/*"
     ],
     "permissions": [
-
+        "http://www.douban.com/",
+        "tabs", "contextMenus" 
     ],
-    "browser_action": {
-        "default_icon": "icon.jpg",
-        "default_popup": "index.html"
-    },
+    "devtools_page": "devtool.html",
+    "options_page": "panel.html",
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
