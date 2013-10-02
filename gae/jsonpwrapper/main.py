@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/Usr/bin/env python
 #
 # Copyright 2007 Google Inc.
 #
@@ -15,53 +15,97 @@
 # limitations under the License.
 #
 import webapp2
+import urllib
 import urllib2
 import logging
+import base64
 
 logging.getLogger().setLevel(logging.DEBUG)
 
 class MainHandler(webapp2.RequestHandler):
-    def fetch(self, url, data = None):
+    def fetch(self, url, data = None, debugData = None):
         try:
             result = urllib2.urlopen(url, data = data)
-            return result.read()
+            result_str = result.read()
+            if debugData != None:
+                debug_str = str(debugData).replace(": u'", ": '")
+                return result_str[:-1] + ", " + debug_str[1:]
+            return result_str
         except urllib2.URLError as e:
-            return "{\"error\":\"" + e.message + "\"}"
+            if debugData != None:
+                debugData["except"] = e
+                return debugData
+            return "{\"error\":\"" + e + "\"}"
         except urllib2.HTTPError as e:
-            return "{\"error\":\"" + e.message + "\"}"
-        except:
-            return "{\"error\":\"" + "Unknown" + "\"}"
+            if debugData != None:
+                debugData["except"] = e
+                return debugData
+            return "{\"error\":\"" + e + "\"}"
+
+        except BaseException as e:
+            if debugData != None:
+                debugData["except"] = e
+                return debugData
+            return "{\"error\":\"" + e + "\"}"
+        except Exception as e:
+            if debugData != None:
+                debugData["except"] = e
+                return debugData
+            return "{\"error\":\"" + e + "\"}"
 
     def data_to_query(self, data):
         return '&'.join(map(lambda (k,v): '='.join([k, str(v)]), data.iteritems()))
 
-    def get_json_p(self, post = False):
-        url = self.request.get('url');
-        callback = self.request.get('callback');
-
+    def query_to_data(self, query):
         data = {}
-        for arg in self.request.arguments():
-            if arg != 'url' or arg != 'callback':
-                data[arg] = self.request.get(arg)
+        for pair in query.split("&"):
+            split = pair.split("=")
+            if len(split) == 2:
+                data[split[0]] = split[1]
+        return data
 
+    def get_json_p(self, post = False):
+
+        debugData = {}
+
+        b64_url = self.request.get('url');
+        callback = self.request.get('callback');
+        payload = self.request.get('payload');
+
+        debugData["b64_url"] = b64_url
+        debugData["cb"] = callback
+        debugData["b64_payload"] = payload
+
+        url = base64.b64decode(b64_url)
+        query = base64.b64decode(payload)
+        data = self.query_to_data(query)
+
+        debugData["url"] = url
+        debugData["query"] = query
+        debugData["query_to_data"] = data
+
+
+        debugData["mode"] = "POST"
         if not post:
-            query = self.data_to_query(data)
-            url += "?" + query
+            debugData["mode"] = "GET"
+            url += "?" + urllib.urlencode(data)
+            debugData["url"] = url
             data = None
+
 
         self.response.headers['Content-Type'] = "application/javascript"
         self.response.headers['Access-Control-Allow-Origin'] = "*"
 
-        logging.debug("POST:", post)
-        logging.debug(post)
-        logging.debug("URL:")
-        logging.debug(url)
-        logging.debug("Data:")
-        logging.debug(data)
+        logging.warn("POST:", post)
+        logging.warn(post)
+        logging.warn("URL:")
+        logging.warn(url)
+        logging.warn("Data:")
+        logging.warn(data)
 
         if callback:
             self.response.write(callback + "(")
-        self.response.write(self.fetch(url, data))
+        self.response.write(self.fetch(url, data, debugData))
 
         if callback:
             self.response.write(");");

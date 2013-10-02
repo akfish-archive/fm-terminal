@@ -10,3 +10,6 @@
 [submodule "jquery-cookie"]
 	path = jquery-cookie
 	url = https://github.com/carhartl/jquery-cookie.git
+[submodule "jquery-base64"]
+	path = jquery-base64
+	url = https://github.com/carlo/jquery-base64.git

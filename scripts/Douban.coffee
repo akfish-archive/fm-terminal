@@ -50,14 +50,31 @@ class User extends JsonObject
 class Service
         constructor: (@proxy) ->
 
-        query: (type, url, data, succ, err) ->
-                data['url'] = url
+        encodePayload: (payload) ->
+                pairs = []
+                for k, v of payload
+                        pairs.push(k + "=" + v)
+                str = pairs.join("&")
+                return $.base64.encode(str)
+                
+        query: (type, url, payload, succ, err) ->
+                encoded = @encodePayload(payload)
+                encoded_payload = {
+                        'url': $.base64.encode(url),
+                        'payload': encoded
+                }
+
                 console.log "#{type} #{url}"
-                console.log "Data: "
-                console.log data
+                console.log "Payload: "
+                console.log payload
+                console.log "Encoded: "
+                console.log encoded_payload
+                console.log "Decoded: "
+                console.log $.base64.decode(encoded)
+                
                 $.jsonp({
                         type: type,
-                        data: data,
+                        data: encoded_payload,
                         url: @proxy + "?callback=?",
                         
                         xhrFields: {
@@ -74,8 +91,6 @@ class Service
         post: (url, data, succ, err) ->
                 @query("POST", url, data, succ, err)
                 
-proxy_domain = "http://localhost:10080"
-#proxy_domain = "https://jsonpwrapper.appspot.com"
 
 window.Service ?= new Service(proxy_domain)
 
@@ -361,7 +376,7 @@ class DoubanFM
                         "password": password,
                 }
                 @attachVersion(payload)
-                @service.get(
+                @service.post(
                         domain + login_url,
                         payload,
                         ((data) =>
