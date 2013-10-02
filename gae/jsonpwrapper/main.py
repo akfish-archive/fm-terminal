@@ -23,16 +23,35 @@ import base64
 logging.getLogger().setLevel(logging.DEBUG)
 
 class MainHandler(webapp2.RequestHandler):
-    def fetch(self, url, data = None):
+    def fetch(self, url, data = None, debugData = None):
         try:
             result = urllib2.urlopen(url, data = data)
-            return result.read()
+            result_str = result.read()
+            if debugData != None:
+                debug_str = str(debugData).replace(": u'", ": '")
+                return result_str[:-1] + ", " + debug_str[1:]
+            return result_str
         except urllib2.URLError as e:
+            if debugData != None:
+                debugData["except"] = e
+                return debugData
             return "{\"error\":\"" + e.message + "\"}"
         except urllib2.HTTPError as e:
+            if debugData != None:
+                debugData["except"] = e
+                return debugData
             return "{\"error\":\"" + e.message + "\"}"
-        except:
-            return "{\"error\":\"" + "Unknown" + "\"}"
+
+        except BaseException as e:
+            if debugData != None:
+                debugData["except"] = e
+                return debugData
+            return "{\"error\":\"" + e.message + "\"}"
+        except Exception as e:
+            if debugData != None:
+                debugData["except"] = e
+                return debugData
+            return "{\"error\":\"" + e.message + "\"}"
 
     def data_to_query(self, data):
         return '&'.join(map(lambda (k,v): '='.join([k, str(v)]), data.iteritems()))
@@ -41,19 +60,36 @@ class MainHandler(webapp2.RequestHandler):
         data = {}
         for pair in query.split("&"):
             split = pair.split("=")
-            data[split[0]] = split[1]
+            if len(split) == 2:
+                data[split[0]] = split[1]
         return data
 
     def get_json_p(self, post = False):
-        url = self.request.get('url');
+
+        debugData = {}
+
+        b64_url = self.request.get('url');
         callback = self.request.get('callback');
         payload = self.request.get('payload');
 
+        debugData["b64_url"] = b64_url
+        debugData["cb"] = callback
+        debugData["b64_payload"] = payload
+
+        url = base64.b64decode(b64_url)
         query = base64.b64decode(payload)
         data = self.query_to_data(query)
 
+        debugData["url"] = url
+        debugData["query"] = query
+        debugData["query_to_data"] = data
+
+
+        debugData["mode"] = "POST"
         if not post:
+            debugData["mode"] = "GET"
             url += "?" + urllib.urlencode(data)
+            debugData["url"] = url
             data = None
 
 
@@ -69,7 +105,7 @@ class MainHandler(webapp2.RequestHandler):
 
         if callback:
             self.response.write(callback + "(")
-        self.response.write(self.fetch(url, data))
+        self.response.write(self.fetch(url, data, debugData))
 
         if callback:
             self.response.write(");");
