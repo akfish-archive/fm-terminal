@@ -35,23 +35,23 @@ class MainHandler(webapp2.RequestHandler):
             if debugData != None:
                 debugData["except"] = e
                 return debugData
-            return "{\"error\":\"" + e.message + "\"}"
+            return "{\"error\":\"" + e + "\"}"
         except urllib2.HTTPError as e:
             if debugData != None:
                 debugData["except"] = e
                 return debugData
-            return "{\"error\":\"" + e.message + "\"}"
+            return "{\"error\":\"" + e + "\"}"
 
         except BaseException as e:
             if debugData != None:
                 debugData["except"] = e
                 return debugData
-            return "{\"error\":\"" + e.message + "\"}"
+            return "{\"error\":\"" + e + "\"}"
         except Exception as e:
             if debugData != None:
                 debugData["except"] = e
                 return debugData
-            return "{\"error\":\"" + e.message + "\"}"
+            return "{\"error\":\"" + e + "\"}"
 
     def data_to_query(self, data):
         return '&'.join(map(lambda (k,v): '='.join([k, str(v)]), data.iteritems()))
