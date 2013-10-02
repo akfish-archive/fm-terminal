@@ -1,0 +1,24 @@
+{
+    "manifest_version": 2,
+
+    "name": "DoubanFM Cmd",
+    "description": "Commandline like douban.fm",
+    "version": "1.0",
+
+    "web_accessible_resources": [
+        "scripts/*",
+        "jquery.terminal/*",
+        "jquery-base64/*",
+        "jquery-cookie/*",
+        "jquery-jsonp/*",
+        "SoundManager2/*"
+    ],
+    "permissions": [
+
+    ],
+    "browser_action": {
+        "default_icon": "icon.jpg",
+        "default_popup": "index.html"
+    },
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}
