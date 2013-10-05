@@ -3,3 +3,4 @@ eproject.cfg
 *#*#
 *.bat
 *.pyc
+*_flymake.*

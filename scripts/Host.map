@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Host.js",
+  "sourceRoot": "",
+  "sources": [
+    "Host.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,CAAA,CAAkB,CAAlB,EAAM,GAAY,MAAA;CAAlB"
+}

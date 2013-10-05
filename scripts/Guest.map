@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Guest.js",
+  "sourceRoot": "",
+  "sources": [
+    "Guest.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,CAAA,CAAkB,CAAlB,EAAM,GAAY,MAAA;CAAlB"
+}
