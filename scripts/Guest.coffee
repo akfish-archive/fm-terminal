@@ -30,7 +30,11 @@ class RemoteTerminal
 
         interpret: (name, term) ->
                 term.echo "[[gb;#929292;#000]...]"
-                window.Pipe.post name
+                window.Pipe.post
+                        name:
+                                name
+                        what:
+                                "ever"
                 term.echo "[[gb;#929292;#000]...]"
                 return
                 
