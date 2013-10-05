@@ -30,15 +30,15 @@
 
   window.PipeServerClass = PipeServer = (function() {
     function PipeServer(name) {
+      var _this = this;
       this.name = name;
       chrome.runtime.onConnect.addListener(function(port) {
-        var _this = this;
-        console.log("Init Pipe Server " + this.name);
-        if (port.name === this.name) {
-          console.log("Conected pipe: " + this.name);
+        console.log("Init Pipe Server " + _this.name);
+        if (port.name === _this.name) {
+          console.log("Conected pipe: " + _this.name);
           console.log(port.sender);
-          this.port = port;
-          return this.port.onMessage.addListener(function(msg) {
+          _this.port = port;
+          return _this.port.onMessage.addListener(function(msg) {
             return _this.dispatch(msg);
           });
         }

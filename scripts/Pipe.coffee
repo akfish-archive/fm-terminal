@@ -13,7 +13,7 @@ window.PipeClientClass = class PipeClient
 
 window.PipeServerClass = class PipeServer
         constructor: (@name) ->
-                chrome.runtime.onConnect.addListener (port) ->
+                chrome.runtime.onConnect.addListener (port) =>
                         console.log("Init Pipe Server #{@name}")
                         if port.name == @name
                                 console.log "Conected pipe: #{@name}"
