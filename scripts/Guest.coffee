@@ -8,7 +8,13 @@ greet = (callback) ->
         str += "[[gb;#929292;#000]......]"
         return str
 
-prompt = "(Remote)♫>"                
+prompt = "(Remote)♫>"
+class TerminalProxyTarget
+        # TODO: register pip dispatch
+        # and route to window.T
+        constructor: (@t) ->
+        
+
 class RemoteTerminal
         setUser: (user) ->
                 name = user?.user_name ? ""
@@ -19,6 +25,7 @@ class RemoteTerminal
                 window.commands ?= {}
         start: (options) ->
                 window.T = $('body').terminal(@interpret, options)
+                @proxyTarget = new TerminalProxyTarget(window.T)
                 return
 
         interpret: (name, term) ->
