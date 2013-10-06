@@ -14,6 +14,10 @@ class TerminalProxyTarget
         # and route to window.T
         constructor: (@t) ->
                 window.Pipe.registerRPC("echo", @t.echo.bind(@t))
+                window.Pipe.registerRPC("set_prompt", @t.set_prompt.bind(@t))
+                window.Pipe.registerRPC("pause", @t.pause.bind(@t))
+                window.Pipe.registerRPC("resume", @t.resume.bind(@t))
+                window.Pipe.registerRPC("clear", @t.clear.bind(@t))                
                 
 
 class RemoteTerminal

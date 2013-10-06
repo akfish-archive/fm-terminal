@@ -27,15 +27,22 @@
     };
 
     TerminalProxy.prototype.set_prompt = function() {
-      var prompt;
+      var prompt, _ref;
       prompt = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      return (_ref = this.server_pipe).fireRPC.apply(_ref, ["set_prompt"].concat(__slice.call(prompt)));
     };
 
-    TerminalProxy.prototype.pause = function() {};
+    TerminalProxy.prototype.pause = function() {
+      return this.server_pipe.fireRPC("pause");
+    };
 
-    TerminalProxy.prototype.resume = function() {};
+    TerminalProxy.prototype.resume = function() {
+      return this.server_pipe.fireRPC("resume");
+    };
 
-    TerminalProxy.prototype.clear = function() {};
+    TerminalProxy.prototype.clear = function() {
+      return this.server_pipe.fireRPC("clear");
+    };
 
     return TerminalProxy;
 

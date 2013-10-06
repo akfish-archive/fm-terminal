@@ -17,13 +17,13 @@ class TerminalProxy
         echo: (msg...) ->
                 @server_pipe.fireRPC "echo", msg...
         set_prompt: (prompt...) ->
-                 
+                @server_pipe.fireRPC "set_prompt", prompt...
         pause: () ->
-
+                @server_pipe.fireRPC "pause"
         resume: () ->
-
+                @server_pipe.fireRPC "resume"
         clear: () -> 
-
+                @server_pipe.fireRPC "clear"
 window.TerminalProxy ?= new TerminalProxy(window.Pipe)
 
 

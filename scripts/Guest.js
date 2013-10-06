@@ -20,6 +20,10 @@
     function TerminalProxyTarget(t) {
       this.t = t;
       window.Pipe.registerRPC("echo", this.t.echo.bind(this.t));
+      window.Pipe.registerRPC("set_prompt", this.t.set_prompt.bind(this.t));
+      window.Pipe.registerRPC("pause", this.t.pause.bind(this.t));
+      window.Pipe.registerRPC("resume", this.t.resume.bind(this.t));
+      window.Pipe.registerRPC("clear", this.t.clear.bind(this.t));
     }
 
     return TerminalProxyTarget;
