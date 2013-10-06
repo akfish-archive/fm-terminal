@@ -120,7 +120,14 @@
     }
 
     Terminal.prototype.start = function(options) {
-      window.T = $('body').terminal(this.interpret, options);
+      var t;
+      t = $('body').terminal(this.interpret, options);
+      if (window.TerminalProxy != null) {
+        window.TerminalProxy.bind(t);
+      }
+      if (window.T == null) {
+        window.T = t;
+      }
     };
 
     Terminal.prototype.interpret = function(name, term) {

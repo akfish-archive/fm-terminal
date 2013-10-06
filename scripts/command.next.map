@@ -1,9 +1,9 @@
 {
   "version": 3,
   "file": "command.next.js",
-  "sourceRoot": "",
+  "sourceRoot": "..",
   "sources": [
-    "command.next.coffee"
+    "scripts\\command.next.coffee"
   ],
   "names": [],
   "mappings": ";AAAA;CAAA,KAAA,WAAA;KAAA;oSAAA;;CAAA,CAAM;CACE;;;;;CAAA;;CAAA,EAAS,IAAT,EAAS;CACM,GAAP,EAAM,EAAS,KAAf;CADR,IAAS;;CAAT;;CADkB,KAAM;;CAAhC,CAIA,EAAK,EAAA,EAAL,GAAK,MAAA;CAJL"

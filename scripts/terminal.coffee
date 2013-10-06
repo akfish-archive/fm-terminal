@@ -65,7 +65,10 @@ class Terminal
         constructor: () ->
                 window.commands ?= {}
         start: (options) ->
-                window.T = $('body').terminal(@interpret, options)
+                t = $('body').terminal(@interpret, options)
+                if window.TerminalProxy?
+                        window.TerminalProxy.bind(t)
+                window.T ?= t
                 return
 
         interpret: (name, term) ->
