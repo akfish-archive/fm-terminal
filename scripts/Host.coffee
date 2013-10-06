@@ -4,20 +4,27 @@ window.Pipe = new window.PipeServerClass(pipe_name)
 # then the window.T should be overrided 
 class TerminalProxy 
         constructor: (@server_pipe) ->
-                @T = window.T
+
+
+        onCommand: (command) ->
+                @t.exec(command)
+                
+        bind: (@t) ->
+                @server_pipe.registerRPC("command", @onCommand.bind(@))
                 window.T = @
 
+
         echo: (msg...) ->
-
+                @server_pipe.fireRPC "echo", msg...
         set_prompt: (prompt...) ->
-
-        pasue: () ->
+                 
+        pause: () ->
 
         resume: () ->
 
         clear: () -> 
 
-
+window.TerminalProxy ?= new TerminalProxy(window.Pipe)
 
 
 

@@ -1,9 +1,9 @@
 {
   "version": 3,
   "file": "command.logout.js",
-  "sourceRoot": "",
+  "sourceRoot": "..",
   "sources": [
-    "command.logout.coffee"
+    "scripts\\command.logout.coffee"
   ],
   "names": [],
   "mappings": ";AAAA;CAAA,KAAA,aAAA;KAAA;oSAAA;;CAAA,CAAM;CACE;;;;;CAAA;;CAAA,EAAS,IAAT,EAAS;CACD,KAAA,EAAe;CAAf,GACA,EAAA,KAAA;CACO,GAAI,EAAL,CAAN,CAAmC,KAAnC;CAHR,IAAS;;CAAT;;CADoB,KAAM;;CAAlC,CAMA,EAAK,IAAA,KAAA,UAAA;CANL"

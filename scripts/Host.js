@@ -8,13 +8,22 @@
   TerminalProxy = (function() {
     function TerminalProxy(server_pipe) {
       this.server_pipe = server_pipe;
-      this.T = window.T;
-      window.T = this;
     }
 
+    TerminalProxy.prototype.onCommand = function(command) {
+      return this.t.exec(command);
+    };
+
+    TerminalProxy.prototype.bind = function(t) {
+      this.t = t;
+      this.server_pipe.registerRPC("command", this.onCommand.bind(this));
+      return window.T = this;
+    };
+
     TerminalProxy.prototype.echo = function() {
-      var msg;
+      var msg, _ref;
       msg = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      return (_ref = this.server_pipe).fireRPC.apply(_ref, ["echo"].concat(__slice.call(msg)));
     };
 
     TerminalProxy.prototype.set_prompt = function() {
@@ -22,7 +31,7 @@
       prompt = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
     };
 
-    TerminalProxy.prototype.pasue = function() {};
+    TerminalProxy.prototype.pause = function() {};
 
     TerminalProxy.prototype.resume = function() {};
 
@@ -31,6 +40,10 @@
     return TerminalProxy;
 
   })();
+
+  if (window.TerminalProxy == null) {
+    window.TerminalProxy = new TerminalProxy(window.Pipe);
+  }
 
 }).call(this);
 

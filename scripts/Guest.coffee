@@ -13,7 +13,8 @@ class TerminalProxyTarget
         # TODO: register pip dispatch
         # and route to window.T
         constructor: (@t) ->
-        
+                window.Pipe.registerRPC("echo", @t.echo.bind(@t))
+                
 
 class RemoteTerminal
         setUser: (user) ->
@@ -30,11 +31,7 @@ class RemoteTerminal
 
         interpret: (name, term) ->
                 term.echo "[[gb;#929292;#000]...]"
-                window.Pipe.post
-                        name:
-                                name
-                        what:
-                                "ever"
+                window.Pipe.fireRPC("command", name)
                 term.echo "[[gb;#929292;#000]...]"
                 return
                 

@@ -19,6 +19,7 @@
   TerminalProxyTarget = (function() {
     function TerminalProxyTarget(t) {
       this.t = t;
+      window.Pipe.registerRPC("echo", this.t.echo.bind(this.t));
     }
 
     return TerminalProxyTarget;
@@ -46,10 +47,7 @@
 
     RemoteTerminal.prototype.interpret = function(name, term) {
       term.echo("[[gb;#929292;#000]...]");
-      window.Pipe.post({
-        name: name,
-        what: "ever"
-      });
+      window.Pipe.fireRPC("command", name);
       term.echo("[[gb;#929292;#000]...]");
     };
 

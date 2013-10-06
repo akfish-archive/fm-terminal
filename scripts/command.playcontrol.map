@@ -1,9 +1,9 @@
 {
   "version": 3,
   "file": "command.playcontrol.js",
-  "sourceRoot": "",
+  "sourceRoot": "..",
   "sources": [
-    "command.playcontrol.coffee"
+    "scripts\\command.playcontrol.coffee"
   ],
   "names": [],
   "mappings": ";AAAA;CAAA,KAAA,sDAAA;KAAA;oSAAA;;CAAA,CAAM;CACE;;;;;CAAA;;CAAA,EAAS,IAAT,EAAS;CACM,IAAP,CAAM,EAAS,KAAf;CADR,IAAS;;CAAT;;CADmB,KAAM;;CAAjC,CAIM;CACE;;;;;CAAA;;CAAA,EAAS,IAAT,EAAS;CACM,KAAD,EAAS,KAAf;CADR,IAAS;;CAAT;;CADoB,KAAM;;CAJlC,CAQM;CACE;;;;;CAAA;;CAAA,EAAS,IAAT,EAAS;CACM,IAAP,CAAM,EAAS,KAAf;CADR,IAAS;;CAAT;;CADkB,KAAM;;CARhC,CAYA,EAAK,GAAA,CAAL,IAAK,SAAA;;CAZL,CAaA,EAAK,IAAA,KAAA,SAAA;;CAbL,CAcA,EAAK,EAAA,EAAL,GAAK,SAAA;CAdL"
