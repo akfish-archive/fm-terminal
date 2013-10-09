@@ -33,6 +33,21 @@ class TerminalProxy
                 
 window.TerminalProxy ?= new TerminalProxy(window.Pipe)
 
+class Notification
+        onPlay: (song) ->
+                
+                notif = webkitNotifications.createNotification(
+                        song.picture,
+                        "<#{song.albumtitle}> #{song.artist}",
+                        song.title)
 
+                notif.show()
+                window.setTimeout(
+                        () -> notif.cancel(),
+                        5000)
+                
+        constructor: () ->
+                window.DoubanFM.player.onPlayCallback = @onPlay.bind(@)
 
+new Notification()
 
