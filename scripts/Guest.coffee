@@ -23,6 +23,7 @@ class TerminalProxyTarget
                 window.Pipe.registerRPC("clear", @t.clear.bind(@t))                
 
                 window.Pipe.registerRPC("init_ui", @t.UI.init.bind(@t.UI))
+                window.Pipe.registerRPC("update_ui", @t.UI.update.bind(@t.UI))
 
 class RemoteTerminal
         setUser: (user) ->

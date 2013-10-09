@@ -1,9 +1,84 @@
 window.PlayerUI = class PlayerUI
+        bind: (div) ->
+                @$ui = $(div)
+
+        update: (sound) ->
+                barCount = 30
+
+                playing = not sound.paused
+                buffering = sound.isBuffering
+
+                # playing progress
+                pos = sound.position
+                duration = sound.duration
+                play_percent = pos / duration
+
+                # loading progress
+                loaded_percent = sound.bytesLoaded / sound.bytesTotal
+                load_slider_pos = Math.floor(barCount * loaded_percent)
+
+                play_slider_pos = Math.floor(barCount * play_percent)
+
+                # format
+                hl_format = "[gb;#2ecc71;#000]"
+                nm_format = "[gb;#fff;#000]"
+                no_format = "[gb;#000;#000]"
+
+                # slider
+
+                left = $.terminal.escape_brackets(if sound.looping then ">" else "[")
+                right = $.terminal.escape_brackets(if sound.looping then "<" else "]")
+
+                border_left = "[#{nm_format}#{left}]"
+                border_right = "[#{nm_format}#{right}]"
+
+                empty_bar = "[#{no_format}=]"
+                load_slider = "[#{nm_format}☁]"
+                loaded_bar = "[#{nm_format}=]"
+                play_slider = "[#{hl_format}#{if playing then "♫" else "♨"}]"
+                played_bar = "[#{hl_format}#{if playing then ">" else "|"}]"
+                
+                # Total bar
+                barArray = Array(barCount)
+                for i in [0..barCount - 1]
+                        barArray[i] = empty_bar
+                for i in [play_slider_pos..load_slider_pos - 1]
+                        barArray[i] = loaded_bar
+                for i in [0..play_slider_pos - 1]
+                        barArray[i] = played_bar
+
+                barArray[load_slider_pos] = load_slider
+                barArray[play_slider_pos] = play_slider
+
+                bar_middle = barArray.join("")
+
+                # display
+                time_played = "[#{nm_format}#{@formatTime(pos)}]"
+                time_total = "[#{nm_format}#{@formatTime(duration)}]"
+                bar_str = "#{time_played}#{border_left}#{bar_middle}#{border_right}#{time_total}"
+
+                bar = $.terminal.format(bar_str)
+                @$ui.text("")
+                @$ui.append(bar)
+
+        formatTime: (ms) ->
+                zeroPad = (num, places) ->
+                        zero = places - num.toString().length + 1
+                        Array(+(zero > 0 && zero)).join("0") + num
+
+                s = Math.floor(ms / 1000)
+                MS = ms - s * 1000
+                MM = Math.floor(s / 60)
+                SS = s - MM * 60
+                return "#{zeroPad(MM, 2)}:#{zeroPad(SS, 2)}"
+
+
         init: () ->
-                @t.echo("PlayerUI...",
+                @t.echo("[Player]",
                 {
-                        #finalize: (div) => @bind(div),
+                        finalize: (div) => @bind(div),
                 })
 
         constructor: (@t) ->
                 @t.init_ui = @init.bind(@)
+                @t.update_ui = @update.bind(@)

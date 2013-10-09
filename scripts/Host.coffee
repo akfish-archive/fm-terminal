@@ -27,6 +27,10 @@ class TerminalProxy
 
         init_ui: () ->
                 @server_pipe.fireRPC "init_ui"
+
+        update_ui: (sound...) ->
+                @server_pipe.fireRPC "update_ui", sound...
+                
 window.TerminalProxy ?= new TerminalProxy(window.Pipe)
 
 

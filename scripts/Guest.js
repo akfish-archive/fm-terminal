@@ -27,6 +27,7 @@
       window.Pipe.registerRPC("resume", this.t.resume.bind(this.t));
       window.Pipe.registerRPC("clear", this.t.clear.bind(this.t));
       window.Pipe.registerRPC("init_ui", this.t.UI.init.bind(this.t.UI));
+      window.Pipe.registerRPC("update_ui", this.t.UI.update.bind(this.t.UI));
     }
 
     return TerminalProxyTarget;
