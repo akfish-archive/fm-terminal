@@ -167,11 +167,13 @@ class Player
         doPlay: (song) ->
                 id = song.sid
                 url = song.url
-
+                
                 @currentSong = song
                 @currentSound = @sounds[id]
                 window.T.init_ui(song)
 
+                if @onPlayCallback?
+                        @onPlayCallback(song)
                 @currentSound ?= soundManager.createSound({
                         url: url,
                         autoLoad: true,

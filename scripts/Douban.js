@@ -240,6 +240,9 @@
       this.currentSong = song;
       this.currentSound = this.sounds[id];
       window.T.init_ui(song);
+      if (this.onPlayCallback != null) {
+        this.onPlayCallback(song);
+      }
       return this.currentSound != null ? this.currentSound : this.currentSound = soundManager.createSound({
         url: url,
         autoLoad: true,

@@ -33,11 +33,17 @@ class TerminalProxy
                 
 window.TerminalProxy ?= new TerminalProxy(window.Pipe)
 
+class Notification
+        onPlay: (song) ->
+                
+                notif = webkitNotifications.createNotification(
+                        song.picture,
+                        "<#{song.albumtitle}> #{song.artist}",
+                        song.title)
+                notif.show()
+                
+        constructor: () ->
+                window.DoubanFM.player.onPlayCallback = @onPlay.bind(@)
 
-notification = webkitNotifications.createNotification(
-  'http://dev.chromium.org/_/rsrc/1302286216006/config/customLogo.gif?revision=2',
-  'Hello!',  
-  'Lorem ipsum...'  
-)
+new Notification()
 
-notification.show()
