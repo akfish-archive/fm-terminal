@@ -40,7 +40,11 @@ class Notification
                         song.picture,
                         "<#{song.albumtitle}> #{song.artist}",
                         song.title)
+
                 notif.show()
+                window.setTimeout(
+                        () -> notif.cancel(),
+                        5000)
                 
         constructor: () ->
                 window.DoubanFM.player.onPlayCallback = @onPlay.bind(@)

@@ -68,7 +68,10 @@
     Notification.prototype.onPlay = function(song) {
       var notif;
       notif = webkitNotifications.createNotification(song.picture, "<" + song.albumtitle + "> " + song.artist, song.title);
-      return notif.show();
+      notif.show();
+      return window.setTimeout(function() {
+        return notif.cancel();
+      }, 5000);
     };
 
     function Notification() {
