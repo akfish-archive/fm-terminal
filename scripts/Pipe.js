@@ -43,7 +43,8 @@
     };
 
     PipeBase.prototype.post = function(msg) {
-      return this.port.postMessage(msg);
+      var _ref;
+      return (_ref = this.port) != null ? _ref.postMessage(msg) : void 0;
     };
 
     return PipeBase;

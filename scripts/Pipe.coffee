@@ -26,9 +26,9 @@ window.PipeBaseClass = class PipeBase
                         console.error error
 
         post: (msg) ->
-                @port.postMessage(msg)
+                @port?.postMessage(msg)
 
-        
+         
 window.PipeClientClass = class PipeClient extends PipeBase
         constructor: (name) ->
                 super name
