@@ -4,7 +4,13 @@
     "name": "DoubanFM Cmd",
     "description": "Commandline like douban.fm",
     "version": "1.0",
-
+    "browser_action": {
+        "default_icon": {                    // optional
+            "19": "icon.jpg"           // optional
+        },
+        "default_title": "Douban.fm CMD",      // optional; shown in tooltip
+        "default_popup": "panel.html"        // optional
+    },
     "web_accessible_resources": [
         "scripts/*",
         "jquery.terminal/*",
