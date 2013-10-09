@@ -172,6 +172,20 @@ class Player
 
                 # do simple indexing, since when channel is updated, song list is appended
                 @doPlay(@currentChannel.songs[@currentSongIndex])
+
+        prevSong: () ->
+                # No previouse song
+                if (@currentSongIndex <= 0)
+                        window.T.echo "No previous song..."
+                        return 
+
+                @stop()
+
+                # get prev song
+                @currentSongIndex--
+
+                # do simple indexing, since when channel is updated, song list is appended
+                @doPlay(@currentChannel.songs[@currentSongIndex])
                 
         doPlay: (song) ->
                 id = song.sid
@@ -295,7 +309,7 @@ class DoubanFM
         next: () ->
                 @player?.nextSong(@player.action.SKIP)
         prev: () ->
-                @player?.prevSong(@player.action.SKIP)
+                @player?.prevSong()
         pause: () ->
                 @player?.pause()
 

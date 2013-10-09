@@ -246,6 +246,16 @@
       return this.doPlay(this.currentChannel.songs[this.currentSongIndex]);
     };
 
+    Player.prototype.prevSong = function() {
+      if (this.currentSongIndex <= 0) {
+        window.T.echo("No previous song...");
+        return;
+      }
+      this.stop();
+      this.currentSongIndex--;
+      return this.doPlay(this.currentChannel.songs[this.currentSongIndex]);
+    };
+
     Player.prototype.doPlay = function(song) {
       var id, url,
         _this = this;
@@ -398,7 +408,7 @@
 
     DoubanFM.prototype.prev = function() {
       var _ref3;
-      return (_ref3 = this.player) != null ? _ref3.prevSong(this.player.action.SKIP) : void 0;
+      return (_ref3 = this.player) != null ? _ref3.prevSong() : void 0;
     };
 
     DoubanFM.prototype.pause = function() {
