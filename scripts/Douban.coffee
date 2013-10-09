@@ -238,6 +238,7 @@ class Player
 
                 @currentSong = song
                 @currentSound = @sounds[id]
+                window.T.init_ui()
                 window.T.echo("Loading...",
                         {
                                 finalize: (div) => @bind(div),

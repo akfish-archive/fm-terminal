@@ -296,6 +296,7 @@
       window.T.echo("[" + like_format + "♥ ][[gb;#e67e22;#000]" + song.artist + " - " + song.title + " | " + song.albumtitle + "]");
       this.currentSong = song;
       this.currentSound = this.sounds[id];
+      window.T.init_ui();
       window.T.echo("Loading...", {
         finalize: function(div) {
           return _this.bind(div);

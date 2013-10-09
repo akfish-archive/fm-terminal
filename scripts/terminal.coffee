@@ -69,6 +69,7 @@ class Terminal
                 if window.TerminalProxy?
                         window.TerminalProxy.bind(t)
                 window.T ?= t
+                window.T.UI = new window.PlayerUI(t)
                 return
 
         interpret: (name, term) ->

@@ -128,6 +128,7 @@
       if (window.T == null) {
         window.T = t;
       }
+      window.T.UI = new window.PlayerUI(t);
     };
 
     Terminal.prototype.interpret = function(name, term) {

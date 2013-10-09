@@ -2,8 +2,15 @@
 (function() {
   var PlayerUI;
 
-  PlayerUI = (function() {
-    function PlayerUI() {}
+  window.PlayerUI = PlayerUI = (function() {
+    PlayerUI.prototype.init = function() {
+      return this.t.echo("PlayerUI...", {});
+    };
+
+    function PlayerUI(t) {
+      this.t = t;
+      this.t.init_ui = this.init.bind(this);
+    }
 
     return PlayerUI;
 

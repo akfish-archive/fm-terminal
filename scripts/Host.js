@@ -44,6 +44,10 @@
       return this.server_pipe.fireRPC("clear");
     };
 
+    TerminalProxy.prototype.init_ui = function() {
+      return this.server_pipe.fireRPC("init_ui");
+    };
+
     return TerminalProxy;
 
   })();
