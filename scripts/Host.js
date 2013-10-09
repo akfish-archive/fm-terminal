@@ -45,7 +45,9 @@
     };
 
     TerminalProxy.prototype.init_ui = function() {
-      return this.server_pipe.fireRPC("init_ui");
+      var song, _ref;
+      song = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      return (_ref = this.server_pipe).fireRPC.apply(_ref, ["init_ui"].concat(__slice.call(song)));
     };
 
     TerminalProxy.prototype.update_ui = function() {

@@ -9,6 +9,10 @@
 
     PlayerUI.prototype.update = function(sound) {
       var bar, barArray, barCount, bar_middle, bar_str, border_left, border_right, buffering, duration, empty_bar, hl_format, i, left, load_slider, load_slider_pos, loaded_bar, loaded_percent, nm_format, no_format, play_percent, play_slider, play_slider_pos, played_bar, playing, pos, right, time_played, time_total, _i, _j, _k, _ref, _ref1, _ref2;
+      if (this.$ui == null) {
+        this.init(sound.song);
+        return;
+      }
       barCount = 30;
       playing = !sound.paused;
       buffering = sound.isBuffering;
@@ -65,8 +69,19 @@
       return "" + (zeroPad(MM, 2)) + ":" + (zeroPad(SS, 2));
     };
 
-    PlayerUI.prototype.init = function() {
-      var _this = this;
+    PlayerUI.prototype.init = function(song) {
+      var album, artist, id, like, like_format, picture, title, url,
+        _this = this;
+      this.t.clear;
+      id = song.sid;
+      url = song.url;
+      artist = song.artist;
+      title = song.title;
+      album = song.albumtitle;
+      picture = song.picture;
+      like = song.like !== 0;
+      like_format = like ? "[gb;#f00;#000]" : "[gb;#fff;#000]";
+      window.T.echo("[" + like_format + "♥ ][[gb;#e67e22;#000]" + song.artist + " - " + song.title + " | " + song.albumtitle + "]");
       return this.t.echo("[Player]", {
         finalize: function(div) {
           return _this.bind(div);

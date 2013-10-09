@@ -145,6 +145,7 @@
     Player.prototype.currentSoundInfo = function() {
       var sound;
       sound = {};
+      sound.song = this.currentSong;
       sound.paused = this.currentSound.paused;
       sound.isBuffering = this.currentSound.isBuffering;
       sound.position = this.currentSound.position;
@@ -232,25 +233,13 @@
     };
 
     Player.prototype.doPlay = function(song) {
-      var album, artist, id, like, like_format, picture, title, url,
+      var id, url,
         _this = this;
       id = song.sid;
       url = song.url;
-      artist = song.artist;
-      title = song.title;
-      album = song.albumtitle;
-      picture = song.picture;
-      like = song.like !== 0;
-      like_format = like ? "[gb;#f00;#000]" : "[gb;#fff;#000]";
-      window.T.echo("[" + like_format + "♥ ][[gb;#e67e22;#000]" + song.artist + " - " + song.title + " | " + song.albumtitle + "]");
       this.currentSong = song;
       this.currentSound = this.sounds[id];
-      window.T.init_ui();
-      window.T.echo("Loading...", {
-        finalize: function(div) {
-          return _this.bind(div);
-        }
-      });
+      window.T.init_ui(song);
       return this.currentSound != null ? this.currentSound : this.currentSound = soundManager.createSound({
         url: url,
         autoLoad: true,

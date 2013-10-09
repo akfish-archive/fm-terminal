@@ -3,6 +3,9 @@ window.PlayerUI = class PlayerUI
                 @$ui = $(div)
 
         update: (sound) ->
+                if not @$ui?
+                        @init(sound.song)
+                        return
                 barCount = 30
 
                 playing = not sound.paused
@@ -73,7 +76,20 @@ window.PlayerUI = class PlayerUI
                 return "#{zeroPad(MM, 2)}:#{zeroPad(SS, 2)}"
 
 
-        init: () ->
+        init: (song) ->
+                @t.clear
+                id = song.sid
+                url = song.url
+                artist = song.artist
+                title = song.title
+                album = song.albumtitle
+                picture = song.picture
+                like = song.like != 0
+                like_format = if like then "[gb;#f00;#000]" else "[gb;#fff;#000]"
+                #window.T.clear()
+                window.T.echo "[#{like_format}♥ ][[gb;#e67e22;#000]#{song.artist} - #{song.title} | #{song.albumtitle}]"
+
+
                 @t.echo("[Player]",
                 {
                         finalize: (div) => @bind(div),

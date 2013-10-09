@@ -78,6 +78,8 @@ class Player
 
         currentSoundInfo: () ->
                 sound = {}
+                sound.song = @currentSong
+                
                 sound.paused = @currentSound.paused
                 sound.isBuffering = @currentSound.isBuffering
                 
@@ -165,22 +167,10 @@ class Player
         doPlay: (song) ->
                 id = song.sid
                 url = song.url
-                artist = song.artist
-                title = song.title
-                album = song.albumtitle
-                picture = song.picture
-                like = song.like != 0
-                like_format = if like then "[gb;#f00;#000]" else "[gb;#fff;#000]"
-                #window.T.clear()
-                window.T.echo "[#{like_format}♥ ][[gb;#e67e22;#000]#{song.artist} - #{song.title} | #{song.albumtitle}]"
 
                 @currentSong = song
                 @currentSound = @sounds[id]
-                window.T.init_ui()
-                window.T.echo("Loading...",
-                        {
-                                finalize: (div) => @bind(div),
-                        })
+                window.T.init_ui(song)
 
                 @currentSound ?= soundManager.createSound({
                         url: url,

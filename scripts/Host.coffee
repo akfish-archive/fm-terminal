@@ -25,8 +25,8 @@ class TerminalProxy
         clear: () -> 
                 @server_pipe.fireRPC "clear"
 
-        init_ui: () ->
-                @server_pipe.fireRPC "init_ui"
+        init_ui: (song...) ->
+                @server_pipe.fireRPC "init_ui", song...
 
         update_ui: (sound...) ->
                 @server_pipe.fireRPC "update_ui", sound...
