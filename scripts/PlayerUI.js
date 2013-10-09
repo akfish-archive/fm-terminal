@@ -72,7 +72,6 @@
     PlayerUI.prototype.init = function(song) {
       var album, artist, id, like, like_format, picture, title, url,
         _this = this;
-      this.t.clear;
       id = song.sid;
       url = song.url;
       artist = song.artist;
@@ -81,6 +80,7 @@
       picture = song.picture;
       like = song.like !== 0;
       like_format = like ? "[gb;#f00;#000]" : "[gb;#fff;#000]";
+      window.T.clear();
       window.T.echo("[" + like_format + "♥ ][[gb;#e67e22;#000]" + song.artist + " - " + song.title + " | " + song.albumtitle + "]");
       return this.t.echo("[Player]", {
         finalize: function(div) {
