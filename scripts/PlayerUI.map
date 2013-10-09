@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "PlayerUI.js",
+  "sourceRoot": "..",
+  "sources": [
+    "scripts\\PlayerUI.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,KAAA,EAAA;;CAAA,CAAM;CACe,EAAA,CAAA,cAAA;;CAAb;;CADR;CAAA"
+}

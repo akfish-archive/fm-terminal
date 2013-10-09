@@ -17,8 +17,8 @@
   prompt = "(Remote)♫>";
 
   TerminalProxyTarget = (function() {
-    function TerminalProxyTarget(t) {
-      this.t = t;
+    function TerminalProxyTarget() {
+      this.t = window.T;
       window.Pipe.registerRPC("echo", this.t.echo.bind(this.t));
       window.Pipe.registerRPC("set_prompt", this.t.set_prompt.bind(this.t));
       window.Pipe.registerRPC("pause", this.t.pause.bind(this.t));
@@ -46,7 +46,7 @@
 
     RemoteTerminal.prototype.start = function(options) {
       window.T = $('body').terminal(this.interpret, options);
-      this.proxyTarget = new TerminalProxyTarget(window.T);
+      this.proxyTarget = new TerminalProxyTarget();
     };
 
     RemoteTerminal.prototype.interpret = function(name, term) {

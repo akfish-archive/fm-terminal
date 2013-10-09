@@ -12,7 +12,8 @@ prompt = "(Remote)♫>"
 class TerminalProxyTarget
         # TODO: register pip dispatch
         # and route to window.T
-        constructor: (@t) ->
+        constructor: () ->
+                @t = window.T
                 window.Pipe.registerRPC("echo", @t.echo.bind(@t))
                 window.Pipe.registerRPC("set_prompt", @t.set_prompt.bind(@t))
                 window.Pipe.registerRPC("pause", @t.pause.bind(@t))
@@ -30,7 +31,7 @@ class RemoteTerminal
                 window.commands ?= {}
         start: (options) ->
                 window.T = $('body').terminal(@interpret, options)
-                @proxyTarget = new TerminalProxyTarget(window.T)
+                @proxyTarget = new TerminalProxyTarget()
                 return
 
         interpret: (name, term) ->
