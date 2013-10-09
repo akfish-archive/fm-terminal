@@ -129,11 +129,8 @@ class Player
                         h.join(":")
                 str += H.get().join("|")
                 return str
-                
-        nextSong: (action) ->
-                @stop()
 
-                sid = ""
+        updateHistory: (action) ->
                 if @currentSong
                         sid = @currentSong.sid
                         h = [sid, action]
@@ -142,17 +139,29 @@ class Player
                                 @history = @history[1..]
                         @history.push(h)
                         console.log @getHistory()
-                        
-                # TODO: record history
-                # if not in cache, update
+                
+        isCacheNeeded: (callback) ->
+                sid = @currentSong?.sid ? ""
                 if (@currentSongIndex + 1 >= @currentChannel.songs.length)
                         # TODO: prompt user that we are updating
                         @currentChannel.update(
-                                (songs) => @nextSong(action),
+                                callback,
                                 () -> #TODO:,
-                                action,
+                                @action.NONE,
                                 sid,
                                 @getHistory())
+                        return true
+                return false
+                
+        nextSong: (action) ->
+                @stop()
+
+                sid = @currentSong?.sid ? ""
+
+                @updateHistory(action)
+                
+                # if not in cache, update
+                if (@isCacheNeeded((songs) => @nextSong(action)))
                         return # block operation here
                 # handle action of previous song
                 # action could be booo, finish, skip, null
@@ -285,7 +294,8 @@ class DoubanFM
                 @player?.play(channel)
         next: () ->
                 @player?.nextSong(@player.action.SKIP)
-
+        prev: () ->
+                @player?.prevSong(@player.action.SKIP)
         pause: () ->
                 @player?.pause()
 
