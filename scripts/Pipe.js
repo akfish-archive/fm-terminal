@@ -5,8 +5,8 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   window.PipeBaseClass = PipeBase = (function() {
-    function PipeBase(name) {
-      this.name = name;
+    function PipeBase(key) {
+      this.key = key;
       this.rpcMap = {};
     }
 
@@ -32,7 +32,7 @@
 
     PipeBase.prototype.dispatch = function(msg) {
       var error;
-      console.log("Msg on pipe " + this.name + ":");
+      console.log("Msg on pipe " + this.key + ":");
       console.log(msg);
       try {
         return this.onRPC(msg);
@@ -42,11 +42,6 @@
       }
     };
 
-    PipeBase.prototype.post = function(msg) {
-      var _ref;
-      return (_ref = this.port) != null ? _ref.postMessage(msg) : void 0;
-    };
-
     return PipeBase;
 
   })();
@@ -54,9 +49,11 @@
   window.PipeClientClass = PipeClient = (function(_super) {
     __extends(PipeClient, _super);
 
-    function PipeClient(name) {
+    function PipeClient(key) {
       var _this = this;
-      PipeClient.__super__.constructor.call(this, name);
+      PipeClient.__super__.constructor.call(this, key);
+      this.id = (new Date()).getTime();
+      this.name = "" + key + ":" + this.id;
       console.log("Init Pipe Client " + this.name);
       this.port = chrome.runtime.connect({
         name: this.name
@@ -65,6 +62,11 @@
         return _this.dispatch(msg);
       });
     }
+
+    PipeClient.prototype.post = function(msg) {
+      var _ref;
+      return (_ref = this.port) != null ? _ref.postMessage(msg) : void 0;
+    };
 
     return PipeClient;
 
@@ -76,18 +78,46 @@
     function PipeServer(name) {
       var _this = this;
       PipeServer.__super__.constructor.call(this, name);
+      this.ports = {};
       chrome.runtime.onConnect.addListener(function(port) {
-        console.log("Init Pipe Server " + _this.name);
-        if (port.name === _this.name) {
-          console.log("Conected pipe: " + _this.name);
+        var id, key, _ref;
+        console.log("Init Pipe Server " + _this.key);
+        _ref = port.name.split(":"), key = _ref[0], id = _ref[1];
+        if (key === _this.key) {
+          console.log("Conected pipe: " + id);
           console.log(port.sender);
-          _this.port = port;
-          return _this.port.onMessage.addListener(function(msg) {
+          _this.ports[id] = port;
+          port.onMessage.addListener(function(msg) {
             return _this.dispatch(msg);
+          });
+          return port.onDisconnect.addListener(function(port) {
+            return _this.onDisconnect(port);
           });
         }
       });
     }
+
+    PipeServer.prototype.onDisconnect = function(port) {
+      var id, key, _ref;
+      console.log("OnDisconnect:");
+      console.log(port);
+      _ref = port.name.split(":"), key = _ref[0], id = _ref[1];
+      if (id != null) {
+        console.log("Pipe " + id + " disconnected");
+        return delete this.ports[id];
+      }
+    };
+
+    PipeServer.prototype.post = function(msg) {
+      var id, port, _ref, _results;
+      _ref = this.ports;
+      _results = [];
+      for (id in _ref) {
+        port = _ref[id];
+        _results.push(port != null ? port.postMessage(msg) : void 0);
+      }
+      return _results;
+    };
 
     return PipeServer;
 
