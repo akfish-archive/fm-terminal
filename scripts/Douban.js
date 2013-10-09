@@ -397,6 +397,11 @@
       return (_ref3 = this.player) != null ? _ref3.loops() : void 0;
     };
 
+    DoubanFM.prototype.stop = function() {
+      var _ref3;
+      return (_ref3 = this.player) != null ? _ref3.stop() : void 0;
+    };
+
     DoubanFM.prototype.update = function(succ, err) {
       var _this = this;
       return this.doGetChannels((function(json) {

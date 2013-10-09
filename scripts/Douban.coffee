@@ -295,6 +295,10 @@ class DoubanFM
         loops: () ->
                 @player?.loops()
 
+        stop: () ->
+                @player?.stop()
+
+
         #######################################
         #
         update: (succ, err) ->
