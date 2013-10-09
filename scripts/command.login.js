@@ -20,11 +20,6 @@
 
     wait_for_remember = 2;
 
-    LoginCommand.prototype.showInfo = function() {
-      window.T.echo("Login to douban.fm...");
-      return this.echoNeedUser();
-    };
-
     LoginCommand.prototype.echoNeedUser = function() {
       window.T.echo("Username (email address)");
       return window.T.set_mask(false);
@@ -49,14 +44,6 @@
 
     LoginCommand.prototype.isValidPass = function(pass) {
       return true;
-    };
-
-    LoginCommand.prototype.exit = function() {
-      var term;
-      this.pass = "";
-      term = window.T;
-      term.set_mask(false);
-      return window.TERM.setUser(this.user);
     };
 
     LoginCommand.prototype.succ = function(user) {
@@ -136,22 +123,8 @@
     };
 
     LoginCommand.prototype.execute = function() {
-      var _this = this;
       this.stage = wait_for_user;
-      return window.T.push(function(input, term) {
-        return _this.input(input, term);
-      }, {
-        name: "login",
-        prompt: ":",
-        onStart: function() {
-          return _this.showInfo();
-        },
-        onExit: function() {
-          return _this.exit();
-        },
-        completion: function() {},
-        keydown: function(e) {}
-      });
+      return window.T.begin_login();
     };
 
     return LoginCommand;

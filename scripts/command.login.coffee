@@ -3,9 +3,6 @@ class LoginCommand extends window.CommandBase
         wait_for_pass = 1
         wait_for_remember = 2
 
-        showInfo: () ->
-                window.T.echo("Login to douban.fm...")
-                @echoNeedUser()
                 
         echoNeedUser: () ->
                 window.T.echo("Username (email address)")
@@ -27,11 +24,6 @@ class LoginCommand extends window.CommandBase
         isValidPass: (pass) ->
                 return true
 
-        exit: () ->
-                @pass = ""
-                term = window.T
-                term.set_mask(false)
-                window.TERM.setUser(@user)
                                 
         succ: (user) ->
                 @user = user
@@ -99,17 +91,8 @@ class LoginCommand extends window.CommandBase
                 
         execute: () ->
                 @stage = wait_for_user
-                
-                window.T.push(
-                        (input, term) => @input(input, term),
-                        {
-                                name: "login",
-                                prompt: ":",
-                                onStart: () => @showInfo(),
-                                onExit: () => @exit(),
-                                completion: () ->,
-                                keydown: (e) -> 
-                        })
+
+                window.T.begin_login()
 
 
 (new LoginCommand("login", "Login to douban.fm")).register()

@@ -11,11 +11,12 @@
         "jquery-base64/*",
         "jquery-cookie/*",
         "jquery-jsonp/*",
-        "SoundManager2/*"
+        "SoundManager2/*",
+        "icon.png"
     ],
     "permissions": [
         "http://www.douban.com/",
-        "tabs", "contextMenus" 
+        "tabs", "contextMenus", "notifications"
     ],
     "devtools_page": "devtool.html",
     "options_page": "panel.html",

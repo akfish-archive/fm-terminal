@@ -34,5 +34,10 @@ class TerminalProxy
 window.TerminalProxy ?= new TerminalProxy(window.Pipe)
 
 
+notification = webkitNotifications.createNotification(
+  'http://dev.chromium.org/_/rsrc/1302286216006/config/customLogo.gif?revision=2',
+  'Hello!',  
+  'Lorem ipsum...'  
+)
 
-
+notification.show()
