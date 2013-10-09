@@ -77,7 +77,6 @@ window.PlayerUI = class PlayerUI
 
 
         init: (song) ->
-                @t.clear
                 id = song.sid
                 url = song.url
                 artist = song.artist
@@ -86,7 +85,7 @@ window.PlayerUI = class PlayerUI
                 picture = song.picture
                 like = song.like != 0
                 like_format = if like then "[gb;#f00;#000]" else "[gb;#fff;#000]"
-                #window.T.clear()
+                window.T.clear()
                 window.T.echo "[#{like_format}♥ ][[gb;#e67e22;#000]#{song.artist} - #{song.title} | #{song.albumtitle}]"
 
 
