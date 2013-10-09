@@ -76,82 +76,21 @@ class Player
                                 window.T?.error("Failed to intialize player. Check your brower's flash setting.")
                 });
 
-        bind: (div) ->
-                @$ui = $(div)
-
-        onLoading: () ->
-                #@$ui.text("Loading.. #{@current.bytesLoaded / @current.bytesTotal * 100}")
-
-        formatTime: (ms) ->
-                zeroPad = (num, places) ->
-                        zero = places - num.toString().length + 1
-                        Array(+(zero > 0 && zero)).join("0") + num
-
-                s = Math.floor(ms / 1000)
-                MS = ms - s * 1000
-                MM = Math.floor(s / 60)
-                SS = s - MM * 60
-                return "#{zeroPad(MM, 2)}:#{zeroPad(SS, 2)}"
-
-        onPlaying: (pos) ->
-                barCount = 30
-
-                playing = not @currentSound.paused
-                buffering = @currentSound.isBuffering
-
-                # playing progress
-                pos = @currentSound.position
-                duration = @currentSound.duration
-                play_percent = pos / duration
-
-                # loading progress
-                loaded_percent = @currentSound.bytesLoaded / @currentSound.bytesTotal
-                load_slider_pos = Math.floor(barCount * loaded_percent)
-
-                play_slider_pos = Math.floor(barCount * play_percent)
-
-                # format
-                hl_format = "[gb;#2ecc71;#000]"
-                nm_format = "[gb;#fff;#000]"
-                no_format = "[gb;#000;#000]"
-
-                # slider
-
-                left = $.terminal.escape_brackets(if @looping then ">" else "[")
-                right = $.terminal.escape_brackets(if @looping then "<" else "]")
-
-                border_left = "[#{nm_format}#{left}]"
-                border_right = "[#{nm_format}#{right}]"
-
-                empty_bar = "[#{no_format}=]"
-                load_slider = "[#{nm_format}☁]"
-                loaded_bar = "[#{nm_format}=]"
-                play_slider = "[#{hl_format}#{if playing then "♫" else "♨"}]"
-                played_bar = "[#{hl_format}#{if playing then ">" else "|"}]"
+        currentSoundInfo: () ->
+                sound = {}
+                sound.song = @currentSong
                 
-                # Total bar
-                barArray = Array(barCount)
-                for i in [0..barCount - 1]
-                        barArray[i] = empty_bar
-                for i in [play_slider_pos..load_slider_pos - 1]
-                        barArray[i] = loaded_bar
-                for i in [0..play_slider_pos - 1]
-                        barArray[i] = played_bar
+                sound.paused = @currentSound.paused
+                sound.isBuffering = @currentSound.isBuffering
+                
+                sound.position = @currentSound.position
+                sound.duration = @currentSound.duration
+                sound.bytesLoaded = @currentSound.bytesLoaded
+                sound.bytesTotal = @currentSound.bytesTotal
 
-                barArray[load_slider_pos] = load_slider
-                barArray[play_slider_pos] = play_slider
-
-                bar_middle = barArray.join("")
-
-                # display
-                time_played = "[#{nm_format}#{@formatTime(pos)}]"
-                time_total = "[#{nm_format}#{@formatTime(duration)}]"
-                bar_str = "#{time_played}#{border_left}#{bar_middle}#{border_right}#{time_total}"
-
-                bar = $.terminal.format(bar_str)
-                @$ui.text("")
-                @$ui.append(bar)
-
+                sound.looping = @looping
+                return sound
+                
         play: (channel) ->
                 # if playing then stop
                 @stop()
@@ -163,7 +102,8 @@ class Player
 
         pause: () ->
                 @currentSound?.pause()
-                @onPlaying(@currentSound.position)
+                window.T.update_ui(@currentSoundInfo())
+
 
         resume: () ->
                 @currentSound?.resume()        
@@ -227,27 +167,16 @@ class Player
         doPlay: (song) ->
                 id = song.sid
                 url = song.url
-                artist = song.artist
-                title = song.title
-                album = song.albumtitle
-                picture = song.picture
-                like = song.like != 0
-                like_format = if like then "[gb;#f00;#000]" else "[gb;#fff;#000]"
-                #window.T.clear()
-                window.T.echo "[#{like_format}♥ ][[gb;#e67e22;#000]#{song.artist} - #{song.title} | #{song.albumtitle}]"
 
                 @currentSong = song
                 @currentSound = @sounds[id]
-                window.T.echo("Loading...",
-                        {
-                                finalize: (div) => @bind(div),
-                        })
+                window.T.init_ui(song)
 
                 @currentSound ?= soundManager.createSound({
                         url: url,
                         autoLoad: true,
-                        whileloading: () => @onLoading(),
-                        whileplaying: () => @onPlaying(),
+                        whileloading: () => window.T.update_ui(@currentSoundInfo()),
+                        whileplaying: () => window.T.update_ui(@currentSoundInfo()),
                         onload: () -> @.play()
                         onfinish: () =>
                                 if @looping

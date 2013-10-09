@@ -44,6 +44,18 @@
       return this.server_pipe.fireRPC("clear");
     };
 
+    TerminalProxy.prototype.init_ui = function() {
+      var song, _ref;
+      song = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      return (_ref = this.server_pipe).fireRPC.apply(_ref, ["init_ui"].concat(__slice.call(song)));
+    };
+
+    TerminalProxy.prototype.update_ui = function() {
+      var sound, _ref;
+      sound = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      return (_ref = this.server_pipe).fireRPC.apply(_ref, ["update_ui"].concat(__slice.call(sound)));
+    };
+
     return TerminalProxy;
 
   })();

@@ -142,68 +142,18 @@
       });
     }
 
-    Player.prototype.bind = function(div) {
-      return this.$ui = $(div);
-    };
-
-    Player.prototype.onLoading = function() {};
-
-    Player.prototype.formatTime = function(ms) {
-      var MM, MS, SS, s, zeroPad;
-      zeroPad = function(num, places) {
-        var zero;
-        zero = places - num.toString().length + 1;
-        return Array(+(zero > 0 && zero)).join("0") + num;
-      };
-      s = Math.floor(ms / 1000);
-      MS = ms - s * 1000;
-      MM = Math.floor(s / 60);
-      SS = s - MM * 60;
-      return "" + (zeroPad(MM, 2)) + ":" + (zeroPad(SS, 2));
-    };
-
-    Player.prototype.onPlaying = function(pos) {
-      var bar, barArray, barCount, bar_middle, bar_str, border_left, border_right, buffering, duration, empty_bar, hl_format, i, left, load_slider, load_slider_pos, loaded_bar, loaded_percent, nm_format, no_format, play_percent, play_slider, play_slider_pos, played_bar, playing, right, time_played, time_total, _i, _j, _k, _ref3, _ref4, _ref5;
-      barCount = 30;
-      playing = !this.currentSound.paused;
-      buffering = this.currentSound.isBuffering;
-      pos = this.currentSound.position;
-      duration = this.currentSound.duration;
-      play_percent = pos / duration;
-      loaded_percent = this.currentSound.bytesLoaded / this.currentSound.bytesTotal;
-      load_slider_pos = Math.floor(barCount * loaded_percent);
-      play_slider_pos = Math.floor(barCount * play_percent);
-      hl_format = "[gb;#2ecc71;#000]";
-      nm_format = "[gb;#fff;#000]";
-      no_format = "[gb;#000;#000]";
-      left = $.terminal.escape_brackets(this.looping ? ">" : "[");
-      right = $.terminal.escape_brackets(this.looping ? "<" : "]");
-      border_left = "[" + nm_format + left + "]";
-      border_right = "[" + nm_format + right + "]";
-      empty_bar = "[" + no_format + "=]";
-      load_slider = "[" + nm_format + "☁]";
-      loaded_bar = "[" + nm_format + "=]";
-      play_slider = "[" + hl_format + (playing ? "♫" : "♨") + "]";
-      played_bar = "[" + hl_format + (playing ? ">" : "|") + "]";
-      barArray = Array(barCount);
-      for (i = _i = 0, _ref3 = barCount - 1; 0 <= _ref3 ? _i <= _ref3 : _i >= _ref3; i = 0 <= _ref3 ? ++_i : --_i) {
-        barArray[i] = empty_bar;
-      }
-      for (i = _j = play_slider_pos, _ref4 = load_slider_pos - 1; play_slider_pos <= _ref4 ? _j <= _ref4 : _j >= _ref4; i = play_slider_pos <= _ref4 ? ++_j : --_j) {
-        barArray[i] = loaded_bar;
-      }
-      for (i = _k = 0, _ref5 = play_slider_pos - 1; 0 <= _ref5 ? _k <= _ref5 : _k >= _ref5; i = 0 <= _ref5 ? ++_k : --_k) {
-        barArray[i] = played_bar;
-      }
-      barArray[load_slider_pos] = load_slider;
-      barArray[play_slider_pos] = play_slider;
-      bar_middle = barArray.join("");
-      time_played = "[" + nm_format + (this.formatTime(pos)) + "]";
-      time_total = "[" + nm_format + (this.formatTime(duration)) + "]";
-      bar_str = "" + time_played + border_left + bar_middle + border_right + time_total;
-      bar = $.terminal.format(bar_str);
-      this.$ui.text("");
-      return this.$ui.append(bar);
+    Player.prototype.currentSoundInfo = function() {
+      var sound;
+      sound = {};
+      sound.song = this.currentSong;
+      sound.paused = this.currentSound.paused;
+      sound.isBuffering = this.currentSound.isBuffering;
+      sound.position = this.currentSound.position;
+      sound.duration = this.currentSound.duration;
+      sound.bytesLoaded = this.currentSound.bytesLoaded;
+      sound.bytesTotal = this.currentSound.bytesTotal;
+      sound.looping = this.looping;
+      return sound;
     };
 
     Player.prototype.play = function(channel) {
@@ -224,7 +174,7 @@
       if ((_ref3 = this.currentSound) != null) {
         _ref3.pause();
       }
-      return this.onPlaying(this.currentSound.position);
+      return window.T.update_ui(this.currentSoundInfo());
     };
 
     Player.prototype.resume = function() {
@@ -283,32 +233,21 @@
     };
 
     Player.prototype.doPlay = function(song) {
-      var album, artist, id, like, like_format, picture, title, url,
+      var id, url,
         _this = this;
       id = song.sid;
       url = song.url;
-      artist = song.artist;
-      title = song.title;
-      album = song.albumtitle;
-      picture = song.picture;
-      like = song.like !== 0;
-      like_format = like ? "[gb;#f00;#000]" : "[gb;#fff;#000]";
-      window.T.echo("[" + like_format + "♥ ][[gb;#e67e22;#000]" + song.artist + " - " + song.title + " | " + song.albumtitle + "]");
       this.currentSong = song;
       this.currentSound = this.sounds[id];
-      window.T.echo("Loading...", {
-        finalize: function(div) {
-          return _this.bind(div);
-        }
-      });
+      window.T.init_ui(song);
       return this.currentSound != null ? this.currentSound : this.currentSound = soundManager.createSound({
         url: url,
         autoLoad: true,
         whileloading: function() {
-          return _this.onLoading();
+          return window.T.update_ui(_this.currentSoundInfo());
         },
         whileplaying: function() {
-          return _this.onPlaying();
+          return window.T.update_ui(_this.currentSoundInfo());
         },
         onload: function() {
           return this.play();

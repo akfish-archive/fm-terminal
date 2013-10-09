@@ -17,13 +17,17 @@
   prompt = "(Remote)♫>";
 
   TerminalProxyTarget = (function() {
-    function TerminalProxyTarget(t) {
-      this.t = t;
+    function TerminalProxyTarget() {
+      this.t = window.T;
+      this.ui = new window.PlayerUI(this.t);
+      window.T.UI = this.ui;
       window.Pipe.registerRPC("echo", this.t.echo.bind(this.t));
       window.Pipe.registerRPC("set_prompt", this.t.set_prompt.bind(this.t));
       window.Pipe.registerRPC("pause", this.t.pause.bind(this.t));
       window.Pipe.registerRPC("resume", this.t.resume.bind(this.t));
       window.Pipe.registerRPC("clear", this.t.clear.bind(this.t));
+      window.Pipe.registerRPC("init_ui", this.t.UI.init.bind(this.t.UI));
+      window.Pipe.registerRPC("update_ui", this.t.UI.update.bind(this.t.UI));
     }
 
     return TerminalProxyTarget;
@@ -46,7 +50,7 @@
 
     RemoteTerminal.prototype.start = function(options) {
       window.T = $('body').terminal(this.interpret, options);
-      this.proxyTarget = new TerminalProxyTarget(window.T);
+      this.proxyTarget = new TerminalProxyTarget();
     };
 
     RemoteTerminal.prototype.interpret = function(name, term) {
