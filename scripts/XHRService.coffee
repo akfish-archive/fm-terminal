@@ -15,7 +15,8 @@ class XHRService
                 if type == "GET"
                         url += "?" + @encodePayload(payload)
                 else
-                        data = payload
+                        data = @encodePayload(payload)
+                        xhr.setRequestHeader("Content-length", data.length);
                         
                 xhr.onreadystatechange = () ->
                         if xhr.readyState == 4
@@ -31,7 +32,7 @@ class XHRService
                 @query("GET", url, data, succ, err)
 
         post: (url, data, succ, err) ->
-                @query("POST", url, data, succ, err)
+                @query("GET", url, data, succ, err)
                 
 
 window.Service ?= new XHRService()
