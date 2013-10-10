@@ -67,26 +67,6 @@
       return _ref1;
     }
 
-    Song.prototype.like = function() {
-      var _ref2;
-      return (_ref2 = window.DoubanFM) != null ? _ref2.doLike(this) : void 0;
-    };
-
-    Song.prototype.unlike = function() {
-      var _ref2;
-      return (_ref2 = window.DoubanFM) != null ? _ref2.doUnlike(this) : void 0;
-    };
-
-    Song.prototype.boo = function() {
-      var _ref2;
-      return (_ref2 = window.DoubanFM) != null ? _ref2.doBoo(this) : void 0;
-    };
-
-    Song.prototype.skip = function() {
-      var _ref2;
-      return (_ref2 = window.DoubanFM) != null ? _ref2.doSkip(this) : void 0;
-    };
-
     return Song;
 
   })(JsonObject);

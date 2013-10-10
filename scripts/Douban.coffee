@@ -28,18 +28,7 @@ class Channel extends JsonObject
 
         
 class Song extends JsonObject
-        # not so logic, it get liked/unliked/booed/skipped
-        like: () ->
-                window.DoubanFM?.doLike(@)
 
-        unlike: () ->
-                window.DoubanFM?.doUnlike(@)
-                
-        boo: () ->
-                window.DoubanFM?.doBoo(@)
-                
-        skip: () ->
-                window.DoubanFM?.doSkip(@)
 
 class User extends JsonObject
         attachAuth: (data) ->
