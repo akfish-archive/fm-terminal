@@ -148,7 +148,7 @@ class Player
                                 @getHistory())
                         return true
                 return false
-        commitAction: (action) ->
+        commitAction: (action, succ, err) ->
                 # Don't do NONE or END
                 if action == @action.NONE
                         return
@@ -158,9 +158,10 @@ class Player
                 if not sid?
                         return
                 if (@currentSongIndex > -1)
-                        @currentChannel.update(null, null, action, sid, @getHistory())
+                        @currentChannel.update(succ, err, action, sid, @getHistory())
 
-        nextSong: (action) ->
+        # succ and err are for commitAction
+        nextSong: (action, succ, err) ->
                 @stop()
 
                 sid = @currentSong?.sid ? ""
@@ -170,11 +171,11 @@ class Player
                         @updateHistory(action)
                 
                 # if not in cache, update
-                if (@isCacheNeeded((songs) => @nextSong(action)))
+                if (@isCacheNeeded((songs) => @nextSong(action, succ, err)))
                         return # block operation here
                 # handle action of previous song
                 # action could be booo, finish, skip, null
-                @commitAction action
+                @commitAction action, succ, err
 
                 # get next song
                 @currentSongIndex++
@@ -310,7 +311,10 @@ class DoubanFM
                 @user = new User()
                 @forget()
                 @clean_user_data()
-                
+
+        isLoggedIn: () ->
+                return @user? and @user.user_id? and @user?.user_id != ""
+                                
         #######################################
         # Play Channel
         play: (channel) ->
@@ -319,20 +323,44 @@ class DoubanFM
                 
         next: () ->
                 @player?.nextSong(@player.action.SKIP)
-                
+
+        onSocialErr: (status, err) ->
+                window.T.error "Operation failed: #{status}"
+
         boo: () ->
-                # TODO: check login
-                @player?.nextSong(@player.action.BOO)
+                # check login
+                if not @isLoggedIn()
+                        window.T.error "Need login first"
+                        return
+                @player?.nextSong(@player.action.BOO,
+                        () -> window.T.echo "Done. Will never play again.",
+                        (status, err) => @onSocialErr(status, err))
 
         like: () ->
-                # TODO: check login
+                # check login
+                if not @isLoggedIn()
+                        window.T.error "Need login first"
+                        return
                 # TODO: check like
-                @player?.commitAction(@player.action.LIKE)
+                @player?.commitAction(@player.action.LIKE,
+                        () =>
+                                window.T.echo "Liked"
+                                @player?.currentSong?.like = 1
+                        ,
+                        (status, err) => @onSocialErr(status, err))
                 
         unlike: () ->
-                # TODO: check login
+                # check login
+                if not @isLoggedIn()
+                        window.T.error "Need login first"
+                        return
                 # TODO: check like
-                @player?.commitAction(@player.action.UNLIKE)
+                @player?.commitAction(@player.action.UNLIKE,
+                        () =>
+                                window.T.echo "Unliked"
+                                @player?.currentSong?.like = 0
+                        ,
+                        (status, err) => @onSocialErr(status, err))
 
         prev: () ->
                 @player?.prevSong()

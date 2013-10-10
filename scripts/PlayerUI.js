@@ -8,11 +8,14 @@
     };
 
     PlayerUI.prototype.update = function(sound) {
-      var bar, barArray, barCount, bar_middle, bar_str, border_left, border_right, buffering, duration, empty_bar, hl_format, i, left, load_slider, load_slider_pos, loaded_bar, loaded_percent, nm_format, no_format, play_percent, play_slider, play_slider_pos, played_bar, playing, pos, right, time_played, time_total, _i, _j, _k, _ref, _ref1, _ref2;
+      var bar, barArray, barCount, bar_middle, bar_str, border_left, border_right, buffering, duration, empty_bar, heart, hl_format, i, left, like, like_format, load_slider, load_slider_pos, loaded_bar, loaded_percent, nm_format, no_format, play_percent, play_slider, play_slider_pos, played_bar, playing, pos, right, time_played, time_total, _i, _j, _k, _ref, _ref1, _ref2;
       if (this.$ui == null) {
         this.init(sound.song);
         return;
       }
+      like = sound.song.like !== 0;
+      like_format = like ? "[gb;#f00;#000]" : "[gb;#fff;#000]";
+      heart = "[" + like_format + " ♥]";
       barCount = 30;
       playing = !sound.paused;
       buffering = sound.isBuffering;
@@ -49,7 +52,7 @@
       bar_middle = barArray.join("");
       time_played = "[" + nm_format + (this.formatTime(pos)) + "]";
       time_total = "[" + nm_format + (this.formatTime(duration)) + "]";
-      bar_str = "" + time_played + border_left + bar_middle + border_right + time_total;
+      bar_str = ("" + heart) + ("[" + no_format + "=]") + ("" + time_played + border_left + bar_middle + border_right + time_total);
       bar = $.terminal.format(bar_str);
       this.$ui.text("");
       return this.$ui.append(bar);
@@ -70,7 +73,7 @@
     };
 
     PlayerUI.prototype.init = function(song) {
-      var album, artist, id, like, like_format, picture, title, url,
+      var album, artist, header_format, id, picture, title, url,
         _this = this;
       id = song.sid;
       url = song.url;
@@ -78,10 +81,9 @@
       title = song.title;
       album = song.albumtitle;
       picture = song.picture;
-      like = song.like !== 0;
-      like_format = like ? "[gb;#f00;#000]" : "[gb;#fff;#000]";
+      header_format = "[gb;#fff;#000]";
       window.T.clear();
-      window.T.echo("[" + like_format + "♥ ][[gb;#e67e22;#000]" + song.artist + " - " + song.title + " | " + song.albumtitle + "]");
+      window.T.echo("[" + header_format + "● ][[gb;#e67e22;#000]" + song.artist + " - " + song.title + " | " + song.albumtitle + "]");
       return this.t.echo("[Player]", {
         finalize: function(div) {
           return _this.bind(div);

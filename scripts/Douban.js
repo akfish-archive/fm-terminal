@@ -213,7 +213,7 @@
       return false;
     };
 
-    Player.prototype.commitAction = function(action) {
+    Player.prototype.commitAction = function(action, succ, err) {
       var sid, _ref3;
       if (action === this.action.NONE) {
         return;
@@ -226,11 +226,11 @@
         return;
       }
       if (this.currentSongIndex > -1) {
-        return this.currentChannel.update(null, null, action, sid, this.getHistory());
+        return this.currentChannel.update(succ, err, action, sid, this.getHistory());
       }
     };
 
-    Player.prototype.nextSong = function(action) {
+    Player.prototype.nextSong = function(action, succ, err) {
       var sid, _ref3, _ref4,
         _this = this;
       this.stop();
@@ -239,11 +239,11 @@
         this.updateHistory(action);
       }
       if (this.isCacheNeeded(function(songs) {
-        return _this.nextSong(action);
+        return _this.nextSong(action, succ, err);
       })) {
         return;
       }
-      this.commitAction(action);
+      this.commitAction(action, succ, err);
       this.currentSongIndex++;
       this.frontMostSongIndex = Math.max(this.frontMostSongIndex, this.currentSongIndex);
       return this.doPlay(this.currentChannel.songs[this.currentSongIndex]);
@@ -398,6 +398,11 @@
       return this.clean_user_data();
     };
 
+    DoubanFM.prototype.isLoggedIn = function() {
+      var _ref3;
+      return (this.user != null) && (this.user.user_id != null) && ((_ref3 = this.user) != null ? _ref3.user_id : void 0) !== "";
+    };
+
     DoubanFM.prototype.play = function(channel) {
       var _ref3;
       this.currentChannel = channel;
@@ -409,19 +414,54 @@
       return (_ref3 = this.player) != null ? _ref3.nextSong(this.player.action.SKIP) : void 0;
     };
 
+    DoubanFM.prototype.onSocialErr = function(status, err) {
+      return window.T.error("Operation failed: " + status);
+    };
+
     DoubanFM.prototype.boo = function() {
-      var _ref3;
-      return (_ref3 = this.player) != null ? _ref3.nextSong(this.player.action.BOO) : void 0;
+      var _ref3,
+        _this = this;
+      if (!this.isLoggedIn()) {
+        window.T.error("Need login first");
+        return;
+      }
+      return (_ref3 = this.player) != null ? _ref3.nextSong(this.player.action.BOO, function() {
+        return window.T.echo("Done. Will never play again.");
+      }, function(status, err) {
+        return _this.onSocialErr(status, err);
+      }) : void 0;
     };
 
     DoubanFM.prototype.like = function() {
-      var _ref3;
-      return (_ref3 = this.player) != null ? _ref3.commitAction(this.player.action.LIKE) : void 0;
+      var _ref3,
+        _this = this;
+      if (!this.isLoggedIn()) {
+        window.T.error("Need login first");
+        return;
+      }
+      return (_ref3 = this.player) != null ? _ref3.commitAction(this.player.action.LIKE, function() {
+        var _ref4, _ref5;
+        window.T.echo("Liked");
+        return (_ref4 = _this.player) != null ? (_ref5 = _ref4.currentSong) != null ? _ref5.like = 1 : void 0 : void 0;
+      }, function(status, err) {
+        return _this.onSocialErr(status, err);
+      }) : void 0;
     };
 
     DoubanFM.prototype.unlike = function() {
-      var _ref3;
-      return (_ref3 = this.player) != null ? _ref3.commitAction(this.player.action.UNLIKE) : void 0;
+      var _ref3,
+        _this = this;
+      if (!this.isLoggedIn()) {
+        window.T.error("Need login first");
+        return;
+      }
+      return (_ref3 = this.player) != null ? _ref3.commitAction(this.player.action.UNLIKE, function() {
+        var _ref4, _ref5;
+        window.T.echo("Unliked");
+        return (_ref4 = _this.player) != null ? (_ref5 = _ref4.currentSong) != null ? _ref5.like = 0 : void 0 : void 0;
+      }, function(status, err) {
+        return _this.onSocialErr(status, err);
+      }) : void 0;
     };
 
     DoubanFM.prototype.prev = function() {
