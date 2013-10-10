@@ -63,13 +63,14 @@ class Player
                 @maxHistoryCount = 15
                 
                 @currentSongIndex = -1
-
+                @frontMostSongIndex = -1
+                
                 @looping = false
                                 
                 soundManager.setup({
                         url: "SoundManager2/swf/",
                         preferFlash: false,
-
+                        debugMode: false,
                         onready: () ->
                                 window.T?.echo("Player initialized");
                         ontimeout: () ->
@@ -78,6 +79,7 @@ class Player
 
         currentSoundInfo: () ->
                 sound = {}
+
                 sound.song = @currentSong
                 
                 sound.paused = @currentSound.paused
@@ -129,30 +131,46 @@ class Player
                         h.join(":")
                 str += H.get().join("|")
                 return str
-                
-        nextSong: (action) ->
-                @stop()
 
-                sid = ""
+        updateHistory: (action) ->
+                # No history for NONE
+                if action == @action.NONE
+                        return
                 if @currentSong
-                        sid = @currentSong.sid
+                        # No sid for END
+                        sid = if action == @action.END then "" else @currentSong.sid
+                        
                         h = [sid, action]
                         # slice to make sure the size 
                         if @history.length > @maxHistoryCount
                                 @history = @history[1..]
                         @history.push(h)
                         console.log @getHistory()
-                        
-                # TODO: record history
-                # if not in cache, update
+                
+        isCacheNeeded: (callback) ->
+                sid = @currentSong?.sid ? ""
                 if (@currentSongIndex + 1 >= @currentChannel.songs.length)
                         # TODO: prompt user that we are updating
                         @currentChannel.update(
-                                (songs) => @nextSong(action),
+                                callback,
                                 () -> #TODO:,
-                                action,
+                                @action.NONE,
                                 sid,
                                 @getHistory())
+                        return true
+                return false
+                
+        nextSong: (action) ->
+                @stop()
+
+                sid = @currentSong?.sid ? ""
+
+                # avoid duplicates causes by prev
+                if (@currentSongIndex == @frontMostSongIndex)
+                        @updateHistory(action)
+                
+                # if not in cache, update
+                if (@isCacheNeeded((songs) => @nextSong(action)))
                         return # block operation here
                 # handle action of previous song
                 # action could be booo, finish, skip, null
@@ -160,6 +178,21 @@ class Player
                         @currentChannel.update(null, null, action, sid, @getHistory())
                 # get next song
                 @currentSongIndex++
+                @frontMostSongIndex = Math.max(@frontMostSongIndex, @currentSongIndex)
+                
+                # do simple indexing, since when channel is updated, song list is appended
+                @doPlay(@currentChannel.songs[@currentSongIndex])
+
+        prevSong: () ->
+                # No previouse song
+                if (@currentSongIndex <= 0)
+                        window.T.echo "No previous song..."
+                        return 
+
+                @stop()
+
+                # get prev song
+                @currentSongIndex--
 
                 # do simple indexing, since when channel is updated, song list is appended
                 @doPlay(@currentChannel.songs[@currentSongIndex])
@@ -285,7 +318,8 @@ class DoubanFM
                 @player?.play(channel)
         next: () ->
                 @player?.nextSong(@player.action.SKIP)
-
+        prev: () ->
+                @player?.prevSong()
         pause: () ->
                 @player?.pause()
 
@@ -294,6 +328,10 @@ class DoubanFM
 
         loops: () ->
                 @player?.loops()
+
+        stop: () ->
+                @player?.stop()
+
 
         #######################################
         #

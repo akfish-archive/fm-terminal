@@ -127,10 +127,12 @@
       this.action.SKIP = "s";
       this.maxHistoryCount = 15;
       this.currentSongIndex = -1;
+      this.frontMostSongIndex = -1;
       this.looping = false;
       soundManager.setup({
         url: "SoundManager2/swf/",
         preferFlash: false,
+        debugMode: false,
         onready: function() {
           var _ref3;
           return (_ref3 = window.T) != null ? _ref3.echo("Player initialized") : void 0;
@@ -205,30 +207,60 @@
       return str;
     };
 
-    Player.prototype.nextSong = function(action) {
-      var h, sid,
-        _this = this;
-      this.stop();
-      sid = "";
+    Player.prototype.updateHistory = function(action) {
+      var h, sid;
+      if (action === this.action.NONE) {
+        return;
+      }
       if (this.currentSong) {
-        sid = this.currentSong.sid;
+        sid = action === this.action.END ? "" : this.currentSong.sid;
         h = [sid, action];
         if (this.history.length > this.maxHistoryCount) {
           this.history = this.history.slice(1);
         }
         this.history.push(h);
-        console.log(this.getHistory());
+        return console.log(this.getHistory());
       }
+    };
+
+    Player.prototype.isCacheNeeded = function(callback) {
+      var sid, _ref3, _ref4;
+      sid = (_ref3 = (_ref4 = this.currentSong) != null ? _ref4.sid : void 0) != null ? _ref3 : "";
       if (this.currentSongIndex + 1 >= this.currentChannel.songs.length) {
-        this.currentChannel.update(function(songs) {
-          return _this.nextSong(action);
-        }, function() {}, action, sid, this.getHistory());
+        this.currentChannel.update(callback, function() {}, this.action.NONE, sid, this.getHistory());
+        return true;
+      }
+      return false;
+    };
+
+    Player.prototype.nextSong = function(action) {
+      var sid, _ref3, _ref4,
+        _this = this;
+      this.stop();
+      sid = (_ref3 = (_ref4 = this.currentSong) != null ? _ref4.sid : void 0) != null ? _ref3 : "";
+      if (this.currentSongIndex === this.frontMostSongIndex) {
+        this.updateHistory(action);
+      }
+      if (this.isCacheNeeded(function(songs) {
+        return _this.nextSong(action);
+      })) {
         return;
       }
       if (this.currentSongIndex > -1) {
         this.currentChannel.update(null, null, action, sid, this.getHistory());
       }
       this.currentSongIndex++;
+      this.frontMostSongIndex = Math.max(this.frontMostSongIndex, this.currentSongIndex);
+      return this.doPlay(this.currentChannel.songs[this.currentSongIndex]);
+    };
+
+    Player.prototype.prevSong = function() {
+      if (this.currentSongIndex <= 0) {
+        window.T.echo("No previous song...");
+        return;
+      }
+      this.stop();
+      this.currentSongIndex--;
       return this.doPlay(this.currentChannel.songs[this.currentSongIndex]);
     };
 
@@ -382,6 +414,11 @@
       return (_ref3 = this.player) != null ? _ref3.nextSong(this.player.action.SKIP) : void 0;
     };
 
+    DoubanFM.prototype.prev = function() {
+      var _ref3;
+      return (_ref3 = this.player) != null ? _ref3.prevSong() : void 0;
+    };
+
     DoubanFM.prototype.pause = function() {
       var _ref3;
       return (_ref3 = this.player) != null ? _ref3.pause() : void 0;
@@ -395,6 +432,11 @@
     DoubanFM.prototype.loops = function() {
       var _ref3;
       return (_ref3 = this.player) != null ? _ref3.loops() : void 0;
+    };
+
+    DoubanFM.prototype.stop = function() {
+      var _ref3;
+      return (_ref3 = this.player) != null ? _ref3.stop() : void 0;
     };
 
     DoubanFM.prototype.update = function(succ, err) {
