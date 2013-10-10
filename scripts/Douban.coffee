@@ -149,14 +149,22 @@ class Player
                         return true
                 return false
         commitAction: (action, succ, err) ->
-                # Don't do NONE or END
+                # Don't do NONE
                 if action == @action.NONE
                         return
-                if action == @action.END
-                        return
+                # Non-social operation, just update
                 sid = @currentSong?.sid
+                if action == @action.END or action == @action.SKIP
+                        # Avoid duplication 
+                        if (@currentSongIndex == @frontMostSongIndex)
+                                @updateHistory(action)
+                # Boo, like or unlike
+                else
+                        @updateHistory(action)
                 if not sid?
                         return
+
+
                 if (@currentSongIndex > -1)
                         @currentChannel.update(succ, err, action, sid, @getHistory())
 
@@ -166,13 +174,10 @@ class Player
 
                 sid = @currentSong?.sid ? ""
 
-                # avoid duplicates causes by prev
-                if (@currentSongIndex == @frontMostSongIndex)
-                        @updateHistory(action)
-                
                 # if not in cache, update
                 if (@isCacheNeeded((songs) => @nextSong(action, succ, err)))
                         return # block operation here
+                
                 # handle action of previous song
                 # action could be booo, finish, skip, null
                 @commitAction action, succ, err

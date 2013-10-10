@@ -218,10 +218,14 @@
       if (action === this.action.NONE) {
         return;
       }
-      if (action === this.action.END) {
-        return;
-      }
       sid = (_ref3 = this.currentSong) != null ? _ref3.sid : void 0;
+      if (action === this.action.END || action === this.action.SKIP) {
+        if (this.currentSongIndex === this.frontMostSongIndex) {
+          this.updateHistory(action);
+        }
+      } else {
+        this.updateHistory(action);
+      }
       if (sid == null) {
         return;
       }
@@ -235,9 +239,6 @@
         _this = this;
       this.stop();
       sid = (_ref3 = (_ref4 = this.currentSong) != null ? _ref4.sid : void 0) != null ? _ref3 : "";
-      if (this.currentSongIndex === this.frontMostSongIndex) {
-        this.updateHistory(action);
-      }
       if (this.isCacheNeeded(function(songs) {
         return _this.nextSong(action, succ, err);
       })) {
