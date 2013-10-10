@@ -159,7 +159,18 @@ class Player
                                 @getHistory())
                         return true
                 return false
-                
+        commitAction: (action) ->
+                # Don't do NONE or END
+                if action == @action.NONE
+                        return
+                if action == @action.END
+                        return
+                sid = @currentSong?.sid
+                if not sid?
+                        return
+                if (@currentSongIndex > -1)
+                        @currentChannel.update(null, null, action, sid, @getHistory())
+
         nextSong: (action) ->
                 @stop()
 
@@ -174,8 +185,8 @@ class Player
                         return # block operation here
                 # handle action of previous song
                 # action could be booo, finish, skip, null
-                if (@currentSongIndex > -1)
-                        @currentChannel.update(null, null, action, sid, @getHistory())
+                @commitAction action
+
                 # get next song
                 @currentSongIndex++
                 @frontMostSongIndex = Math.max(@frontMostSongIndex, @currentSongIndex)
@@ -321,8 +332,19 @@ class DoubanFM
                 @player?.nextSong(@player.action.SKIP)
                 
         boo: () ->
+                # TODO: check login
                 @player?.nextSong(@player.action.BOO)
+
+        like: () ->
+                # TODO: check login
+                # TODO: check like
+                @player?.commitAction(@player.action.LIKE)
                 
+        unlike: () ->
+                # TODO: check login
+                # TODO: check like
+                @player?.commitAction(@player.action.UNLIKE)
+
         prev: () ->
                 @player?.prevSong()
         pause: () ->
@@ -376,14 +398,5 @@ class DoubanFM
                         err
                 )
 
-        #######################################
-        doLike: (song) ->
-                #TODO:
-
-        doUnlike: (song) ->
-                #TODO:
-                
-        doSkip: (song) ->
-                #TODO:
 
 new DoubanFM(window.Service)

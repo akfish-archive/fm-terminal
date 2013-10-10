@@ -233,6 +233,23 @@
       return false;
     };
 
+    Player.prototype.commitAction = function(action) {
+      var sid, _ref3;
+      if (action === this.action.NONE) {
+        return;
+      }
+      if (action === this.action.END) {
+        return;
+      }
+      sid = (_ref3 = this.currentSong) != null ? _ref3.sid : void 0;
+      if (sid == null) {
+        return;
+      }
+      if (this.currentSongIndex > -1) {
+        return this.currentChannel.update(null, null, action, sid, this.getHistory());
+      }
+    };
+
     Player.prototype.nextSong = function(action) {
       var sid, _ref3, _ref4,
         _this = this;
@@ -246,9 +263,7 @@
       })) {
         return;
       }
-      if (this.currentSongIndex > -1) {
-        this.currentChannel.update(null, null, action, sid, this.getHistory());
-      }
+      this.commitAction(action);
       this.currentSongIndex++;
       this.frontMostSongIndex = Math.max(this.frontMostSongIndex, this.currentSongIndex);
       return this.doPlay(this.currentChannel.songs[this.currentSongIndex]);
@@ -419,6 +434,16 @@
       return (_ref3 = this.player) != null ? _ref3.nextSong(this.player.action.BOO) : void 0;
     };
 
+    DoubanFM.prototype.like = function() {
+      var _ref3;
+      return (_ref3 = this.player) != null ? _ref3.commitAction(this.player.action.LIKE) : void 0;
+    };
+
+    DoubanFM.prototype.unlike = function() {
+      var _ref3;
+      return (_ref3 = this.player) != null ? _ref3.commitAction(this.player.action.UNLIKE) : void 0;
+    };
+
     DoubanFM.prototype.prev = function() {
       var _ref3;
       return (_ref3 = this.player) != null ? _ref3.prevSong() : void 0;
@@ -480,12 +505,6 @@
       }
       return this.service.get(domain + song_url, payload, succ, err);
     };
-
-    DoubanFM.prototype.doLike = function(song) {};
-
-    DoubanFM.prototype.doUnlike = function(song) {};
-
-    DoubanFM.prototype.doSkip = function(song) {};
 
     return DoubanFM;
 
