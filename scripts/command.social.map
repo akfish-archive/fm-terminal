@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "command.social.js",
+  "sourceRoot": "..",
+  "sources": [
+    "scripts\\command.social.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,KAAA,UAAA;KAAA;oSAAA;;CAAA,CAAM;CACE;;;;;CAAA;;CAAA,EAAS,IAAT,EAAS;CACM,EAAP,GAAM,EAAS,KAAf;CADR,IAAS;;CAAT;;CADiB,KAAM;;CAA/B,CAIA,EAAK,CAAA,GAAL,EAAK,0CAAA;CAJL"
+}

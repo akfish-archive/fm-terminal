@@ -316,8 +316,13 @@ class DoubanFM
         play: (channel) ->
                 @currentChannel = channel
                 @player?.play(channel)
+                
         next: () ->
                 @player?.nextSong(@player.action.SKIP)
+                
+        boo: () ->
+                @player?.nextSong(@player.action.BOO)
+                
         prev: () ->
                 @player?.prevSong()
         pause: () ->
@@ -378,9 +383,6 @@ class DoubanFM
         doUnlike: (song) ->
                 #TODO:
                 
-        doBoo: (song) ->
-                #TODO:
-
         doSkip: (song) ->
                 #TODO:
 

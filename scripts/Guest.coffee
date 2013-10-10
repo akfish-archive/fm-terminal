@@ -8,7 +8,7 @@ greet = (callback) ->
         str += "[[gb;#929292;#000]......]"
         return str
 
-prompt = "(Remote)♫>"
+prompt = "♫>"
 class TerminalProxyTarget
         # TODO: register pip dispatch
         # and route to window.T

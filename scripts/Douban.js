@@ -414,6 +414,11 @@
       return (_ref3 = this.player) != null ? _ref3.nextSong(this.player.action.SKIP) : void 0;
     };
 
+    DoubanFM.prototype.boo = function() {
+      var _ref3;
+      return (_ref3 = this.player) != null ? _ref3.nextSong(this.player.action.BOO) : void 0;
+    };
+
     DoubanFM.prototype.prev = function() {
       var _ref3;
       return (_ref3 = this.player) != null ? _ref3.prevSong() : void 0;
@@ -479,8 +484,6 @@
     DoubanFM.prototype.doLike = function(song) {};
 
     DoubanFM.prototype.doUnlike = function(song) {};
-
-    DoubanFM.prototype.doBoo = function(song) {};
 
     DoubanFM.prototype.doSkip = function(song) {};
 
