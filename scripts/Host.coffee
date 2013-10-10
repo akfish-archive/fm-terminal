@@ -10,6 +10,7 @@ class TerminalProxy
                 @t.exec(command)
                 
         bind: (@t) ->
+                @server_pipe.registerRPC("do_login", @do_login.bind(@))                
                 @server_pipe.registerRPC("command", @onCommand.bind(@))
                 window.T = @
 
@@ -31,6 +32,21 @@ class TerminalProxy
         update_ui: (sound...) ->
                 @server_pipe.fireRPC "update_ui", sound...
                 
+        login_begin: () ->
+                @server_pipe.fireRPC "login_begin"
+                
+        login_succ: (user) ->
+                @server_pipe.fireRPC "login_succ", user
+
+        login_fail: (user) ->
+                @server_pipe.fireRPC "login_fail", user
+
+        # very nasty, fix later
+        do_login: (info) ->
+                window.DoubanFM?.login(info.username, info.password, info.remember,
+                                        (user) => @login_succ(user),
+                                        (user) => @login_fail(user))
+                                                
 window.TerminalProxy ?= new TerminalProxy(window.Pipe)
 
 class Notification

@@ -16,6 +16,7 @@
 
     TerminalProxy.prototype.bind = function(t) {
       this.t = t;
+      this.server_pipe.registerRPC("do_login", this.do_login.bind(this));
       this.server_pipe.registerRPC("command", this.onCommand.bind(this));
       return window.T = this;
     };
@@ -54,6 +55,28 @@
       var sound, _ref;
       sound = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
       return (_ref = this.server_pipe).fireRPC.apply(_ref, ["update_ui"].concat(__slice.call(sound)));
+    };
+
+    TerminalProxy.prototype.login_begin = function() {
+      return this.server_pipe.fireRPC("login_begin");
+    };
+
+    TerminalProxy.prototype.login_succ = function(user) {
+      return this.server_pipe.fireRPC("login_succ", user);
+    };
+
+    TerminalProxy.prototype.login_fail = function(user) {
+      return this.server_pipe.fireRPC("login_fail", user);
+    };
+
+    TerminalProxy.prototype.do_login = function(info) {
+      var _ref,
+        _this = this;
+      return (_ref = window.DoubanFM) != null ? _ref.login(info.username, info.password, info.remember, function(user) {
+        return _this.login_succ(user);
+      }, function(user) {
+        return _this.login_fail(user);
+      }) : void 0;
     };
 
     return TerminalProxy;
