@@ -57,7 +57,7 @@ class HelpCommand extends CommandBase
 
 prompt = "♫>"                
 class Terminal
-        setUser: (user) ->
+        setUser: (@user) ->
                 name = user?.user_name ? ""
                 name_str = if name != "" then "[#{name}]" else ""
                 window.T?.set_prompt(name_str + prompt)
@@ -66,9 +66,10 @@ class Terminal
                 window.commands ?= {}
         start: (options) ->
                 t = $('body').terminal(@interpret, options)
+                window.T ?= t
                 if window.TerminalProxy?
                         window.TerminalProxy.bind(t)
-                window.T ?= t
+
                 window.T.UI = new window.PlayerUI(t)
                 return
 

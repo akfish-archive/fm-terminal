@@ -23,7 +23,8 @@
       if (type === "GET") {
         url += "?" + this.encodePayload(payload);
       } else {
-        data = payload;
+        data = this.encodePayload(payload);
+        xhr.setRequestHeader("Content-length", data.length);
       }
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
@@ -44,7 +45,7 @@
     };
 
     XHRService.prototype.post = function(url, data, succ, err) {
-      return this.query("POST", url, data, succ, err);
+      return this.query("GET", url, data, succ, err);
     };
 
     return XHRService;
