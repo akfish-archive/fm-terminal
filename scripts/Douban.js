@@ -127,10 +127,12 @@
       this.action.SKIP = "s";
       this.maxHistoryCount = 15;
       this.currentSongIndex = -1;
+      this.frontMostSongIndex = -1;
       this.looping = false;
       soundManager.setup({
         url: "SoundManager2/swf/",
         preferFlash: false,
+        debugMode: false,
         onready: function() {
           var _ref3;
           return (_ref3 = window.T) != null ? _ref3.echo("Player initialized") : void 0;
@@ -233,7 +235,9 @@
         _this = this;
       this.stop();
       sid = (_ref3 = (_ref4 = this.currentSong) != null ? _ref4.sid : void 0) != null ? _ref3 : "";
-      this.updateHistory(action);
+      if (this.currentSongIndex === this.frontMostSongIndex) {
+        this.updateHistory(action);
+      }
       if (this.isCacheNeeded(function(songs) {
         return _this.nextSong(action);
       })) {
@@ -243,6 +247,7 @@
         this.currentChannel.update(null, null, action, sid, this.getHistory());
       }
       this.currentSongIndex++;
+      this.frontMostSongIndex = Math.max(this.frontMostSongIndex, this.currentSongIndex);
       return this.doPlay(this.currentChannel.songs[this.currentSongIndex]);
     };
 

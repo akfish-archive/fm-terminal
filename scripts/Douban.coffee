@@ -63,13 +63,14 @@ class Player
                 @maxHistoryCount = 15
                 
                 @currentSongIndex = -1
-
+                @frontMostSongIndex = -1
+                
                 @looping = false
                                 
                 soundManager.setup({
                         url: "SoundManager2/swf/",
                         preferFlash: false,
-
+                        debugMode: false,
                         onready: () ->
                                 window.T?.echo("Player initialized");
                         ontimeout: () ->
@@ -78,6 +79,7 @@ class Player
 
         currentSoundInfo: () ->
                 sound = {}
+
                 sound.song = @currentSong
                 
                 sound.paused = @currentSound.paused
@@ -133,6 +135,7 @@ class Player
         updateHistory: (action) ->
                 if @currentSong
                         sid = @currentSong.sid
+                        
                         h = [sid, action]
                         # slice to make sure the size 
                         if @history.length > @maxHistoryCount
@@ -158,7 +161,9 @@ class Player
 
                 sid = @currentSong?.sid ? ""
 
-                @updateHistory(action)
+                # avoid duplicates causes by prev
+                if (@currentSongIndex == @frontMostSongIndex)
+                        @updateHistory(action)
                 
                 # if not in cache, update
                 if (@isCacheNeeded((songs) => @nextSong(action)))
@@ -169,7 +174,8 @@ class Player
                         @currentChannel.update(null, null, action, sid, @getHistory())
                 # get next song
                 @currentSongIndex++
-
+                @frontMostSongIndex = Math.max(@frontMostSongIndex, @currentSongIndex)
+                
                 # do simple indexing, since when channel is updated, song list is appended
                 @doPlay(@currentChannel.songs[@currentSongIndex])
 
