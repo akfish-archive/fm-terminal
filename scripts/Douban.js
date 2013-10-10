@@ -209,8 +209,11 @@
 
     Player.prototype.updateHistory = function(action) {
       var h, sid;
+      if (action === this.action.NONE) {
+        return;
+      }
       if (this.currentSong) {
-        sid = this.currentSong.sid;
+        sid = action === this.action.END ? "" : this.currentSong.sid;
         h = [sid, action];
         if (this.history.length > this.maxHistoryCount) {
           this.history = this.history.slice(1);

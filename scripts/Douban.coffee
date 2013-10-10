@@ -133,8 +133,12 @@ class Player
                 return str
 
         updateHistory: (action) ->
+                # No history for NONE
+                if action == @action.NONE
+                        return
                 if @currentSong
-                        sid = @currentSong.sid
+                        # No sid for END
+                        sid = if action == @action.END then "" else @currentSong.sid
                         
                         h = [sid, action]
                         # slice to make sure the size 
