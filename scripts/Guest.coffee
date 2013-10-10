@@ -18,6 +18,7 @@ class TerminalProxyTarget
                 window.T.UI = @ui
                 # Incoming
                 window.Pipe.registerRPC("echo", @t.echo.bind(@t))
+                window.Pipe.registerRPC("error", @t.error.bind(@t))                
                 window.Pipe.registerRPC("set_prompt", @t.set_prompt.bind(@t))
                 window.Pipe.registerRPC("pause", @t.pause.bind(@t))
                 window.Pipe.registerRPC("resume", @t.resume.bind(@t))

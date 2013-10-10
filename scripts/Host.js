@@ -28,6 +28,12 @@
       return (_ref = this.server_pipe).fireRPC.apply(_ref, ["echo"].concat(__slice.call(msg)));
     };
 
+    TerminalProxy.prototype.error = function() {
+      var msg, _ref;
+      msg = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      return (_ref = this.server_pipe).fireRPC.apply(_ref, ["error"].concat(__slice.call(msg)));
+    };
+
     TerminalProxy.prototype.set_prompt = function() {
       var prompt, _ref;
       prompt = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
