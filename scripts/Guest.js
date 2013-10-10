@@ -14,7 +14,7 @@
     return str;
   };
 
-  prompt = "(Remote)♫>";
+  prompt = "♫>";
 
   TerminalProxyTarget = (function() {
     function TerminalProxyTarget() {

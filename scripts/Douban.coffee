@@ -28,18 +28,7 @@ class Channel extends JsonObject
 
         
 class Song extends JsonObject
-        # not so logic, it get liked/unliked/booed/skipped
-        like: () ->
-                window.DoubanFM?.doLike(@)
 
-        unlike: () ->
-                window.DoubanFM?.doUnlike(@)
-                
-        boo: () ->
-                window.DoubanFM?.doBoo(@)
-                
-        skip: () ->
-                window.DoubanFM?.doSkip(@)
 
 class User extends JsonObject
         attachAuth: (data) ->
@@ -159,23 +148,40 @@ class Player
                                 @getHistory())
                         return true
                 return false
-                
-        nextSong: (action) ->
+        commitAction: (action, succ, err) ->
+                # Don't do NONE
+                if action == @action.NONE
+                        return
+                # Non-social operation, just update
+                sid = @currentSong?.sid
+                if action == @action.END or action == @action.SKIP
+                        # Avoid duplication 
+                        if (@currentSongIndex == @frontMostSongIndex)
+                                @updateHistory(action)
+                # Boo, like or unlike
+                else
+                        @updateHistory(action)
+                if not sid?
+                        return
+
+
+                if (@currentSongIndex > -1)
+                        @currentChannel.update(succ, err, action, sid, @getHistory())
+
+        # succ and err are for commitAction
+        nextSong: (action, succ, err) ->
                 @stop()
 
                 sid = @currentSong?.sid ? ""
 
-                # avoid duplicates causes by prev
-                if (@currentSongIndex == @frontMostSongIndex)
-                        @updateHistory(action)
-                
                 # if not in cache, update
-                if (@isCacheNeeded((songs) => @nextSong(action)))
+                if (@isCacheNeeded((songs) => @nextSong(action, succ, err)))
                         return # block operation here
+                
                 # handle action of previous song
                 # action could be booo, finish, skip, null
-                if (@currentSongIndex > -1)
-                        @currentChannel.update(null, null, action, sid, @getHistory())
+                @commitAction action, succ, err
+
                 # get next song
                 @currentSongIndex++
                 @frontMostSongIndex = Math.max(@frontMostSongIndex, @currentSongIndex)
@@ -310,14 +316,57 @@ class DoubanFM
                 @user = new User()
                 @forget()
                 @clean_user_data()
-                
+
+        isLoggedIn: () ->
+                return @user? and @user.user_id? and @user?.user_id != ""
+                                
         #######################################
         # Play Channel
         play: (channel) ->
                 @currentChannel = channel
                 @player?.play(channel)
+                
         next: () ->
                 @player?.nextSong(@player.action.SKIP)
+
+        onSocialErr: (status, err) ->
+                window.T.error "Operation failed: #{status}"
+
+        boo: () ->
+                # check login
+                if not @isLoggedIn()
+                        window.T.error "Need login first"
+                        return
+                @player?.nextSong(@player.action.BOO,
+                        () -> window.T.echo "Done. Will never play again.",
+                        (status, err) => @onSocialErr(status, err))
+
+        like: () ->
+                # check login
+                if not @isLoggedIn()
+                        window.T.error "Need login first"
+                        return
+                # TODO: check like
+                @player?.commitAction(@player.action.LIKE,
+                        () =>
+                                window.T.echo "Liked"
+                                @player?.currentSong?.like = 1
+                        ,
+                        (status, err) => @onSocialErr(status, err))
+                
+        unlike: () ->
+                # check login
+                if not @isLoggedIn()
+                        window.T.error "Need login first"
+                        return
+                # TODO: check like
+                @player?.commitAction(@player.action.UNLIKE,
+                        () =>
+                                window.T.echo "Unliked"
+                                @player?.currentSong?.like = 0
+                        ,
+                        (status, err) => @onSocialErr(status, err))
+
         prev: () ->
                 @player?.prevSong()
         pause: () ->
@@ -371,17 +420,5 @@ class DoubanFM
                         err
                 )
 
-        #######################################
-        doLike: (song) ->
-                #TODO:
-
-        doUnlike: (song) ->
-                #TODO:
-                
-        doBoo: (song) ->
-                #TODO:
-
-        doSkip: (song) ->
-                #TODO:
 
 new DoubanFM(window.Service)

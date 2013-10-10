@@ -30,9 +30,9 @@
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
             data = JSON.parse(xhr.responseText);
-            return succ(data);
+            return typeof succ === "function" ? succ(data) : void 0;
           } else {
-            return err(xhr.status, "Error");
+            return typeof err === "function" ? err(xhr.status, "Error") : void 0;
           }
         }
       };

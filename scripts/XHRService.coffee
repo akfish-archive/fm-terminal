@@ -22,9 +22,9 @@ class XHRService
                         if xhr.readyState == 4
                                 if xhr.status == 200
                                         data = JSON.parse(xhr.responseText)
-                                        succ(data)
+                                        succ?(data)
                                 else
-                                        err(xhr.status, "Error")
+                                        err?(xhr.status, "Error")
                 xhr.open(type, url, true)
                 xhr.send(data)
 

@@ -6,6 +6,10 @@ window.PlayerUI = class PlayerUI
                 if not @$ui?
                         @init(sound.song)
                         return
+                like = sound.song.like != 0
+                like_format = if like then "[gb;#f00;#000]" else "[gb;#fff;#000]"
+
+                heart = "[#{like_format} ♥]"
                 barCount = 30
 
                 playing = not sound.paused
@@ -58,7 +62,9 @@ window.PlayerUI = class PlayerUI
                 # display
                 time_played = "[#{nm_format}#{@formatTime(pos)}]"
                 time_total = "[#{nm_format}#{@formatTime(duration)}]"
-                bar_str = "#{time_played}#{border_left}#{bar_middle}#{border_right}#{time_total}"
+                bar_str = "#{heart}" +
+                        "[#{no_format}=]" +
+                        "#{time_played}#{border_left}#{bar_middle}#{border_right}#{time_total}"
 
                 bar = $.terminal.format(bar_str)
                 @$ui.text("")
@@ -83,10 +89,9 @@ window.PlayerUI = class PlayerUI
                 title = song.title
                 album = song.albumtitle
                 picture = song.picture
-                like = song.like != 0
-                like_format = if like then "[gb;#f00;#000]" else "[gb;#fff;#000]"
+                header_format = "[gb;#fff;#000]"
                 window.T.clear()
-                window.T.echo "[#{like_format}♥ ][[gb;#e67e22;#000]#{song.artist} - #{song.title} | #{song.albumtitle}]"
+                window.T.echo "[#{header_format}● ][[gb;#e67e22;#000]#{song.artist} - #{song.title} | #{song.albumtitle}]"
 
 
                 @t.echo("[Player]",
