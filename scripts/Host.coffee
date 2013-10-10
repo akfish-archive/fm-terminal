@@ -12,6 +12,7 @@ class TerminalProxy
         bind: (@t) ->
                 @server_pipe.registerRPC("do_login", @do_login.bind(@))                
                 @server_pipe.registerRPC("command", @onCommand.bind(@))
+                @server_pipe.registerRPC("request_user", @request_user.bind(@))                
                 window.T = @
 
 
@@ -46,6 +47,9 @@ class TerminalProxy
                 window.DoubanFM?.login(info.username, info.password, info.remember,
                                         (user) => @login_succ(user),
                                         (user) => @login_fail(user))
+
+        request_user: () ->
+                @server_pipe.fireRPC "set_user", window.TERM.user
                                                 
 window.TerminalProxy ?= new TerminalProxy(window.Pipe)
 

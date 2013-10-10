@@ -26,7 +26,10 @@ class TerminalProxyTarget
                 window.Pipe.registerRPC("init_ui", @t.UI.init.bind(@t.UI))
                 window.Pipe.registerRPC("update_ui", @t.UI.update.bind(@t.UI))
                 
+        # Out going
         
+        requestUser: () ->
+                window.Pipe.fireRPC "request_user"
 
 class RemoteTerminal
         setUser: (user) ->
@@ -36,9 +39,12 @@ class RemoteTerminal
                 
         constructor: () ->
                 window.commands ?= {}
+                window.Pipe.registerRPC("set_user", @setUser.bind(@))
+                
         start: (options) ->
                 window.T = $('body').terminal(@interpret, options)
                 @proxyTarget = new TerminalProxyTarget()
+                @proxyTarget.requestUser()
                 return
 
         interpret: (name, term) ->

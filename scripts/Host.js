@@ -18,6 +18,7 @@
       this.t = t;
       this.server_pipe.registerRPC("do_login", this.do_login.bind(this));
       this.server_pipe.registerRPC("command", this.onCommand.bind(this));
+      this.server_pipe.registerRPC("request_user", this.request_user.bind(this));
       return window.T = this;
     };
 
@@ -77,6 +78,10 @@
       }, function(user) {
         return _this.login_fail(user);
       }) : void 0;
+    };
+
+    TerminalProxy.prototype.request_user = function() {
+      return this.server_pipe.fireRPC("set_user", window.TERM.user);
     };
 
     return TerminalProxy;

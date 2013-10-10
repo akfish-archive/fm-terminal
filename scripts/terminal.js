@@ -108,6 +108,7 @@
   Terminal = (function() {
     Terminal.prototype.setUser = function(user) {
       var name, name_str, _ref, _ref1;
+      this.user = user;
       name = (_ref = user != null ? user.user_name : void 0) != null ? _ref : "";
       name_str = name !== "" ? "[" + name + "]" : "";
       return (_ref1 = window.T) != null ? _ref1.set_prompt(name_str + prompt) : void 0;
@@ -122,11 +123,11 @@
     Terminal.prototype.start = function(options) {
       var t;
       t = $('body').terminal(this.interpret, options);
-      if (window.TerminalProxy != null) {
-        window.TerminalProxy.bind(t);
-      }
       if (window.T == null) {
         window.T = t;
+      }
+      if (window.TerminalProxy != null) {
+        window.TerminalProxy.bind(t);
       }
       window.T.UI = new window.PlayerUI(t);
     };
