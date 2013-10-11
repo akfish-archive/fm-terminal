@@ -5,12 +5,26 @@ class JsonObject
                 
 
 class Channel extends JsonObject
+        isAd: (song) ->
+                sid = song.sid
+                # The sid of ad is something like: da60222_43
+                return sid.indexOf("_") != -1
+
         appendSongs: (newSongs) ->
                 if not newSongs?
                         return
+
+                realSongs = []
+                for song in newSongs
+                        if not @isAd(song)
+                                realSongs.push song
+                        else
+                                console.log "Filter ad:"
+                                console.log song
+                                
                 @songs ?= []
                 # TODO: check max size and release
-                @songs = @songs.concat(newSongs)
+                @songs = @songs.concat(realSongs)
                 return
                 
         update: (succ, err, action, sid, history) ->
@@ -19,7 +33,8 @@ class Channel extends JsonObject
                         action, sid, history,
                         ((json) =>
                                 # TODO: append song list instead of replacing
-                                @appendSongs(new Song(s) for s in json?.song)
+                                if json?.song?
+                                        @appendSongs(new Song(s) for s in json?.song)
                                 succ?(@songs)
                         )
                                 ,

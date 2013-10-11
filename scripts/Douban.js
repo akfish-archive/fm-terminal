@@ -26,14 +26,31 @@
       return _ref;
     }
 
+    Channel.prototype.isAd = function(song) {
+      var sid;
+      sid = song.sid;
+      return sid.indexOf("_") !== -1;
+    };
+
     Channel.prototype.appendSongs = function(newSongs) {
+      var realSongs, song, _i, _len;
       if (newSongs == null) {
         return;
+      }
+      realSongs = [];
+      for (_i = 0, _len = newSongs.length; _i < _len; _i++) {
+        song = newSongs[_i];
+        if (!this.isAd(song)) {
+          realSongs.push(song);
+        } else {
+          console.log("Filter ad:");
+          console.log(song);
+        }
       }
       if (this.songs == null) {
         this.songs = [];
       }
-      this.songs = this.songs.concat(newSongs);
+      this.songs = this.songs.concat(realSongs);
     };
 
     Channel.prototype.update = function(succ, err, action, sid, history) {
@@ -41,16 +58,18 @@
         _this = this;
       return (_ref1 = window.DoubanFM) != null ? _ref1.doGetSongs(this, action, sid, history, (function(json) {
         var s;
-        _this.appendSongs((function() {
-          var _i, _len, _ref2, _results;
-          _ref2 = json != null ? json.song : void 0;
-          _results = [];
-          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-            s = _ref2[_i];
-            _results.push(new Song(s));
-          }
-          return _results;
-        })());
+        if ((json != null ? json.song : void 0) != null) {
+          _this.appendSongs((function() {
+            var _i, _len, _ref2, _results;
+            _ref2 = json != null ? json.song : void 0;
+            _results = [];
+            for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+              s = _ref2[_i];
+              _results.push(new Song(s));
+            }
+            return _results;
+          })());
+        }
         return typeof succ === "function" ? succ(_this.songs) : void 0;
       }), err) : void 0;
     };
