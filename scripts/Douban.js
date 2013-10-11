@@ -58,16 +58,18 @@
         _this = this;
       return (_ref1 = window.DoubanFM) != null ? _ref1.doGetSongs(this, action, sid, history, (function(json) {
         var s;
-        _this.appendSongs((function() {
-          var _i, _len, _ref2, _results;
-          _ref2 = (json != null ? json.song : void 0) != null;
-          _results = [];
-          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-            s = _ref2[_i];
-            _results.push(new Song(s));
-          }
-          return _results;
-        })());
+        if ((json != null ? json.song : void 0) != null) {
+          _this.appendSongs((function() {
+            var _i, _len, _ref2, _results;
+            _ref2 = json != null ? json.song : void 0;
+            _results = [];
+            for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+              s = _ref2[_i];
+              _results.push(new Song(s));
+            }
+            return _results;
+          })());
+        }
         return typeof succ === "function" ? succ(_this.songs) : void 0;
       }), err) : void 0;
     };

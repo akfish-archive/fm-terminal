@@ -33,7 +33,8 @@ class Channel extends JsonObject
                         action, sid, history,
                         ((json) =>
                                 # TODO: append song list instead of replacing
-                                @appendSongs(new Song(s) for s in json?.song?)
+                                if json?.song?
+                                        @appendSongs(new Song(s) for s in json?.song)
                                 succ?(@songs)
                         )
                                 ,
