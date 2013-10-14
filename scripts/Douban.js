@@ -310,8 +310,15 @@
           }
         },
         onsuspend: function() {
-          console.log("Suspended");
-          return _this.nextSong(_this.action.END);
+          return console.log("Suspended");
+        },
+        onconnet: function() {
+          var connected;
+          connected = _this.currentSound.connected;
+          if (!connected) {
+            console.log("Connection failed. Try next song");
+            return _this.nextSong(_this.action.END);
+          }
         }
       });
     };

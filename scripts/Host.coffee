@@ -78,3 +78,18 @@ class Notification
 
 new Notification()
 
+class ConnectionMonitor
+        onErrorOccurred: (e) ->
+                console.log "Connection failure"
+                console.log e
+                if window?.DoubanFM?.player?.currentSong?
+                        window.DoubanFM.next()
+        constructor: () ->
+                filter = {urls: ["*://*.douban.com/*"]}
+                chrome.webRequest.onErrorOccurred.addListener(
+                        (e) => @onErrorOccurred(e)
+                        ,
+                        filter)
+
+new ConnectionMonitor()
+        

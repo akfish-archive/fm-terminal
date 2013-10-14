@@ -241,7 +241,12 @@ class Player
                                         @nextSong(@action.END)
                         onsuspend: () =>
                                 console.log "Suspended"
-                                @nextSong(@action.END)
+                                # @nextSong(@action.END)
+                        onconnet: () =>
+                                connected = @currentSound.connected
+                                if not connected
+                                        console.log "Connection failed. Try next song"
+                                        @nextSong(@action.END)
                                 
                         # TODO: invoke nextSong when complete
                 })
