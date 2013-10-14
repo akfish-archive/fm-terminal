@@ -13,6 +13,10 @@ v1.0 功能
 * Chrome开发者工具、Popup终端
 * 屏蔽广告
 
+![](http://fm.catx.me/gallery/1.jpg)
+
+![](http://fm.catx.me/gallery/2.jpg)
+
 安装
 ---------
 
@@ -20,6 +24,9 @@ v1.0 功能
 2. 打开[Chrome插件设置页面](chrome://extensions/)
 3. 拖放下载的文件到插件设置页面中
 4. 确定安装
+
+
+![](http://fm.catx.me/gallery/install.jpg)
 
 使用
 ----------
