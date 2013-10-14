@@ -109,6 +109,9 @@
   Notification = (function() {
     Notification.prototype.notify = function(msg, title, picture, timeout) {
       var notif;
+      if (picture == null) {
+        picture = "radio.png";
+      }
       if (timeout == null) {
         timeout = 5000;
       }

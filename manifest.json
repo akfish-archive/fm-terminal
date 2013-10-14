@@ -4,9 +4,15 @@
     "name": "DoubanFM Cmd",
     "description": "Commandline like douban.fm",
     "version": "1.0",
+    "icons": {
+        "16":"radio.png",
+        "48":"radio.png",
+        "128":"radio.png"
+    },
+
     "browser_action": {
         "default_icon": {                    // optional
-            "19": "icon.jpg"           // optional
+            "19": "radio.png"           // optional
         },
         "default_title": "Douban.fm CMD",      // optional; shown in tooltip
         "default_popup": "panel.html"        // optional
@@ -18,7 +24,7 @@
         "jquery-cookie/*",
         "jquery-jsonp/*",
         "SoundManager2/*",
-        "icon.png"
+        "radio.png"
     ],
     "permissions": [
         "http://www.douban.com/",

@@ -61,7 +61,7 @@ class TerminalProxy
 window.TerminalProxy ?= new TerminalProxy(window.Pipe)
 
 class Notification
-        notify: (msg, title, picture, timeout = 5000) ->
+        notify: (msg, title, picture = "radio.png", timeout = 5000) ->
                 notif = webkitNotifications.createNotification(
                         picture ? "",
                         title ? ""
