@@ -22,7 +22,7 @@
     ],
     "permissions": [
         "http://www.douban.com/",
-        "tabs", "contextMenus", "notifications"
+        "tabs", "contextMenus", "notifications", "webRequest"
     ],
     "devtools_page": "devtool.html",
     "options_page": "panel.html",
