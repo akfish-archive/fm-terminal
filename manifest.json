@@ -17,6 +17,16 @@
         "default_title": "Douban.fm CMD",      // optional; shown in tooltip
         "default_popup": "panel.html"        // optional
     },
+    "commands": {
+        "_execute_browser_action": {
+            "suggested_key": {
+                "windows": "Alt+M",
+                "mac": "Alt+M",
+                "chromeos": "Alt+M",
+                "linux": "Alt+M"
+            }
+        }
+    },
     "web_accessible_resources": [
         "scripts/*",
         "jquery.terminal/*",
@@ -31,7 +41,6 @@
         "tabs", "contextMenus", "notifications", "webRequest"
     ],
     "devtools_page": "devtool.html",
-    "options_page": "panel.html",
     "background": {
         "page": "background.html"
     },
