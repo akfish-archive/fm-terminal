@@ -61,27 +61,30 @@ class TerminalProxy
 window.TerminalProxy ?= new TerminalProxy(window.Pipe)
 
 class Notification
-        onPlay: (song) ->
-                
+        notify: (msg, title, picture, timeout = 5000) ->
                 notif = webkitNotifications.createNotification(
-                        song.picture,
-                        "<#{song.albumtitle}> #{song.artist}",
-                        song.title)
+                        picture ? "",
+                        title ? ""
+                        msg ? "")
 
                 notif.show()
                 window.setTimeout(
                         () -> notif.cancel(),
-                        5000)
+                        timeout)
+                
+        onPlay: (song) ->
+                @notify(song.title, "<#{song.albumtitle}> #{song.artist}", song.picture)
                 
         constructor: () ->
                 window.DoubanFM.player.onPlayCallback = @onPlay.bind(@)
 
-new Notification()
+window.Notification = new Notification()
 
 class ConnectionMonitor
         onErrorOccurred: (e) ->
                 console.log "Connection failure"
                 console.log e
+                window.Notification.notify(e.error, "Connection Problem")
                 if window?.DoubanFM?.player?.currentSong?
                         window.DoubanFM.next()
         constructor: () ->

@@ -107,13 +107,20 @@
   }
 
   Notification = (function() {
-    Notification.prototype.onPlay = function(song) {
+    Notification.prototype.notify = function(msg, title, picture, timeout) {
       var notif;
-      notif = webkitNotifications.createNotification(song.picture, "<" + song.albumtitle + "> " + song.artist, song.title);
+      if (timeout == null) {
+        timeout = 5000;
+      }
+      notif = webkitNotifications.createNotification(picture != null ? picture : "", title != null ? title : "", msg != null ? msg : "");
       notif.show();
       return window.setTimeout(function() {
         return notif.cancel();
-      }, 5000);
+      }, timeout);
+    };
+
+    Notification.prototype.onPlay = function(song) {
+      return this.notify(song.title, "<" + song.albumtitle + "> " + song.artist, song.picture);
     };
 
     function Notification() {
@@ -124,13 +131,14 @@
 
   })();
 
-  new Notification();
+  window.Notification = new Notification();
 
   ConnectionMonitor = (function() {
     ConnectionMonitor.prototype.onErrorOccurred = function(e) {
       var _ref, _ref1;
       console.log("Connection failure");
       console.log(e);
+      window.Notification.notify(e.error, "Connection Problem");
       if ((typeof window !== "undefined" && window !== null ? (_ref = window.DoubanFM) != null ? (_ref1 = _ref.player) != null ? _ref1.currentSong : void 0 : void 0 : void 0) != null) {
         return window.DoubanFM.next();
       }
