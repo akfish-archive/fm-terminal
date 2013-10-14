@@ -239,6 +239,10 @@ class Player
                                         @doPlay(@currentSong)
                                 else
                                         @nextSong(@action.END)
+                        onsuspend: () =>
+                                console.log "Suspended"
+                                @nextSong(@action.END)
+                                
                         # TODO: invoke nextSong when complete
                 })
                 

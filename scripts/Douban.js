@@ -308,6 +308,10 @@
           } else {
             return _this.nextSong(_this.action.END);
           }
+        },
+        onsuspend: function() {
+          console.log("Suspended");
+          return _this.nextSong(_this.action.END);
         }
       });
     };
