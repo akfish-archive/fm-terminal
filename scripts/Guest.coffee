@@ -31,6 +31,8 @@ class TerminalProxyTarget
         
         requestUser: () ->
                 window.Pipe.fireRPC "request_user"
+        requestPlayerStatus: () ->
+                window.Pipe.fireRPC "request_player_status"
 
 class RemoteTerminal
         setUser: (user) ->
@@ -46,6 +48,7 @@ class RemoteTerminal
                 window.T = $('body').terminal(@interpret, options)
                 @proxyTarget = new TerminalProxyTarget()
                 @proxyTarget.requestUser()
+                @proxyTarget.requestPlayerStatus()
                 return
 
         interpret: (name, term) ->
