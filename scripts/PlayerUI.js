@@ -3,14 +3,18 @@
   var PlayerUI;
 
   window.PlayerUI = PlayerUI = (function() {
-    PlayerUI.prototype.bind = function(div) {
-      return this.$ui = $(div);
+    PlayerUI.prototype.bind = function(div, callback) {
+      this.$ui = $(div);
+      return typeof callback === "function" ? callback() : void 0;
     };
 
     PlayerUI.prototype.update = function(sound) {
-      var bar, barArray, barCount, bar_middle, bar_str, border_left, border_right, buffering, duration, empty_bar, heart, hl_format, i, left, like, like_format, load_slider, load_slider_pos, loaded_bar, loaded_percent, nm_format, no_format, play_percent, play_slider, play_slider_pos, played_bar, playing, pos, right, time_played, time_total, _i, _j, _k, _ref, _ref1, _ref2;
+      var bar, barArray, barCount, bar_middle, bar_str, border_left, border_right, buffering, duration, empty_bar, heart, hl_format, i, left, like, like_format, load_slider, load_slider_pos, loaded_bar, loaded_percent, nm_format, no_format, play_percent, play_slider, play_slider_pos, played_bar, playing, pos, right, time_played, time_total, _i, _j, _k, _ref, _ref1, _ref2,
+        _this = this;
       if (this.$ui == null) {
-        this.init(sound.song);
+        this.init(sound.song, function() {
+          return _this.update(sound);
+        });
         return;
       }
       like = sound.song.like !== 0;
@@ -72,7 +76,7 @@
       return "" + (zeroPad(MM, 2)) + ":" + (zeroPad(SS, 2));
     };
 
-    PlayerUI.prototype.init = function(song) {
+    PlayerUI.prototype.init = function(song, callback) {
       var album, artist, header_format, id, picture, title, url,
         _this = this;
       id = song.sid;
@@ -86,7 +90,7 @@
       window.T.echo("[" + header_format + "● ][[gb;#e67e22;#000]" + song.artist + " - " + song.title + " | " + song.albumtitle + "]");
       return this.t.echo("[Player]", {
         finalize: function(div) {
-          return _this.bind(div);
+          return _this.bind(div, callback);
         }
       });
     };

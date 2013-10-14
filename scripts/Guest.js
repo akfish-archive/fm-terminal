@@ -35,6 +35,10 @@
       return window.Pipe.fireRPC("request_user");
     };
 
+    TerminalProxyTarget.prototype.requestPlayerStatus = function() {
+      return window.Pipe.fireRPC("request_player_status");
+    };
+
     return TerminalProxyTarget;
 
   })();
@@ -58,6 +62,7 @@
       window.T = $('body').terminal(this.interpret, options);
       this.proxyTarget = new TerminalProxyTarget();
       this.proxyTarget.requestUser();
+      this.proxyTarget.requestPlayerStatus();
     };
 
     RemoteTerminal.prototype.interpret = function(name, term) {

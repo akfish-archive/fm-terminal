@@ -1,10 +1,11 @@
 window.PlayerUI = class PlayerUI
-        bind: (div) ->
+        bind: (div, callback) ->
                 @$ui = $(div)
+                callback?()
 
         update: (sound) ->
                 if not @$ui?
-                        @init(sound.song)
+                        @init(sound.song, () => @update(sound))
                         return
                 like = sound.song.like != 0
                 like_format = if like then "[gb;#f00;#000]" else "[gb;#fff;#000]"
@@ -82,7 +83,7 @@ window.PlayerUI = class PlayerUI
                 return "#{zeroPad(MM, 2)}:#{zeroPad(SS, 2)}"
 
 
-        init: (song) ->
+        init: (song, callback) ->
                 id = song.sid
                 url = song.url
                 artist = song.artist
@@ -96,7 +97,7 @@ window.PlayerUI = class PlayerUI
 
                 @t.echo("[Player]",
                 {
-                        finalize: (div) => @bind(div),
+                        finalize: (div) => @bind(div, callback),
                 })
 
         constructor: (@t) ->

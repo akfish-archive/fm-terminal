@@ -12,7 +12,8 @@ class TerminalProxy
         bind: (@t) ->
                 @server_pipe.registerRPC("do_login", @do_login.bind(@))                
                 @server_pipe.registerRPC("command", @onCommand.bind(@))
-                @server_pipe.registerRPC("request_user", @request_user.bind(@))                
+                @server_pipe.registerRPC("request_user", @request_user.bind(@))
+                @server_pipe.registerRPC("request_player_status", @request_player_status.bind(@))
                 window.T = @
 
 
@@ -52,6 +53,10 @@ class TerminalProxy
 
         request_user: () ->
                 @server_pipe.fireRPC "set_user", window.TERM.user
+
+        request_player_status: () ->
+                if window.DoubanFM?.player?.currentSong?
+                        @update_ui window.DoubanFM.player.currentSoundInfo()
                                                 
 window.TerminalProxy ?= new TerminalProxy(window.Pipe)
 

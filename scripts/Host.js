@@ -19,6 +19,7 @@
       this.server_pipe.registerRPC("do_login", this.do_login.bind(this));
       this.server_pipe.registerRPC("command", this.onCommand.bind(this));
       this.server_pipe.registerRPC("request_user", this.request_user.bind(this));
+      this.server_pipe.registerRPC("request_player_status", this.request_player_status.bind(this));
       return window.T = this;
     };
 
@@ -88,6 +89,13 @@
 
     TerminalProxy.prototype.request_user = function() {
       return this.server_pipe.fireRPC("set_user", window.TERM.user);
+    };
+
+    TerminalProxy.prototype.request_player_status = function() {
+      var _ref, _ref1;
+      if (((_ref = window.DoubanFM) != null ? (_ref1 = _ref.player) != null ? _ref1.currentSong : void 0 : void 0) != null) {
+        return this.update_ui(window.DoubanFM.player.currentSoundInfo());
+      }
     };
 
     return TerminalProxy;
