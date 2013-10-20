@@ -17,11 +17,15 @@
   prompt = "♫>";
 
   TerminalProxyTarget = (function() {
+    TerminalProxyTarget.prototype.echo = function(pack) {
+      return this.t.echo(pack[0], pack[1]);
+    };
+
     function TerminalProxyTarget() {
       this.t = window.T;
       this.ui = new window.PlayerUI(this.t);
       window.T.UI = this.ui;
-      window.Pipe.registerRPC("echo", this.t.echo.bind(this.t));
+      window.Pipe.registerRPC("echo", this.echo.bind(this));
       window.Pipe.registerRPC("error", this.t.error.bind(this.t));
       window.Pipe.registerRPC("set_prompt", this.t.set_prompt.bind(this.t));
       window.Pipe.registerRPC("pause", this.t.pause.bind(this.t));

@@ -19,8 +19,8 @@ class TerminalProxy
                 window.T = @
 
 
-        echo: (msg...) ->
-                @server_pipe.fireRPC "echo", msg...
+        echo: (msg, option) ->
+                @server_pipe.fireRPC "echo", [msg, option]
         error: (msg...) ->
                 @server_pipe.fireRPC "error", msg...
         set_prompt: (prompt...) ->

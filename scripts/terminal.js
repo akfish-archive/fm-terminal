@@ -20,10 +20,10 @@
       this.desc = desc;
     }
 
-    CommandBase.prototype.echo = function(msg) {
+    CommandBase.prototype.echo = function(msg, args) {
       var _ref;
       if ((_ref = window.T) != null) {
-        _ref.echo(msg);
+        _ref.echo(msg, args);
       }
     };
 

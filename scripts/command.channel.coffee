@@ -20,6 +20,7 @@ class ChannelCommand extends window.CommandBase
                 max_name_length = 0
 
                 @echo(Array(80).join('-'))
+
                 names = []
                 for channel in channels
                         name = "#{channel.seq_id}.#{channel.name}"
@@ -28,17 +29,20 @@ class ChannelCommand extends window.CommandBase
 
                 name_per_line = Math.floor 80 / max_name_length
 
+                table = "<table>"
                 line = ""
                 space = 2
                 for name, i in names
                         if i != 0 and i % name_per_line == 0
-                                @echo line
-                                line = ""
+                                line += "</tr>"
+                                table += line
+                                line = "<tr>"
                         str = "[[ub;#2ecc71;#000]#{name}]"
-
+                        formatted = $.terminal.format(str)
                         delta = max_name_length - name.width()
-                        line += str + Array(Math.ceil(delta / 4)+1).join("\t")
-                @echo line
+                        line += "<td>#{formatted}</td>"
+                table += "</table>"
+                @echo table, {raw: true}
                 @echo(Array(80).join('-'))
                 return
                 
@@ -56,4 +60,3 @@ class ChannelCommand extends window.CommandBase
                         
 
 (new ChannelCommand("channel", "Show channel list")).register()
-
