@@ -82,7 +82,7 @@ jQuery(document).ready ->
                 greetings: greet,
                 history: true,
                 tabcompletion: true,
-                completion: window.TERM.completion,                
+                completion: window.TERM.completion.bind(window.TERM),                
                 })                
         
         

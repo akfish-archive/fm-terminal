@@ -51,6 +51,9 @@ class HelpCommand extends CommandBase
                 cb(name for name, cmd of window.commands)
                 return
 
+        getCommandList: () ->
+                return (name for name, cmd of window.commands)
+
         errorMessage: (cmd) ->
                 @echo "[[gb;#e67e22;#000]Unknown command:] [[gub;#e67e22;#000]#{cmd}]"
                 @echo "Type [[ub;#2ecc71;#000]help] for command list"

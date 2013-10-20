@@ -94,6 +94,20 @@
       })());
     };
 
+    HelpCommand.prototype.getCommandList = function() {
+      var cmd, name;
+      return (function() {
+        var _ref, _results;
+        _ref = window.commands;
+        _results = [];
+        for (name in _ref) {
+          cmd = _ref[name];
+          _results.push(name);
+        }
+        return _results;
+      })();
+    };
+
     HelpCommand.prototype.errorMessage = function(cmd) {
       this.echo("[[gb;#e67e22;#000]Unknown command:] [[gub;#e67e22;#000]" + cmd + "]");
       return this.echo("Type [[ub;#2ecc71;#000]help] for command list");

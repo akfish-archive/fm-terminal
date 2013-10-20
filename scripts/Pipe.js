@@ -38,6 +38,7 @@
         return this.onRPC(msg);
       } catch (_error) {
         error = _error;
+        console.error("Error while dispatching: " + msg.name);
         return console.error(error);
       }
     };
