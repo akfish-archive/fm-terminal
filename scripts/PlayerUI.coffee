@@ -50,8 +50,9 @@ window.PlayerUI = class PlayerUI
                 vol_bar = ['▁', '▂', '▃', '▄', '▅']
                 vol_count = Math.round(sound.vol / 20) - 1
                 if vol_count < 0
-                        vol_count = 0
-                vol_set_bar = vol_bar[0..vol_count].join("")
+                        vol_set_bar = ""
+                else
+                        vol_set_bar = vol_bar[0..vol_count].join("")
                 vol_no_set_bar = vol_bar[vol_count + 1..].join("")
                 if sound.muted
                         mute_vol = Array(6).join(vol_bar[0])
