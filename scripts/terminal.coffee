@@ -11,8 +11,8 @@ class CommandBase
         constructor: (name, desc) ->
                 @name = name
                 @desc = desc
-        echo: (msg) ->
-                window.T?.echo msg
+        echo: (msg, args) ->
+                window.T?.echo msg, args
                 return
         register: () ->
                 window.TERM?.registerCommand(@name, @)

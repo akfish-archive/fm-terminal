@@ -12,12 +12,16 @@ prompt = "♫>"
 class TerminalProxyTarget
         # TODO: register pip dispatch
         # and route to window.T
+
+        echo: (pack) ->
+                @t.echo(pack[0], pack[1])
+                
         constructor: () ->
                 @t = window.T
                 @ui = new window.PlayerUI(@t)
                 window.T.UI = @ui
                 # Incoming
-                window.Pipe.registerRPC("echo", @t.echo.bind(@t))
+                window.Pipe.registerRPC("echo", @echo.bind(@))
                 window.Pipe.registerRPC("error", @t.error.bind(@t))                
                 window.Pipe.registerRPC("set_prompt", @t.set_prompt.bind(@t))
                 window.Pipe.registerRPC("pause", @t.pause.bind(@t))

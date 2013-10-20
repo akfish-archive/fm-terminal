@@ -28,7 +28,7 @@
     }
 
     ChannelCommand.prototype.on_data = function(data) {
-      var channel, channels, delta, i, line, max_name_length, name, name_per_line, names, space, str, _i, _j, _len, _len1;
+      var channel, channels, delta, formatted, i, line, max_name_length, name, name_per_line, names, space, str, _i, _j, _len, _len1;
       window.T.resume();
       channels = data;
       max_name_length = 0;
@@ -46,14 +46,19 @@
       for (i = _j = 0, _len1 = names.length; _j < _len1; i = ++_j) {
         name = names[i];
         if (i !== 0 && i % name_per_line === 0) {
-          this.echo(line);
+          this.echo(line, {
+            raw: true
+          });
           line = "";
         }
         str = "[[ub;#2ecc71;#000]" + name + "]";
+        formatted = $.terminal.format(str);
         delta = max_name_length - name.width();
-        line += str + Array(Math.ceil(delta / 4) + 1).join("\t");
+        line += "<div>" + formatted + "</div>";
       }
-      this.echo(line);
+      this.echo(line, {
+        raw: true
+      });
       this.echo(Array(80).join('-'));
     };
 
