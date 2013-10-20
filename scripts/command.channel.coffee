@@ -29,17 +29,20 @@ class ChannelCommand extends window.CommandBase
 
                 name_per_line = Math.floor 80 / max_name_length
 
+                table = "<table>"
                 line = ""
                 space = 2
                 for name, i in names
                         if i != 0 and i % name_per_line == 0
-                                @echo line, {raw: true}
-                                line = ""
+                                line += "</tr>"
+                                table += line
+                                line = "<tr>"
                         str = "[[ub;#2ecc71;#000]#{name}]"
                         formatted = $.terminal.format(str)
                         delta = max_name_length - name.width()
-                        line += "<div>#{formatted}</div>"
-                @echo line, {raw: true}
+                        line += "<td>#{formatted}</td>"
+                table += "</table>"
+                @echo table, {raw: true}
                 @echo(Array(80).join('-'))
                 return
                 
