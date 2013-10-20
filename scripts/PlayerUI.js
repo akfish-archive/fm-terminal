@@ -9,7 +9,7 @@
     };
 
     PlayerUI.prototype.update = function(sound) {
-      var bar, barArray, barCount, bar_middle, bar_str, border_left, border_right, buffering, duration, empty_bar, heart, hl_format, i, left, like, like_format, load_slider, load_slider_pos, loaded_bar, loaded_percent, nm_format, no_format, play_percent, play_slider, play_slider_pos, played_bar, playing, pos, right, time_played, time_total, _i, _j, _k, _ref, _ref1, _ref2,
+      var bar, barArray, barCount, bar_middle, bar_str, border_left, border_right, buffering, duration, empty_bar, heart, hl_format, i, left, like, like_format, load_slider, load_slider_pos, loaded_bar, loaded_percent, mute_vol, nm_format, no_format, play_percent, play_slider, play_slider_pos, played_bar, playing, pos, right, time_played, time_total, vol, vol_bar, vol_bar_str, vol_count, vol_no_set_bar, vol_set_bar, _i, _j, _k, _ref, _ref1, _ref2,
         _this = this;
       if (this.$ui == null) {
         this.init(sound.song, function() {
@@ -41,6 +41,21 @@
       loaded_bar = "[" + nm_format + "=]";
       play_slider = "[" + hl_format + (playing ? "♫" : "♨") + "]";
       played_bar = "[" + hl_format + (playing ? ">" : "|") + "]";
+      vol_bar = ['▁', '▂', '▃', '▄', '▅'];
+      vol_count = Math.round(sound.vol / 20) - 1;
+      if (vol_count < 0) {
+        vol_set_bar = "";
+      } else {
+        vol_set_bar = vol_bar.slice(0, +vol_count + 1 || 9e9).join("");
+      }
+      vol_no_set_bar = vol_bar.slice(vol_count + 1).join("");
+      if (sound.muted) {
+        mute_vol = Array(6).join(vol_bar[0]);
+        vol = "[" + nm_format + mute_vol + "]";
+      } else {
+        vol = "[" + hl_format + vol_set_bar + "][" + nm_format + vol_no_set_bar + "]";
+      }
+      vol_bar_str = "" + border_left + vol + border_right;
       barArray = Array(barCount);
       for (i = _i = 0, _ref = barCount - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
         barArray[i] = empty_bar;
@@ -56,7 +71,7 @@
       bar_middle = barArray.join("");
       time_played = "[" + nm_format + (this.formatTime(pos)) + "]";
       time_total = "[" + nm_format + (this.formatTime(duration)) + "]";
-      bar_str = ("" + heart) + ("[" + no_format + "=]") + ("" + time_played + border_left + bar_middle + border_right + time_total);
+      bar_str = ("" + heart) + ("[" + no_format + "=]") + ("" + time_played + border_left + bar_middle + border_right + time_total + vol_bar_str);
       bar = $.terminal.format(bar_str);
       this.$ui.text("");
       return this.$ui.append(bar);

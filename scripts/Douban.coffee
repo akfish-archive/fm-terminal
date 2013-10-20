@@ -77,6 +77,8 @@ class Player
                         debugMode: false,
                         onready: () ->
                                 window.T?.echo("Player initialized");
+                                window.DoubanFM.player.vol = $.cookie("vol") ? 80
+
                         ontimeout: () ->
                                 window.T?.error("Failed to intialize player. Check your brower's flash setting.")
                 });
@@ -95,6 +97,8 @@ class Player
                 sound.bytesTotal = @currentSound.bytesTotal
 
                 sound.looping = @looping
+                sound.vol = @vol
+                sound.muted = soundManager.muted
                 return sound
                 
         play: (channel) ->
@@ -117,7 +121,18 @@ class Player
         loops: () ->
                 console.log("Should loop")
                 @looping = not @looping
-                        
+
+        mute: () ->
+                if soundManager.muted
+                        soundManager.unmute()
+                else
+                        soundManager.mute()
+
+        setVol: (vol) ->
+                @vol = vol
+                # Expire in 10 years, like forever
+                $.cookie("vol", @vol, { expires: 3650 })
+                soundManager.setVolume(@currentSound?.id, @vol)
 
         startPlay: (channel) ->
                 @currentChannel = channel
@@ -229,8 +244,10 @@ class Player
                 if @onPlayCallback?
                         @onPlayCallback(song)
                 @currentSound ?= soundManager.createSound({
+                        id: id,
                         url: url,
                         autoLoad: true,
+                        volume: @vol,
                         whileloading: () => window.T.update_ui(@currentSoundInfo()),
                         whileplaying: () => window.T.update_ui(@currentSoundInfo()),
                         onload: () -> @.play()
@@ -272,6 +289,8 @@ class DoubanFM
                 $(document).ready =>
                         window.T.echo("DoubanFM initialized...")
                         @resume_session()
+
+
                 
         resume_session: () ->
                 # Initialize cookie setting
@@ -404,6 +423,17 @@ class DoubanFM
 
         stop: () ->
                 @player?.stop()
+
+        mute: () ->
+                @player?.mute()
+
+        setVol: (vol) ->
+                range = parseInt(vol, 10)
+                if not range? or range < 0 or range > 100
+                        window.T?.echo "Current volume: [[gb;#e67e22;#000]#{@player?.vol}]"
+                        window.T?.echo "Use [[ub;#2ecc71;#000]vol <range>] to change voluem. <range> must be a number between 0~100"
+                        return
+                @player?.setVol(range)
 
 
         #######################################

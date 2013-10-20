@@ -45,6 +45,21 @@ window.PlayerUI = class PlayerUI
                 loaded_bar = "[#{nm_format}=]"
                 play_slider = "[#{hl_format}#{if playing then "♫" else "♨"}]"
                 played_bar = "[#{hl_format}#{if playing then ">" else "|"}]"
+
+                # Volumn
+                vol_bar = ['▁', '▂', '▃', '▄', '▅']
+                vol_count = Math.round(sound.vol / 20) - 1
+                if vol_count < 0
+                        vol_set_bar = ""
+                else
+                        vol_set_bar = vol_bar[0..vol_count].join("")
+                vol_no_set_bar = vol_bar[vol_count + 1..].join("")
+                if sound.muted
+                        mute_vol = Array(6).join(vol_bar[0])
+                        vol = "[#{nm_format}#{mute_vol}]"
+                else
+                        vol = "[#{hl_format}#{vol_set_bar}][#{nm_format}#{vol_no_set_bar}]"
+                vol_bar_str = "#{border_left}#{vol}#{border_right}"
                 
                 # Total bar
                 barArray = Array(barCount)
@@ -65,7 +80,7 @@ window.PlayerUI = class PlayerUI
                 time_total = "[#{nm_format}#{@formatTime(duration)}]"
                 bar_str = "#{heart}" +
                         "[#{no_format}=]" +
-                        "#{time_played}#{border_left}#{bar_middle}#{border_right}#{time_total}"
+                        "#{time_played}#{border_left}#{bar_middle}#{border_right}#{time_total}#{vol_bar_str}"
 
                 bar = $.terminal.format(bar_str)
                 @$ui.text("")

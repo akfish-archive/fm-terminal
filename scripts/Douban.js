@@ -133,8 +133,11 @@
         preferFlash: false,
         debugMode: false,
         onready: function() {
-          var _ref3;
-          return (_ref3 = window.T) != null ? _ref3.echo("Player initialized") : void 0;
+          var _ref3, _ref4;
+          if ((_ref3 = window.T) != null) {
+            _ref3.echo("Player initialized");
+          }
+          return window.DoubanFM.player.vol = (_ref4 = $.cookie("vol")) != null ? _ref4 : 80;
         },
         ontimeout: function() {
           var _ref3;
@@ -154,6 +157,8 @@
       sound.bytesLoaded = this.currentSound.bytesLoaded;
       sound.bytesTotal = this.currentSound.bytesTotal;
       sound.looping = this.looping;
+      sound.vol = this.vol;
+      sound.muted = soundManager.muted;
       return sound;
     };
 
@@ -186,6 +191,23 @@
     Player.prototype.loops = function() {
       console.log("Should loop");
       return this.looping = !this.looping;
+    };
+
+    Player.prototype.mute = function() {
+      if (soundManager.muted) {
+        return soundManager.unmute();
+      } else {
+        return soundManager.mute();
+      }
+    };
+
+    Player.prototype.setVol = function(vol) {
+      var _ref3;
+      this.vol = vol;
+      $.cookie("vol", this.vol, {
+        expires: 3650
+      });
+      return soundManager.setVolume((_ref3 = this.currentSound) != null ? _ref3.id : void 0, this.vol);
     };
 
     Player.prototype.startPlay = function(channel) {
@@ -291,8 +313,10 @@
         this.onPlayCallback(song);
       }
       return this.currentSound != null ? this.currentSound : this.currentSound = soundManager.createSound({
+        id: id,
         url: url,
         autoLoad: true,
+        volume: this.vol,
         whileloading: function() {
           return window.T.update_ui(_this.currentSoundInfo());
         },
@@ -518,6 +542,26 @@
     DoubanFM.prototype.stop = function() {
       var _ref3;
       return (_ref3 = this.player) != null ? _ref3.stop() : void 0;
+    };
+
+    DoubanFM.prototype.mute = function() {
+      var _ref3;
+      return (_ref3 = this.player) != null ? _ref3.mute() : void 0;
+    };
+
+    DoubanFM.prototype.setVol = function(vol) {
+      var range, _ref3, _ref4, _ref5, _ref6;
+      range = parseInt(vol, 10);
+      if ((range == null) || range < 0 || range > 100) {
+        if ((_ref3 = window.T) != null) {
+          _ref3.echo("Current volume: [[gb;#e67e22;#000]" + ((_ref4 = this.player) != null ? _ref4.vol : void 0) + "]");
+        }
+        if ((_ref5 = window.T) != null) {
+          _ref5.echo("Use [[ub;#2ecc71;#000]vol <range>] to change voluem. <range> must be a number between 0~100");
+        }
+        return;
+      }
+      return (_ref6 = this.player) != null ? _ref6.setVol(range) : void 0;
     };
 
     DoubanFM.prototype.update = function(succ, err) {
