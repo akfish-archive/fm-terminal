@@ -77,6 +77,8 @@ class Player
                         debugMode: false,
                         onready: () ->
                                 window.T?.echo("Player initialized");
+                                window.DoubanFM.player.vol = $.cookie("vol") ? 80
+
                         ontimeout: () ->
                                 window.T?.error("Failed to intialize player. Check your brower's flash setting.")
                 });
@@ -126,6 +128,8 @@ class Player
 
         setVol: (vol) ->
                 @vol = vol
+                # Expire in 10 years, like forever
+                $.cookie("vol", @vol, { expires: 3650 })
                 soundManager.setVolume(@currentSound?.id, @vol)
 
         startPlay: (channel) ->
@@ -140,7 +144,7 @@ class Player
         
         getHistory: () ->
                 str = "|"
-                H = $(@history).nmap (i, h) ->
+                H = $(@history).map (i, h) ->
                         h.join(":")
                 str += H.get().join("|")
                 return str
@@ -283,6 +287,8 @@ class DoubanFM
                 $(document).ready =>
                         window.T.echo("DoubanFM initialized...")
                         @resume_session()
+
+
                 
         resume_session: () ->
                 # Initialize cookie setting

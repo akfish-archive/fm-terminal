@@ -133,8 +133,11 @@
         preferFlash: false,
         debugMode: false,
         onready: function() {
-          var _ref3;
-          return (_ref3 = window.T) != null ? _ref3.echo("Player initialized") : void 0;
+          var _ref3, _ref4;
+          if ((_ref3 = window.T) != null) {
+            _ref3.echo("Player initialized");
+          }
+          return window.DoubanFM.player.vol = (_ref4 = $.cookie("vol")) != null ? _ref4 : 80;
         },
         ontimeout: function() {
           var _ref3;
@@ -199,6 +202,9 @@
     Player.prototype.setVol = function(vol) {
       var _ref3;
       this.vol = vol;
+      $.cookie("vol", this.vol, {
+        expires: 3650
+      });
       return soundManager.setVolume((_ref3 = this.currentSound) != null ? _ref3.id : void 0, this.vol);
     };
 
@@ -213,7 +219,7 @@
     Player.prototype.getHistory = function() {
       var H, str;
       str = "|";
-      H = $(this.history).nmap(function(i, h) {
+      H = $(this.history).map(function(i, h) {
         return h.join(":");
       });
       str += H.get().join("|");
