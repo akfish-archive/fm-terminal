@@ -38,7 +38,7 @@
 
   (new MuteCommand("mute", "Mute/unmute")).register();
 
-  (new VolCommand("vol", "Format: vol <range>. Set volume. Range 0~100.")).register();
+  (new VolCommand("vol", "Format: vol <range>. Set volume. Range 0~100. Display current volume if range is not provided.")).register();
 
 }).call(this);
 

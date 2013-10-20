@@ -548,15 +548,18 @@
     };
 
     DoubanFM.prototype.setVol = function(vol) {
-      var range, _ref3, _ref4;
+      var range, _ref3, _ref4, _ref5, _ref6;
       range = parseInt(vol, 10);
       if (!range || range < 0 || range > 100) {
         if ((_ref3 = window.T) != null) {
-          _ref3.error("Volume must be a number between 0~100");
+          _ref3.echo("Current volume: [[gb;#e67e22;#000]" + ((_ref4 = this.player) != null ? _ref4.vol : void 0) + "]");
+        }
+        if ((_ref5 = window.T) != null) {
+          _ref5.echo("Use [[ub;#2ecc71;#000]vol <range>] to change voluem. <range> must be a number between 0~100");
         }
         return;
       }
-      return (_ref4 = this.player) != null ? _ref4.setVol(range) : void 0;
+      return (_ref6 = this.player) != null ? _ref6.setVol(range) : void 0;
     };
 
     DoubanFM.prototype.update = function(succ, err) {

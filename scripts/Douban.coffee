@@ -428,7 +428,8 @@ class DoubanFM
         setVol: (vol) ->
                 range = parseInt(vol, 10)
                 if not range or range < 0 or range > 100
-                        window.T?.error "Volume must be a number between 0~100"
+                        window.T?.echo "Current volume: [[gb;#e67e22;#000]#{@player?.vol}]"
+                        window.T?.echo "Use [[ub;#2ecc71;#000]vol <range>] to change voluem. <range> must be a number between 0~100"
                         return
                 @player?.setVol(range)
 
