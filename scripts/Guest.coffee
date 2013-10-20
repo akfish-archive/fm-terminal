@@ -33,22 +33,33 @@ class TerminalProxyTarget
                 window.Pipe.fireRPC "request_user"
         requestPlayerStatus: () ->
                 window.Pipe.fireRPC "request_player_status"
+        requestCommandList: () ->
+                window.Pipe.fireRPC "request_command_list"
 
 class RemoteTerminal
         setUser: (user) ->
                 name = user?.user_name ? ""
                 name_str = if name != "" then "[#{name}]" else ""
                 window.T?.set_prompt(name_str + prompt)
+
+        setCommandList: (list) ->
+                @commands = list
+
+        completion: (term, str, cb) ->
+                cb(@commands)
+                return
                 
         constructor: () ->
                 window.commands ?= {}
                 window.Pipe.registerRPC("set_user", @setUser.bind(@))
+                window.Pipe.registerRPC("set_command_list", @setCommandList.bind(@))
                 
         start: (options) ->
                 window.T = $('body').terminal(@interpret, options)
                 @proxyTarget = new TerminalProxyTarget()
                 @proxyTarget.requestUser()
                 @proxyTarget.requestPlayerStatus()
+                @proxyTarget.requestCommandList()
                 return
 
         interpret: (name, term) ->
@@ -71,6 +82,7 @@ jQuery(document).ready ->
                 greetings: greet,
                 history: true,
                 tabcompletion: true,
+                completion: window.TERM.completion.bind(window.TERM),                
                 })                
         
         

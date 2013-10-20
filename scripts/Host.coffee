@@ -14,6 +14,8 @@ class TerminalProxy
                 @server_pipe.registerRPC("command", @onCommand.bind(@))
                 @server_pipe.registerRPC("request_user", @request_user.bind(@))
                 @server_pipe.registerRPC("request_player_status", @request_player_status.bind(@))
+                @server_pipe.registerRPC("request_command_list", @request_command_list.bind(@))                
+
                 window.T = @
 
 
@@ -57,6 +59,9 @@ class TerminalProxy
         request_player_status: () ->
                 if window.DoubanFM?.player?.currentSong?
                         @update_ui window.DoubanFM.player.currentSoundInfo()
+
+        request_command_list: () ->
+                @server_pipe.fireRPC "set_command_list", window.Help?.getCommandList()
                                                 
 window.TerminalProxy ?= new TerminalProxy(window.Pipe)
 

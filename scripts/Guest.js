@@ -39,6 +39,10 @@
       return window.Pipe.fireRPC("request_player_status");
     };
 
+    TerminalProxyTarget.prototype.requestCommandList = function() {
+      return window.Pipe.fireRPC("request_command_list");
+    };
+
     return TerminalProxyTarget;
 
   })();
@@ -51,11 +55,20 @@
       return (_ref1 = window.T) != null ? _ref1.set_prompt(name_str + prompt) : void 0;
     };
 
+    RemoteTerminal.prototype.setCommandList = function(list) {
+      return this.commands = list;
+    };
+
+    RemoteTerminal.prototype.completion = function(term, str, cb) {
+      cb(this.commands);
+    };
+
     function RemoteTerminal() {
       if (window.commands == null) {
         window.commands = {};
       }
       window.Pipe.registerRPC("set_user", this.setUser.bind(this));
+      window.Pipe.registerRPC("set_command_list", this.setCommandList.bind(this));
     }
 
     RemoteTerminal.prototype.start = function(options) {
@@ -63,6 +76,7 @@
       this.proxyTarget = new TerminalProxyTarget();
       this.proxyTarget.requestUser();
       this.proxyTarget.requestPlayerStatus();
+      this.proxyTarget.requestCommandList();
     };
 
     RemoteTerminal.prototype.interpret = function(name, term) {
@@ -89,7 +103,8 @@
       name: 'catx.fm',
       greetings: greet,
       history: true,
-      tabcompletion: true
+      tabcompletion: true,
+      completion: window.TERM.completion.bind(window.TERM)
     });
   });
 

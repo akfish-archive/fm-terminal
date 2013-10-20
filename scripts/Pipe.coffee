@@ -23,6 +23,7 @@ window.PipeBaseClass = class PipeBase
                 try
                         @onRPC(msg)
                 catch error
+                        console.error "Error while dispatching: #{msg.name}"
                         console.error error
 
 

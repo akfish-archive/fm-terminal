@@ -20,6 +20,7 @@
       this.server_pipe.registerRPC("command", this.onCommand.bind(this));
       this.server_pipe.registerRPC("request_user", this.request_user.bind(this));
       this.server_pipe.registerRPC("request_player_status", this.request_player_status.bind(this));
+      this.server_pipe.registerRPC("request_command_list", this.request_command_list.bind(this));
       return window.T = this;
     };
 
@@ -96,6 +97,11 @@
       if (((_ref = window.DoubanFM) != null ? (_ref1 = _ref.player) != null ? _ref1.currentSong : void 0 : void 0) != null) {
         return this.update_ui(window.DoubanFM.player.currentSoundInfo());
       }
+    };
+
+    TerminalProxy.prototype.request_command_list = function() {
+      var _ref;
+      return this.server_pipe.fireRPC("set_command_list", (_ref = window.Help) != null ? _ref.getCommandList() : void 0);
     };
 
     return TerminalProxy;
