@@ -405,6 +405,16 @@ class DoubanFM
         stop: () ->
                 @player?.stop()
 
+        mute: () ->
+                @player?.toggleMute()
+
+        setVol: (vol) ->
+                range = parseInt(vol, 10)
+                if not range or range < 0 or range > 100
+                        window.T?.error "Volume must be a number between 0~100"
+                        return
+                @player?.setVol(range)
+
 
         #######################################
         #

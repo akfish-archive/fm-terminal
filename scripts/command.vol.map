@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "command.vol.js",
+  "sourceRoot": "..",
+  "sources": [
+    "scripts\\command.vol.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,KAAA,8BAAA;KAAA;oSAAA;;CAAA,CAAM;CACE;;;;;CAAA;;CAAA,EAAS,IAAT,EAAS;CACM,GAAP,EAAM,EAAS,KAAf;CADR,IAAS;;CAAT;;CADkB,KAAM;;CAAhC,CAIM;CACE;;;;;CAAA;;CAAA,EAAS,IAAT,EAAU;CACK,EAAP,GAAM,EAAS,KAAf;CADR,IAAS;;CAAT;;CADiB,KAAM;;CAJ/B,CAQA,EAAK,EAAA,EAAL,GAAK,EAAA;;CARL,CASA,EAAK,CAAA,GAAL,EAAK,qCAAA;CATL"
+}

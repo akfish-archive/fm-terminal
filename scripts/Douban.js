@@ -520,6 +520,23 @@
       return (_ref3 = this.player) != null ? _ref3.stop() : void 0;
     };
 
+    DoubanFM.prototype.mute = function() {
+      var _ref3;
+      return (_ref3 = this.player) != null ? _ref3.toggleMute() : void 0;
+    };
+
+    DoubanFM.prototype.setVol = function(vol) {
+      var range, _ref3, _ref4;
+      range = parseInt(vol, 10);
+      if (!range || range < 0 || range > 100) {
+        if ((_ref3 = window.T) != null) {
+          _ref3.error("Volume must be a number between 0~100");
+        }
+        return;
+      }
+      return (_ref4 = this.player) != null ? _ref4.setVol(range) : void 0;
+    };
+
     DoubanFM.prototype.update = function(succ, err) {
       var _this = this;
       return this.doGetChannels((function(json) {
