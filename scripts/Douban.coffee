@@ -97,6 +97,8 @@ class Player
                 sound.bytesTotal = @currentSound.bytesTotal
 
                 sound.looping = @looping
+                sound.vol = @vol
+                sound.muted = soundManager.muted
                 return sound
                 
         play: (channel) ->

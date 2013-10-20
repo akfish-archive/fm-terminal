@@ -157,6 +157,8 @@
       sound.bytesLoaded = this.currentSound.bytesLoaded;
       sound.bytesTotal = this.currentSound.bytesTotal;
       sound.looping = this.looping;
+      sound.vol = this.vol;
+      sound.muted = soundManager.muted;
       return sound;
     };
 
