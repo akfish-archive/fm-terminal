@@ -117,7 +117,16 @@ class Player
         loops: () ->
                 console.log("Should loop")
                 @looping = not @looping
-                        
+
+        mute: () ->
+                if soundManager.muted
+                        soundManager.unmute()
+                else
+                        soundManager.mute()
+
+        setVol: (vol) ->
+                @vol = vol
+                soundManager.setVolume(@currentSound?.id, @vol)
 
         startPlay: (channel) ->
                 @currentChannel = channel
@@ -131,7 +140,7 @@ class Player
         
         getHistory: () ->
                 str = "|"
-                H = $(@history).map (i, h) ->
+                H = $(@history).nmap (i, h) ->
                         h.join(":")
                 str += H.get().join("|")
                 return str
@@ -229,8 +238,10 @@ class Player
                 if @onPlayCallback?
                         @onPlayCallback(song)
                 @currentSound ?= soundManager.createSound({
+                        id: id,
                         url: url,
                         autoLoad: true,
+                        volume: @vol,
                         whileloading: () => window.T.update_ui(@currentSoundInfo()),
                         whileplaying: () => window.T.update_ui(@currentSoundInfo()),
                         onload: () -> @.play()
@@ -406,7 +417,7 @@ class DoubanFM
                 @player?.stop()
 
         mute: () ->
-                @player?.toggleMute()
+                @player?.mute()
 
         setVol: (vol) ->
                 range = parseInt(vol, 10)

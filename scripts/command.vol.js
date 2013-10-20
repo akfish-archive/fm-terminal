@@ -13,7 +13,7 @@
     }
 
     MuteCommand.prototype.execute = function() {
-      return window.DoubanFM.Mute();
+      return window.DoubanFM.mute();
     };
 
     return MuteCommand;
@@ -29,7 +29,7 @@
     }
 
     VolCommand.prototype.execute = function(vol) {
-      return window.DoubanFM.SetVol(vol);
+      return window.DoubanFM.setVol(vol);
     };
 
     return VolCommand;

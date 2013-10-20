@@ -188,6 +188,20 @@
       return this.looping = !this.looping;
     };
 
+    Player.prototype.mute = function() {
+      if (soundManager.muted) {
+        return soundManager.unmute();
+      } else {
+        return soundManager.mute();
+      }
+    };
+
+    Player.prototype.setVol = function(vol) {
+      var _ref3;
+      this.vol = vol;
+      return soundManager.setVolume((_ref3 = this.currentSound) != null ? _ref3.id : void 0, this.vol);
+    };
+
     Player.prototype.startPlay = function(channel) {
       this.currentChannel = channel;
       this.currentSongIndex = -1;
@@ -199,7 +213,7 @@
     Player.prototype.getHistory = function() {
       var H, str;
       str = "|";
-      H = $(this.history).map(function(i, h) {
+      H = $(this.history).nmap(function(i, h) {
         return h.join(":");
       });
       str += H.get().join("|");
@@ -291,8 +305,10 @@
         this.onPlayCallback(song);
       }
       return this.currentSound != null ? this.currentSound : this.currentSound = soundManager.createSound({
+        id: id,
         url: url,
         autoLoad: true,
+        volume: this.vol,
         whileloading: function() {
           return window.T.update_ui(_this.currentSoundInfo());
         },
@@ -522,7 +538,7 @@
 
     DoubanFM.prototype.mute = function() {
       var _ref3;
-      return (_ref3 = this.player) != null ? _ref3.toggleMute() : void 0;
+      return (_ref3 = this.player) != null ? _ref3.mute() : void 0;
     };
 
     DoubanFM.prototype.setVol = function(vol) {
