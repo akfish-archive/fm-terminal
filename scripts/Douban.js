@@ -551,7 +551,8 @@
     DoubanFM.prototype.setVol = function(vol) {
       var range, _ref3, _ref4, _ref5, _ref6;
       range = parseInt(vol, 10);
-      if ((range == null) || range < 0 || range > 100) {
+      console.log(range);
+      if ((range == null) || isNaN(range) || range < 0 || range > 100) {
         if ((_ref3 = window.T) != null) {
           _ref3.echo("Current volume: [[gb;#e67e22;#000]" + ((_ref4 = this.player) != null ? _ref4.vol : void 0) + "]");
         }
