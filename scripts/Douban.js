@@ -117,6 +117,7 @@
   Player = (function() {
     function Player() {
       this.sounds = {};
+      this.muted = false;
       this.action = {};
       this.action.END = "e";
       this.action.NONE = "n";
@@ -158,7 +159,7 @@
       sound.bytesTotal = this.currentSound.bytesTotal;
       sound.looping = this.looping;
       sound.vol = this.vol;
-      sound.muted = soundManager.muted;
+      sound.muted = this.muted;
       return sound;
     };
 
@@ -194,11 +195,9 @@
     };
 
     Player.prototype.mute = function() {
-      if (soundManager.muted) {
-        return soundManager.unmute();
-      } else {
-        return soundManager.mute();
-      }
+      var _ref3;
+      this.muted = !this.muted;
+      return soundManager.setVolume((_ref3 = this.currentSound) != null ? _ref3.id : void 0, this.muted ? 0 : this.vol);
     };
 
     Player.prototype.setVol = function(vol) {
@@ -316,7 +315,7 @@
         id: id,
         url: url,
         autoLoad: true,
-        volume: this.vol,
+        volume: this.muted ? 0 : this.vol,
         whileloading: function() {
           return window.T.update_ui(_this.currentSoundInfo());
         },
