@@ -151,6 +151,11 @@
       }
     };
 
+    ConnectionMonitor.prototype.onCompleted = function(e) {
+      console.log("Complete");
+      return console.log(e);
+    };
+
     function ConnectionMonitor() {
       var filter,
         _this = this;
@@ -160,13 +165,16 @@
       chrome.webRequest.onErrorOccurred.addListener(function(e) {
         return _this.onErrorOccurred(e);
       }, filter);
+      chrome.webRequest.onCompleted.addListener(function(e) {
+        return _this.onCompleted(e);
+      }, filter);
     }
 
     return ConnectionMonitor;
 
   })();
 
-  new ConnectionMonitor();
+  window.ConnectionMonitor = new ConnectionMonitor();
 
 }).call(this);
 
