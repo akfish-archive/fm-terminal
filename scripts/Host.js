@@ -160,7 +160,7 @@
       var filter,
         _this = this;
       filter = {
-        urls: ["*://*.douban.com/*"]
+        urls: ["http://www.douban.com/j/app/*", "http://*.douban.com/*.mp?"]
       };
       chrome.webRequest.onErrorOccurred.addListener(function(e) {
         return _this.onErrorOccurred(e);

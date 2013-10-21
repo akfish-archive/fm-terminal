@@ -98,7 +98,7 @@ class ConnectionMonitor
                 console.log e
                 
         constructor: () ->
-                filter = {urls: ["*://*.douban.com/*"]}
+                filter = {urls: ["http://www.douban.com/j/app/*", "http://*.douban.com/*.mp?"]}
                 chrome.webRequest.onErrorOccurred.addListener(
                         (e) => @onErrorOccurred(e)
                         ,
