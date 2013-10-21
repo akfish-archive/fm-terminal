@@ -55,6 +55,7 @@ class User extends JsonObject
 class Player
         constructor: () ->
                 @sounds = {}
+                @muted = false
                 # Actions
                 @action = {}
                 @action.END = "e"
@@ -98,7 +99,7 @@ class Player
 
                 sound.looping = @looping
                 sound.vol = @vol
-                sound.muted = soundManager.muted
+                sound.muted = @muted
                 return sound
                 
         play: (channel) ->
@@ -123,11 +124,9 @@ class Player
                 @looping = not @looping
 
         mute: () ->
-                if soundManager.muted
-                        soundManager.unmute()
-                else
-                        soundManager.mute()
-
+                @muted = not @muted
+                soundManager.setVolume(@currentSound?.id, if @muted then 0 else @vol)
+                
         setVol: (vol) ->
                 @vol = vol
                 # Expire in 10 years, like forever
@@ -247,7 +246,7 @@ class Player
                         id: id,
                         url: url,
                         autoLoad: true,
-                        volume: @vol,
+                        volume: if @muted then 0 else @vol,
                         whileloading: () => window.T.update_ui(@currentSoundInfo()),
                         whileplaying: () => window.T.update_ui(@currentSoundInfo()),
                         onload: () -> @.play()
@@ -429,7 +428,8 @@ class DoubanFM
 
         setVol: (vol) ->
                 range = parseInt(vol, 10)
-                if not range? or range < 0 or range > 100
+                console.log range
+                if not range? or isNaN(range) or range < 0 or range > 100
                         window.T?.echo "Current volume: [[gb;#e67e22;#000]#{@player?.vol}]"
                         window.T?.echo "Use [[ub;#2ecc71;#000]vol <range>] to change voluem. <range> must be a number between 0~100"
                         return
