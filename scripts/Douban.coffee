@@ -55,7 +55,9 @@ class User extends JsonObject
 class Player
         constructor: () ->
                 @sounds = {}
+                @soundIds = []
                 @muted = false
+                @maxSounds = 20
                 # Actions
                 @action = {}
                 @action.END = "e"
@@ -75,7 +77,7 @@ class Player
                 soundManager.setup({
                         url: "SoundManager2/swf/",
                         preferFlash: false,
-                        debugMode: true,
+                        debugMode: false,
                         onready: () ->
                                 window.T?.echo("Player initialized");
                                 window.DoubanFM.player.vol = $.cookie("vol") ? 80
@@ -231,6 +233,17 @@ class Player
 
                 # do simple indexing, since when channel is updated, song list is appended
                 @doPlay(@currentChannel.songs[@currentSongIndex])
+
+        freeMem: () ->
+                while (@soundIds.length >= @maxSounds)
+                        id_to_del = @soundIds[0]
+                        @sound_to_del = @sounds[id_to_del]
+                        @soundIds = @soundIds[1..]
+                        soundManager.destroySound(@sound_to_del.id)
+                        delete @sounds[id_to_del]
+                        console.log "Destory sound: #{id_to_del}"
+                        console.log @sounds
+                        console.log @soundIds
                 
         doPlay: (song) ->
                 id = song.sid
@@ -247,6 +260,7 @@ class Player
                         @stop()
                         @currentSound.play()
                 else
+                        @freeMem()
                         @currentSound ?= soundManager.createSound({
                                 id: "s#{id}",
                                 url: url,
@@ -270,6 +284,7 @@ class Player
                                                 @nextSong(@action.END)
                         })
                         @sounds[id] = @currentSound
+                        @soundIds.push(id)
                 
 
 
