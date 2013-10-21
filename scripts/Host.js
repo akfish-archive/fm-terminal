@@ -151,14 +151,22 @@
       }
     };
 
+    ConnectionMonitor.prototype.onCompleted = function(e) {
+      console.log("Complete");
+      return console.log(e);
+    };
+
     function ConnectionMonitor() {
       var filter,
         _this = this;
       filter = {
-        urls: ["*://*.douban.com/*"]
+        urls: ["http://www.douban.com/j/app/*", "http://*.douban.com/*.mp?"]
       };
       chrome.webRequest.onErrorOccurred.addListener(function(e) {
         return _this.onErrorOccurred(e);
+      }, filter);
+      chrome.webRequest.onCompleted.addListener(function(e) {
+        return _this.onCompleted(e);
       }, filter);
     }
 
@@ -166,7 +174,7 @@
 
   })();
 
-  new ConnectionMonitor();
+  window.ConnectionMonitor = new ConnectionMonitor();
 
 }).call(this);
 

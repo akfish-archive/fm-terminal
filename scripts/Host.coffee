@@ -92,12 +92,21 @@ class ConnectionMonitor
                 window.Notification.notify(e.error, "Connection Problem")
                 if window?.DoubanFM?.player?.currentSong?
                         window.DoubanFM.next()
+
+        onCompleted: (e) ->
+                console.log "Complete"
+                console.log e
+                
         constructor: () ->
-                filter = {urls: ["*://*.douban.com/*"]}
+                filter = {urls: ["http://www.douban.com/j/app/*", "http://*.douban.com/*.mp?"]}
                 chrome.webRequest.onErrorOccurred.addListener(
                         (e) => @onErrorOccurred(e)
                         ,
                         filter)
+                chrome.webRequest.onCompleted.addListener(
+                        (e) => @onCompleted(e)
+                        ,
+                        filter)
 
-new ConnectionMonitor()
+window.ConnectionMonitor = new ConnectionMonitor()
         
