@@ -117,7 +117,9 @@
   Player = (function() {
     function Player() {
       this.sounds = {};
+      this.soundIds = [];
       this.muted = false;
+      this.maxSounds = 20;
       this.action = {};
       this.action.END = "e";
       this.action.NONE = "n";
@@ -169,11 +171,8 @@
     };
 
     Player.prototype.stop = function() {
-      var _ref3, _ref4;
-      if ((_ref3 = this.currentSound) != null) {
-        _ref3.unload();
-      }
-      return (_ref4 = this.currentSound) != null ? _ref4.stop() : void 0;
+      var _ref3;
+      return (_ref3 = this.currentSound) != null ? _ref3.stop() : void 0;
     };
 
     Player.prototype.pause = function() {
@@ -300,6 +299,22 @@
       return this.doPlay(this.currentChannel.songs[this.currentSongIndex]);
     };
 
+    Player.prototype.freeMem = function() {
+      var id_to_del, _results;
+      _results = [];
+      while (this.soundIds.length >= this.maxSounds) {
+        id_to_del = this.soundIds[0];
+        this.sound_to_del = this.sounds[id_to_del];
+        this.soundIds = this.soundIds.slice(1);
+        soundManager.destroySound(this.sound_to_del.id);
+        delete this.sounds[id_to_del];
+        console.log("Destory sound: " + id_to_del);
+        console.log(this.sounds);
+        _results.push(console.log(this.soundIds));
+      }
+      return _results;
+    };
+
     Player.prototype.doPlay = function(song) {
       var id, url,
         _this = this;
@@ -311,39 +326,49 @@
       if (this.onPlayCallback != null) {
         this.onPlayCallback(song);
       }
-      return this.currentSound != null ? this.currentSound : this.currentSound = soundManager.createSound({
-        id: id,
-        url: url,
-        autoLoad: true,
-        volume: this.muted ? 0 : this.vol,
-        whileloading: function() {
-          return window.T.update_ui(_this.currentSoundInfo());
-        },
-        whileplaying: function() {
-          return window.T.update_ui(_this.currentSoundInfo());
-        },
-        onload: function() {
-          return this.play();
-        },
-        onfinish: function() {
-          if (_this.looping) {
-            return _this.doPlay(_this.currentSong);
-          } else {
-            return _this.nextSong(_this.action.END);
-          }
-        },
-        onsuspend: function() {
-          return console.log("Suspended");
-        },
-        onconnet: function() {
-          var connected;
-          connected = _this.currentSound.connected;
-          if (!connected) {
-            console.log("Connection failed. Try next song");
-            return _this.nextSong(_this.action.END);
-          }
+      if (this.currentSound != null) {
+        this.stop();
+        return this.currentSound.play();
+      } else {
+        this.freeMem();
+        if (this.currentSound == null) {
+          this.currentSound = soundManager.createSound({
+            id: "s" + id,
+            url: url,
+            autoLoad: true,
+            volume: this.muted ? 0 : this.vol,
+            whileloading: function() {
+              return window.T.update_ui(_this.currentSoundInfo());
+            },
+            whileplaying: function() {
+              return window.T.update_ui(_this.currentSoundInfo());
+            },
+            onload: function() {
+              return this.play();
+            },
+            onfinish: function() {
+              if (_this.looping) {
+                return _this.doPlay(_this.currentSong);
+              } else {
+                return _this.nextSong(_this.action.END);
+              }
+            },
+            onsuspend: function() {
+              return console.log("Suspended");
+            },
+            onconnet: function() {
+              var connected;
+              connected = _this.currentSound.connected;
+              if (!connected) {
+                console.log("Connection failed. Try next song");
+                return _this.nextSong(_this.action.END);
+              }
+            }
+          });
         }
-      });
+        this.sounds[id] = this.currentSound;
+        return this.soundIds.push(id);
+      }
     };
 
     return Player;

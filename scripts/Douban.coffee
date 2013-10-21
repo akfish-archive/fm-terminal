@@ -55,7 +55,9 @@ class User extends JsonObject
 class Player
         constructor: () ->
                 @sounds = {}
+                @soundIds = []
                 @muted = false
+                @maxSounds = 20
                 # Actions
                 @action = {}
                 @action.END = "e"
@@ -108,7 +110,7 @@ class Player
                 @startPlay(channel)
 
         stop: () ->
-                @currentSound?.unload()
+                #@currentSound?.unload()
                 @currentSound?.stop()
 
         pause: () ->
@@ -231,6 +233,17 @@ class Player
 
                 # do simple indexing, since when channel is updated, song list is appended
                 @doPlay(@currentChannel.songs[@currentSongIndex])
+
+        freeMem: () ->
+                while (@soundIds.length >= @maxSounds)
+                        id_to_del = @soundIds[0]
+                        @sound_to_del = @sounds[id_to_del]
+                        @soundIds = @soundIds[1..]
+                        soundManager.destroySound(@sound_to_del.id)
+                        delete @sounds[id_to_del]
+                        console.log "Destory sound: #{id_to_del}"
+                        console.log @sounds
+                        console.log @soundIds
                 
         doPlay: (song) ->
                 id = song.sid
@@ -242,30 +255,36 @@ class Player
 
                 if @onPlayCallback?
                         @onPlayCallback(song)
-                @currentSound ?= soundManager.createSound({
-                        id: id,
-                        url: url,
-                        autoLoad: true,
-                        volume: if @muted then 0 else @vol,
-                        whileloading: () => window.T.update_ui(@currentSoundInfo()),
-                        whileplaying: () => window.T.update_ui(@currentSoundInfo()),
-                        onload: () -> @.play()
-                        onfinish: () =>
-                                if @looping
-                                        @doPlay(@currentSong)
-                                else
-                                        @nextSong(@action.END)
-                        onsuspend: () =>
-                                console.log "Suspended"
-                                # @nextSong(@action.END)
-                        onconnet: () =>
-                                connected = @currentSound.connected
-                                if not connected
-                                        console.log "Connection failed. Try next song"
-                                        @nextSong(@action.END)
-                                
-                        # TODO: invoke nextSong when complete
-                })
+
+                if @currentSound?
+                        @stop()
+                        @currentSound.play()
+                else
+                        @freeMem()
+                        @currentSound ?= soundManager.createSound({
+                                id: "s#{id}",
+                                url: url,
+                                autoLoad: true,
+                                volume: if @muted then 0 else @vol,
+                                whileloading: () => window.T.update_ui(@currentSoundInfo()),
+                                whileplaying: () => window.T.update_ui(@currentSoundInfo()),
+                                onload: () -> @.play()
+                                onfinish: () =>
+                                        if @looping
+                                                @doPlay(@currentSong)
+                                        else
+                                                @nextSong(@action.END)
+                                onsuspend: () =>
+                                        console.log "Suspended"
+                                        # @nextSong(@action.END)
+                                onconnet: () =>
+                                        connected = @currentSound.connected
+                                        if not connected
+                                                console.log "Connection failed. Try next song"
+                                                @nextSong(@action.END)
+                        })
+                        @sounds[id] = @currentSound
+                        @soundIds.push(id)
                 
 
 
@@ -319,7 +338,6 @@ class DoubanFM
                         $.cookie('user', value)
                 
         forget: () ->
-                #TODO: clear cookie
                 $.removeCookie('user')
 
         clean_user_data: () ->
