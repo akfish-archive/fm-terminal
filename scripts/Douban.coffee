@@ -75,7 +75,7 @@ class Player
                 soundManager.setup({
                         url: "SoundManager2/swf/",
                         preferFlash: false,
-                        debugMode: false,
+                        debugMode: true,
                         onready: () ->
                                 window.T?.echo("Player initialized");
                                 window.DoubanFM.player.vol = $.cookie("vol") ? 80
@@ -108,7 +108,7 @@ class Player
                 @startPlay(channel)
 
         stop: () ->
-                @currentSound?.unload()
+                #@currentSound?.unload()
                 @currentSound?.stop()
 
         pause: () ->
@@ -242,30 +242,34 @@ class Player
 
                 if @onPlayCallback?
                         @onPlayCallback(song)
-                @currentSound ?= soundManager.createSound({
-                        id: id,
-                        url: url,
-                        autoLoad: true,
-                        volume: if @muted then 0 else @vol,
-                        whileloading: () => window.T.update_ui(@currentSoundInfo()),
-                        whileplaying: () => window.T.update_ui(@currentSoundInfo()),
-                        onload: () -> @.play()
-                        onfinish: () =>
-                                if @looping
-                                        @doPlay(@currentSong)
-                                else
-                                        @nextSong(@action.END)
-                        onsuspend: () =>
-                                console.log "Suspended"
-                                # @nextSong(@action.END)
-                        onconnet: () =>
-                                connected = @currentSound.connected
-                                if not connected
-                                        console.log "Connection failed. Try next song"
-                                        @nextSong(@action.END)
-                                
-                        # TODO: invoke nextSong when complete
-                })
+
+                if @currentSound?
+                        @stop()
+                        @currentSound.play()
+                else
+                        @currentSound ?= soundManager.createSound({
+                                id: "s#{id}",
+                                url: url,
+                                autoLoad: true,
+                                volume: if @muted then 0 else @vol,
+                                whileloading: () => window.T.update_ui(@currentSoundInfo()),
+                                whileplaying: () => window.T.update_ui(@currentSoundInfo()),
+                                onload: () -> @.play()
+                                onfinish: () =>
+                                        if @looping
+                                                @doPlay(@currentSong)
+                                        else
+                                                @nextSong(@action.END)
+                                onsuspend: () =>
+                                        console.log "Suspended"
+                                        # @nextSong(@action.END)
+                                onconnet: () =>
+                                        connected = @currentSound.connected
+                                        if not connected
+                                                console.log "Connection failed. Try next song"
+                                                @nextSong(@action.END)
+                        })
+                        @sounds[id] = @currentSound
                 
 
 
@@ -319,7 +323,6 @@ class DoubanFM
                         $.cookie('user', value)
                 
         forget: () ->
-                #TODO: clear cookie
                 $.removeCookie('user')
 
         clean_user_data: () ->
