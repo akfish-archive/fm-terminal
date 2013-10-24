@@ -76,6 +76,20 @@ class Notification
                 window.setTimeout(
                         () -> notif.cancel(),
                         timeout)
+
+        notifyList: (msg, list, title, picture = "radio.png", timeout = 15000) ->
+                opt = {
+                        type: "list",
+                        title: title ? "",
+                        message: message ? "",
+                        iconUrl: picture,
+                        items: list ? {}
+                        }
+                notif = chrome.notifications.create("update_notif", opt, (id) ->
+                        window.setTimeout(() -> chrome.notifications.clear("update_notif")
+                                ,
+                                timeout))
+
                 
         onPlay: (song) ->
                 @notify(song.title, "<#{song.albumtitle}> #{song.artist}", song.picture)
@@ -110,3 +124,18 @@ class ConnectionMonitor
 
 window.ConnectionMonitor = new ConnectionMonitor()
         
+class Extension
+        onInstalled: (info) ->
+                # Don't care about chrome update
+                if info.reason == "chrome_update"
+                        return
+                @showNewVersion(version)
+        showNewVersion: (data) ->
+                console.log data
+                window.Notification.notifyList(data.message, data.items, data.title)
+                        
+        constructor: () ->
+                @id = chrome.i18n.getMessage("@@extension_id")
+                chrome.runtime.onInstalled.addListener @onInstalled.bind(@)
+
+window.Extension = new Extension()
