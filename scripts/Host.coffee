@@ -110,3 +110,15 @@ class ConnectionMonitor
 
 window.ConnectionMonitor = new ConnectionMonitor()
         
+class Extension
+        onInstalled: (info) ->
+                # Don't care about chrome update
+                if info.reason == "chrome_update"
+                        return
+                window.Notification.notify "Just #{info.reason}", "whatever"
+                        
+        constructor: () ->
+                @id = chrome.i18n.getMessage("@@extension_id")
+                chrome.runtime.onInstalled.addListener @onInstalled.bind(@)
+
+window.Extension = new Extension()
