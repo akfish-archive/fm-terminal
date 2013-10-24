@@ -11,6 +11,7 @@
         "128":"radio.png"
     },
 
+    
     "browser_action": {
         "default_icon": {                    // optional
             "19": "radio.png"           // optional
@@ -45,5 +46,5 @@
     "background": {
         "page": "background.html"
     },
-    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+    "content_security_policy": "script-src 'self' 'unsafe-eval' https://ssl.google-analytics.com; object-src 'self'"
 }
