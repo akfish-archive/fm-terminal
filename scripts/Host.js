@@ -132,7 +132,7 @@
         picture = "radio.png";
       }
       if (timeout == null) {
-        timeout = 5000;
+        timeout = 15000;
       }
       opt = {
         type: "list",
@@ -203,18 +203,12 @@
       if (info.reason === "chrome_update") {
         return;
       }
-      return window.Notification.notifyList("Updated to 2.0", [
-        {
-          title: "Item1",
-          message: "This is item 1."
-        }, {
-          title: "Item2",
-          message: "This is item 2."
-        }, {
-          title: "Item3",
-          message: "This is item 3."
-        }
-      ], "Update");
+      return this.showNewVersion(version);
+    };
+
+    Extension.prototype.showNewVersion = function(data) {
+      console.log(data);
+      return window.Notification.notifyList(data.message, data.items, data.title);
     };
 
     function Extension() {

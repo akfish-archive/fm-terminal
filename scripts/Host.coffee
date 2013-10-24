@@ -77,7 +77,7 @@ class Notification
                         () -> notif.cancel(),
                         timeout)
 
-        notifyList: (msg, list, title, picture = "radio.png", timeout = 5000) ->
+        notifyList: (msg, list, title, picture = "radio.png", timeout = 15000) ->
                 opt = {
                         type: "list",
                         title: title ? "",
@@ -129,9 +129,10 @@ class Extension
                 # Don't care about chrome update
                 if info.reason == "chrome_update"
                         return
-                window.Notification.notifyList("Updated to 2.0", [{ title: "Item1", message: "This is item 1."},
-                                { title: "Item2", message: "This is item 2."},
-                                { title: "Item3", message: "This is item 3."}], "Update")
+                @showNewVersion(version)
+        showNewVersion: (data) ->
+                console.log data
+                window.Notification.notifyList(data.message, data.items, data.title)
                         
         constructor: () ->
                 @id = chrome.i18n.getMessage("@@extension_id")

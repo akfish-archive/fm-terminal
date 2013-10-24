@@ -1,10 +1,10 @@
 {
     "manifest_version": 2,
 
-    "name": "DoubanFM Cmd",
+    "name": "Fm Terminal",
     "description": "Command-line like douban.fm",
     "update_url": "http://fm.catx.me/chrome/update.xml",
-    "version": "1.0",
+    "version": "2.0",
     "icons": {
         "16":"radio.png",
         "48":"radio.png",
@@ -15,7 +15,7 @@
         "default_icon": {                    // optional
             "19": "radio.png"           // optional
         },
-        "default_title": "Douban.fm CMD",      // optional; shown in tooltip
+        "default_title": "Fm Terminal",      // optional; shown in tooltip
         "default_popup": "panel.html"        // optional
     },
     "commands": {
