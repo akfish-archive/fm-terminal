@@ -27,7 +27,7 @@ v1.0
 安装
 ---------
 
-1. 下载插件[fm-terminal](http://fm.catx.me/chrome/fm-terminal.crx)
+1. 下载插件[fm-terminal](http://fm.catx.me/chrome/fm-terminal-v2.0.crx)
 2. 打开[Chrome插件设置页面](chrome://extensions/)
 3. 拖放下载的文件到插件设置页面中
 4. 确定安装
