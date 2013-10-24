@@ -76,6 +76,20 @@ class Notification
                 window.setTimeout(
                         () -> notif.cancel(),
                         timeout)
+
+        notifyList: (msg, list, title, picture = "radio.png", timeout = 5000) ->
+                opt = {
+                        type: "list",
+                        title: title ? "",
+                        message: message ? "",
+                        iconUrl: picture,
+                        items: list ? {}
+                        }
+                notif = chrome.notifications.create("update_notif", opt, (id) ->
+                        window.setTimeout(() -> chrome.notifications.clear("update_notif")
+                                ,
+                                timeout))
+
                 
         onPlay: (song) ->
                 @notify(song.title, "<#{song.albumtitle}> #{song.artist}", song.picture)
@@ -115,7 +129,9 @@ class Extension
                 # Don't care about chrome update
                 if info.reason == "chrome_update"
                         return
-                window.Notification.notify "Just #{info.reason}", "whatever"
+                window.Notification.notifyList("Updated to 2.0", [{ title: "Item1", message: "This is item 1."},
+                                { title: "Item2", message: "This is item 2."},
+                                { title: "Item3", message: "This is item 3."}], "Update")
                         
         constructor: () ->
                 @id = chrome.i18n.getMessage("@@extension_id")

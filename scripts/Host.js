@@ -126,6 +126,28 @@
       }, timeout);
     };
 
+    Notification.prototype.notifyList = function(msg, list, title, picture, timeout) {
+      var notif, opt;
+      if (picture == null) {
+        picture = "radio.png";
+      }
+      if (timeout == null) {
+        timeout = 5000;
+      }
+      opt = {
+        type: "list",
+        title: title != null ? title : "",
+        message: typeof message !== "undefined" && message !== null ? message : "",
+        iconUrl: picture,
+        items: list != null ? list : {}
+      };
+      return notif = chrome.notifications.create("update_notif", opt, function(id) {
+        return window.setTimeout(function() {
+          return chrome.notifications.clear("update_notif");
+        }, timeout);
+      });
+    };
+
     Notification.prototype.onPlay = function(song) {
       return this.notify(song.title, "<" + song.albumtitle + "> " + song.artist, song.picture);
     };
@@ -181,7 +203,18 @@
       if (info.reason === "chrome_update") {
         return;
       }
-      return window.Notification.notify("Just " + info.reason, "whatever");
+      return window.Notification.notifyList("Updated to 2.0", [
+        {
+          title: "Item1",
+          message: "This is item 1."
+        }, {
+          title: "Item2",
+          message: "This is item 2."
+        }, {
+          title: "Item3",
+          message: "This is item 3."
+        }
+      ], "Update");
     };
 
     function Extension() {
