@@ -130,6 +130,8 @@ class Extension
                 # Don't care about chrome update
                 if info.reason == "chrome_update"
                         return
+                manifest = chrome.runtime.getManifest()
+                _gaq?.push(['_trackEvent', info.reason, manifest.version])                        
                 @showNewVersion(version)
         showNewVersion: (data) ->
                 console.log data

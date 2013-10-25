@@ -203,8 +203,13 @@
 
   Extension = (function() {
     Extension.prototype.onInstalled = function(info) {
+      var manifest;
       if (info.reason === "chrome_update") {
         return;
+      }
+      manifest = chrome.runtime.getManifest();
+      if (typeof _gaq !== "undefined" && _gaq !== null) {
+        _gaq.push(['_trackEvent', info.reason, manifest.version]);
       }
       return this.showNewVersion(version);
     };
