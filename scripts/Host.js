@@ -86,7 +86,10 @@
       }) : void 0;
     };
 
-    TerminalProxy.prototype.request_user = function() {
+    TerminalProxy.prototype.request_user = function(origin) {
+      if (typeof _gaq !== "undefined" && _gaq !== null) {
+        _gaq.push(['_trackEvent', 'terminal', origin]);
+      }
       return this.server_pipe.fireRPC("set_user", window.TERM.user);
     };
 
@@ -200,8 +203,13 @@
 
   Extension = (function() {
     Extension.prototype.onInstalled = function(info) {
+      var manifest;
       if (info.reason === "chrome_update") {
         return;
+      }
+      manifest = chrome.runtime.getManifest();
+      if (typeof _gaq !== "undefined" && _gaq !== null) {
+        _gaq.push(['_trackEvent', info.reason, manifest.version]);
       }
       return this.showNewVersion(version);
     };

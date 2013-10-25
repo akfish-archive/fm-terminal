@@ -82,6 +82,7 @@ class Terminal
                 # window.T ?= term
                 commands = window.commands
                 if commands? and commands[parse.name]?
+                        _gaq?.push(['_trackEvent', 'command', parse.name])
                         cmd = commands[parse.name]
                         cmd.execute.apply cmd, parse.args
                 else

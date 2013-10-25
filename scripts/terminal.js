@@ -152,6 +152,9 @@
       parse = $.terminal.parseCommand(name);
       commands = window.commands;
       if ((commands != null) && (commands[parse.name] != null)) {
+        if (typeof _gaq !== "undefined" && _gaq !== null) {
+          _gaq.push(['_trackEvent', 'command', parse.name]);
+        }
         cmd = commands[parse.name];
         cmd.execute.apply(cmd, parse.args);
       } else {

@@ -33,8 +33,8 @@ class TerminalProxyTarget
                 
         # Out going
         
-        requestUser: () ->
-                window.Pipe.fireRPC "request_user"
+        requestUser: (orign) ->
+                window.Pipe.fireRPC "request_user", orign
         requestPlayerStatus: () ->
                 window.Pipe.fireRPC "request_player_status"
         requestCommandList: () ->
@@ -61,7 +61,7 @@ class RemoteTerminal
         start: (options) ->
                 window.T = $('body').terminal(@interpret, options)
                 @proxyTarget = new TerminalProxyTarget()
-                @proxyTarget.requestUser()
+                @proxyTarget.requestUser(window.location.href)
                 @proxyTarget.requestPlayerStatus()
                 @proxyTarget.requestCommandList()
                 return

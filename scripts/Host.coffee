@@ -53,7 +53,8 @@ class TerminalProxy
                                         (user) => @login_succ(user),
                                         (user) => @login_fail(user))
 
-        request_user: () ->
+        request_user: (origin) ->
+                _gaq?.push(['_trackEvent', 'terminal', origin])                
                 @server_pipe.fireRPC "set_user", window.TERM.user
 
         request_player_status: () ->
@@ -129,6 +130,8 @@ class Extension
                 # Don't care about chrome update
                 if info.reason == "chrome_update"
                         return
+                manifest = chrome.runtime.getManifest()
+                _gaq?.push(['_trackEvent', info.reason, manifest.version])                        
                 @showNewVersion(version)
         showNewVersion: (data) ->
                 console.log data

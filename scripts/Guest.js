@@ -35,8 +35,8 @@
       window.Pipe.registerRPC("update_ui", this.t.UI.update.bind(this.t.UI));
     }
 
-    TerminalProxyTarget.prototype.requestUser = function() {
-      return window.Pipe.fireRPC("request_user");
+    TerminalProxyTarget.prototype.requestUser = function(orign) {
+      return window.Pipe.fireRPC("request_user", orign);
     };
 
     TerminalProxyTarget.prototype.requestPlayerStatus = function() {
@@ -78,7 +78,7 @@
     RemoteTerminal.prototype.start = function(options) {
       window.T = $('body').terminal(this.interpret, options);
       this.proxyTarget = new TerminalProxyTarget();
-      this.proxyTarget.requestUser();
+      this.proxyTarget.requestUser(window.location.href);
       this.proxyTarget.requestPlayerStatus();
       this.proxyTarget.requestCommandList();
     };
