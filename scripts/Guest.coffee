@@ -59,6 +59,7 @@ class RemoteTerminal
                 window.Pipe.registerRPC("set_command_list", @setCommandList.bind(@))
                 
         start: (options) ->
+                _gaq?.push(['_trackEvent', 'terminal', 'start'])
                 window.T = $('body').terminal(@interpret, options)
                 @proxyTarget = new TerminalProxyTarget()
                 @proxyTarget.requestUser()

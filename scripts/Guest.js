@@ -76,6 +76,9 @@
     }
 
     RemoteTerminal.prototype.start = function(options) {
+      if (typeof _gaq !== "undefined" && _gaq !== null) {
+        _gaq.push(['_trackEvent', 'terminal', 'start']);
+      }
       window.T = $('body').terminal(this.interpret, options);
       this.proxyTarget = new TerminalProxyTarget();
       this.proxyTarget.requestUser();
