@@ -86,7 +86,10 @@
       }) : void 0;
     };
 
-    TerminalProxy.prototype.request_user = function() {
+    TerminalProxy.prototype.request_user = function(origin) {
+      if (typeof _gaq !== "undefined" && _gaq !== null) {
+        _gaq.push(['_trackEvent', 'terminal', origin]);
+      }
       return this.server_pipe.fireRPC("set_user", window.TERM.user);
     };
 
