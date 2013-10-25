@@ -4,7 +4,7 @@
     "name": "Fm Terminal",
     "description": "Command-line like douban.fm",
     "update_url": "http://fm.catx.me/chrome/update.xml",
-    "version": "2.0",
+    "version": "2.1",
     "icons": {
         "16":"radio.png",
         "48":"radio.png",
