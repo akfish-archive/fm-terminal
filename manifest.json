@@ -46,5 +46,6 @@
     "background": {
         "page": "background.html"
     },
+    "options_page": "options/index.html",
     "content_security_policy": "script-src 'self' 'unsafe-eval' https://ssl.google-analytics.com; object-src 'self'"
 }
