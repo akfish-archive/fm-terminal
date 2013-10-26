@@ -2,70 +2,44 @@
 this.i18n = {
     "settings": {
         "en": "Settings",
-        "de": "Optionen"
+        "zh-CN": "设置"
     },
     "search": {
         "en": "Search",
-        "de": "Suche"
+        "zh-CN": "搜索"
     },
     "nothing-found": {
         "en": "No matches were found.",
-        "de": "Keine Übereinstimmungen gefunden."
+        "zh-CN": "未找到选项."
     },
     
+    ///////////////////////////////////////////////////////
+    // General Tab
+    "general": {
+        "en": "General",
+        "zh-CN": "通用"
+    },
+
+
+    "prompt": {
+        "en": "Prompt",
+        "zh-CN": "提示"
+    },
     
-    
-    "information": {
-        "en": "Information",
-        "de": "Information"
+    "show_notif": {
+        "en": "Show notifications",
+        "zh-CN": "显示弹出提示"
     },
-    "login": {
-        "en": "Login",
-        "de": "Anmeldung"
+
+    ///////////////////////////////////////////////////////
+    // About tab
+    "about": {
+        "en": "About",
+        "zh-CN": "关于"
     },
-    "username": {
-        "en": "Username:",
-        "de": "Benutzername:"
-    },
-    "password": {
-        "en": "Password:",
-        "de": "Passwort:"
-    },
-    "x-characters": {
-        "en": "6 - 12 characters",
-        "de": "6 - 12 Zeichen"
-    },
-    "x-characters-pw": {
-        "en": "10 - 18 characters",
-        "de": "10 - 18 Zeichen"
-    },
-    "description": {
-        "en": "This is a description. You can write any text inside of this.<br>\
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut\
-        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores\
-        et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem\
-        ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et\
-        dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.\
-        Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-        
-        "de": "Das ist eine Beschreibung. Du kannst hier beliebigen Text einfügen.<br>\
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut\
-        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores\
-        et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem\
-        ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et\
-        dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.\
-        Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
-    },
-    "logout": {
-        "en": "Logout",
-        "de": "Abmeldung"
-    },
-    "enable": {
-        "en": "Enable",
-        "de": "Aktivieren"
-    },
-    "disconnect": {
-        "en": "Disconnect:",
-        "de": "Trennen:"
+    "terminal-description": {
+        "en": "A terminal-like douban.fm Chrome extension",
+        "zh-CN": "命令行风格豆瓣电台插件"
     }
+    
 };
