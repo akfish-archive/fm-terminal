@@ -22,8 +22,8 @@ class ChannelCommand extends window.CommandBase
                 @echo(Array(80).join('-'))
 
                 names = []
-                for channel in channels
-                        name = "#{channel.seq_id}.#{channel.name}"
+                for channel, i in channels
+                        name = "#{i}.#{channel.name}"
                         names.push(name)
                         max_name_length = Math.max name.width(), max_name_length
 
