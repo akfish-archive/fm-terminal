@@ -34,9 +34,9 @@
       max_name_length = 0;
       this.echo(Array(80).join('-'));
       names = [];
-      for (_i = 0, _len = channels.length; _i < _len; _i++) {
-        channel = channels[_i];
-        name = "" + channel.seq_id + "." + channel.name;
+      for (i = _i = 0, _len = channels.length; _i < _len; i = ++_i) {
+        channel = channels[i];
+        name = "" + i + "." + channel.name;
         names.push(name);
         max_name_length = Math.max(name.width(), max_name_length);
       }
