@@ -2,6 +2,7 @@
     "title": "FM Terminal v2.1",
     "message": "",
     "items": [
+        { "title": "修复bug[2.2]", "message": "修复频道编码bug"},
         { "title": "修复bug[2.1]", "message": "修复网速较慢时popup不弹出的bug"},
         { "title": "音量控制命令[2.0]", "message": "静音, 音量+/-, 设置音量值"},
 	{ "title": "Tab自动完成[2.0]", "message": "更快捷"},
