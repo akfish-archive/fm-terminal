@@ -1,9 +1,6 @@
 [submodule "jquery.terminal"]
 	path = jquery.terminal
 	url = https://github.com/jcubic/jquery.terminal.git
-[submodule "SoundManager2"]
-	path = SoundManager2
-	url = https://github.com/scottschiller/SoundManager2.git
 [submodule "jquery-jsonp"]
 	path = jquery-jsonp
 	url = https://github.com/jaubourg/jquery-jsonp.git
