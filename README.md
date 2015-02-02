@@ -1,30 +1,33 @@
-fm-terminal
-===========
+# fm-terminal
 
 命令行风格豆瓣电台Chrome插件。
 
 Geek风，无广告。
 
-v2.2
--------
+## 项目状态
+
+**由于本人已不再使用豆瓣FM，本项目停止新功能的开发。如果有开发者愿意继续开发维护本项目，请联系我。**
+
+- [ ] [待修复]Chrome Extension Message API变更导致插件失效
+
+## v2.2
+
 * 修复bug: 频道编码不匹配 #12 
 * 缩小打包后文件大小 #10
 
-v2.1
--------
+## v2.1
 
 * 修复bug: 网速较慢时popup有概率不弹出
 
-v2.0
---------
+## v2.0
+
 * 音量控制命令（静音，音量+/-，设置音量值）
 * Tab自动完成命令
 * 美化频道列表
 * 优化资源占用
 * 修复bug
 
-v1.0
---------
+## v1.0
 
 * 播放豆瓣电台音乐，登陆、红心、不再播放
 * Chrome开发者工具、Popup终端
@@ -34,8 +37,7 @@ v1.0
 
 ![](http://fm.catx.me/gallery/2.jpg)
 
-安装
----------
+## 安装
 
 1. 下载插件[fm-terminal](http://fm.catx.me/chrome/fm-terminal-v2.0.crx)
 2. 打开[Chrome插件设置页面](chrome://extensions/)
@@ -45,8 +47,7 @@ v1.0
 
 ![](http://fm.catx.me/gallery/install.jpg)
 
-使用
-----------
+## 使用
 
 1. 点击**Douban.fm CMD**图标（默认快捷键Alt+M），或，打开**开发者工具**（快捷键F12）->切换到**CatX.FM**页
 2. 输入命令，回车
