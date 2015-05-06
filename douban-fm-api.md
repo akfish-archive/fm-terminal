@@ -1,5 +1,9 @@
 # Douban FM API Documentation
 
+## Deprecation Notice
+
+As metioned in [#18](https://github.com/akfish/fm-terminal/issues/18) and some other issues, it seems that Douban FM has changed some of its API. The information in this documentation is no longer valid. There will not be any updates to this documentation, since I stopped using Douban FM. 
+
 ## Disclaimer
 
 This is not an official documentation. Douban.FM does not provide offical API.
